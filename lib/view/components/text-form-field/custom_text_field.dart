@@ -88,6 +88,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: widget.isPassword?obscureText:false,
       textAlign:widget.centerText?TextAlign.center:TextAlign.start,
       textAlignVertical:widget.centerText? TextAlignVertical.center:null,
+      
       decoration: InputDecoration(
         contentPadding:widget.centerText?EdgeInsets.zero: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
         labelText: widget.labelText?.tr??'',
@@ -142,7 +143,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             contentPadding:widget.centerText?EdgeInsets.zero: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
             hintText: widget.hintText!=null?widget.hintText!.tr:'',
             hintStyle: regularSmall.copyWith(color: MyColor.getHintTextColor().withOpacity(0.7)),
-            fillColor: MyColor.transparentColor,
+            fillColor: widget.fillColor,
             filled: true,
             border:widget.disableBorder? InputBorder.none: OutlineInputBorder(borderSide: BorderSide(width:0.5,color: MyColor.getTextFieldDisableBorder()), borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
             focusedBorder:widget.disableBorder? InputBorder.none: OutlineInputBorder(borderSide: BorderSide(width:0.5,color: MyColor.getTextFieldEnableBorder()), borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
@@ -185,10 +186,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
       textAlign:widget.centerText?TextAlign.center:TextAlign.start,
        textAlignVertical:widget.centerText? TextAlignVertical.center:null,
       decoration: InputDecoration(
-        contentPadding:widget.centerText?EdgeInsets.zero: const EdgeInsets.only(top: 5, left: 0, right: 0, bottom: 5),
+        contentPadding:widget.centerText?null: const EdgeInsets.only(top: 5, left: 0, right: 0, bottom: 5),
         labelText:  widget.labelText?.tr,
         labelStyle: regularDefault.copyWith(color: MyColor.getLabelTextColor()),
-        fillColor: MyColor.transparentColor,
+        fillColor: widget.fillColor,
         filled: true,
         border:widget.disableBorder? InputBorder.none: UnderlineInputBorder(borderSide: BorderSide(width:0.5,color: MyColor.getTextFieldDisableBorder())),
         focusedBorder:widget.disableBorder? InputBorder.none: UnderlineInputBorder(borderSide: BorderSide(width:0.5,color: MyColor.getTextFieldEnableBorder())),

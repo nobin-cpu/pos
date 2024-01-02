@@ -5,16 +5,17 @@ import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
-import 'package:flutter_prime/view/screens/category_product_list_screen/widgets/add_to_cart_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/category_product_list_screen/widgets/add_to_cart_aleart_dialogue.dart';
 import 'package:get/get.dart';
 
 class CategoryProductListController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   final TextEditingController productQuantityController = TextEditingController();
+  final TextEditingController discountController = TextEditingController();
   List<ProductModel> productList = [];
   List<ProductModel> uomList = [];
   int quantity = 1;
-
+ bool percentDiscount = false;
 
 
   @override
@@ -62,8 +63,8 @@ class CategoryProductListController extends GetxController {
     
     productQuantityController.text = quantity.toString();
     CustomAlertDialog(
-      child: AddToCartBottomSheet(index: index),
-      actions: [],
+      child: AddToCartAlertDialogue(index: index),
+      actions: []
     ).customAlertDialog(context);
   }
 
@@ -99,6 +100,40 @@ Future<void> addToCart(ProductModel product, int quantity) async {
   } catch (e) {
     CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
     print("Failed to add to cart: $e");
+  }
+}
+changeRememberMe() {
+    percentDiscount = !percentDiscount;
+    update();
+  }
+
+  double calculateTotalAmount(ProductModel product, int quantity) {
+  double price = double.parse(product.price ?? '0.0');
+  return price * quantity;
+}
+
+  void updateTotalAmountWithDiscount(ProductModel product, int quantity, double discount) {
+  double price = double.parse(product.price ?? '0.0');
+  double totalAmount = price * quantity;
+  
+  if (percentDiscount) {
+    double discountedAmount = totalAmount - (totalAmount * discount / 100);
+    this.totalAmount = discountedAmount;
+  } else {
+    double discountedAmount = totalAmount - discount;
+    this.totalAmount = discountedAmount;
+  }
+
+  update();
+}
+
+void handleDiscountChange(String value, int index) {
+  if (percentDiscount) {
+    double discountPercentage = double.tryParse(value) ?? 0;
+    updateTotalAmountWithDiscount(productList[index], quantity, discountPercentage);
+  } else {
+    double directDiscount = double.tryParse(value) ?? 0;
+    updateTotalAmountWithDiscount(productList[index], quantity, directDiscount);
   }
 }
 

@@ -41,6 +41,7 @@ class Dimensions{
   static const double space120 = 120;
   static const double space100 = 100;
   static const double space200 = 200;
+  static const double space110 = 110;
 
   static const double screenPaddingH = 15;
   static const double screenPaddingV = 15;

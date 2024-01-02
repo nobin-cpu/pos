@@ -38,6 +38,7 @@ class MyColor{
   static const Color colorRed                    = Color(0xFFD92027);
   static const Color colorGrey                   = Color(0xff555555);
   static const Color colorLightGrey              = Color(0x83E4E4E4);
+  static const Color colorInputField             = Color(0xFFF3F3F3);
   static const Color transparentColor            = Colors.transparent;
 
   static const Color greenSuccessColor           = greenP;

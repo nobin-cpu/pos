@@ -288,6 +288,7 @@ class MyStrings{
   static const String paidByCash     = "Paid by cash" ;
   static const String wholesalePrice     = "Wholesale Price" ;
   static const String purchasePrice     = "Purchase Price" ;
+  static const String discount     = "Discount" ;
   static const String succesfullyProductAddedToCart     = "Product succesfully added to cart";
   static const String failedToAddToCart     = "Failed To Add To Cart";
 
