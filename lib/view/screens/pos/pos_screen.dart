@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/controller/pos/pos_controller.dart';
 import 'package:flutter_prime/data/services/api_service.dart';
@@ -35,7 +36,7 @@ class _PosScreenState extends State<PosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(appBar:const CustomAppBar(title: MyStrings.pos),body: GetBuilder<PosController>(
        builder: (controller) => const Padding(
-         padding:  EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+         padding:  EdgeInsets.symmetric(horizontal:Dimensions.space10,vertical: Dimensions.space10),
          child:  Column(children: [
           PosCategorySection()
                ]),

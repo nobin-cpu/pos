@@ -41,7 +41,7 @@ class _EditUomBottomSheetState extends State<EditUomBottomSheet> {
               animatedLabel: false,
               needOutlineBorder: true,
             ),
-            const SizedBox(height: Dimensions.space25),
+          const SizedBox(height: Dimensions.contentToButtonSpace),
             RoundedButton(
                 text: MyStrings.edit,
                 press: () {

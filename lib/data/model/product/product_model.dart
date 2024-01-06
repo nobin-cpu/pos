@@ -1,6 +1,7 @@
 class ProductModel {
   final int id;
   final String? price;
+  final String? totalPrice;
   final String? name;
   final String ?category;
   final String? uom;
@@ -10,9 +11,10 @@ class ProductModel {
   final String ?mrp;
   final String ?purchasePrice;
 
-  ProductModel( {
+  ProductModel({
      required this.id,
      this.price,
+     this.totalPrice,
      this.name,
      this.category,
      this.uom,
@@ -24,9 +26,8 @@ class ProductModel {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'],
-     
-      
       price: map['price'],
+      totalPrice: map['totalPrice'],
       name: map['name'],
       category: map['category'],
       uom: map['uom'],

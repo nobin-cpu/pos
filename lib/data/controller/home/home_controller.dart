@@ -42,32 +42,32 @@ class HomeController extends GetxController {
   {
     "image":MyImages.inventory ,
     "title": MyStrings.inventory,
-    "color": MyColor.colorGrey,
+    "color": MyColor.invernToryBtnColor,
   },
   {
     "image":MyImages.stock ,
     "title": MyStrings.stock,
-    "color": MyColor.greenP,
+    "color": MyColor.stockBtnColor,
   },
   {
     "image":MyImages.pos ,
     "title": MyStrings.pos,
-    "color": MyColor.labelTextColor,
+    "color": MyColor.posBtnColor,
   },
   {
     "image":MyImages.report ,
     "title": MyStrings.report,
-    "color": MyColor.primaryButtonColor,
+    "color": MyColor.reportBtnColor,
   },
   {
     "image":MyImages.issue ,
     "title": MyStrings.issue,
-    "color": MyColor.colorRed,
+    "color": MyColor.issueBtnColor,
   },
   {
     "image":MyImages.contact ,
     "title": MyStrings.contact,
-     "color": MyColor.redCancelTextColor,
+     "color": MyColor.contactBtnColor,
   },
  
 ];

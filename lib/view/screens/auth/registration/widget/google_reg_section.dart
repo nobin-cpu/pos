@@ -20,26 +20,22 @@ class GoogleRegSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              InkWell(
-                  onTap: () {},
-                  child: Image.asset(
-                    MyImages.googleImage,
-                    height: Dimensions.space30,
-                    width: Dimensions.space50,
-                  )),
+              Image.asset(
+                MyImages.googleImage,
+                height: Dimensions.space30,
+                width: Dimensions.space50,
+              ),
               const Text(
                 MyStrings.signUpwithGoogle,
                 style: TextStyle(
-            fontSize: Dimensions.space20,
-            fontWeight: FontWeight.bold,
-            color: MyColor.colorBlack
-          ),
-              )
+                fontSize: Dimensions.space17,
+                color: MyColor.colorBlack
+              ),
+             )
             ],
           ),
         ),
-      
-      ],
-    );
-  }
+       ],
+     );
+   }
 }

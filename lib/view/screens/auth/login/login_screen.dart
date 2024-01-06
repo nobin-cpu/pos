@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller.clearTextField();
                                 Get.toNamed(RouteHelper.forgotPasswordScreen);
                               },
-                              child: DefaultText(text: MyStrings.forgotPassword.tr, textColor: MyColor.getTextColor()),
+                              child: Text( MyStrings.forgotPassword.tr,  maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(),fontWeight: FontWeight.w500)),
                             )
                           ],
                         ),
@@ -155,13 +155,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(MyStrings.doNotHaveAccount.tr, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getTextColor(), fontWeight: FontWeight.w500)),
-                            const SizedBox(width: Dimensions.space5),
+                            Text(MyStrings.doNotHaveAccount.tr, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getTextColor(), )),
+                            
                             TextButton(
                               onPressed: () {
                                 Get.offAndToNamed(RouteHelper.registrationScreen);
                               },
-                              child: Text(MyStrings.createAccount.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor())),
+                              child: Text(MyStrings.signUp.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(),fontWeight: FontWeight.w500)),
                             )
                           ],
                         ),
@@ -187,7 +187,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         style: TextStyle(
                                           color: MyColor.primaryColor,
                                           fontSize: Dimensions.space15,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
@@ -207,30 +206,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 child: const GoogleLoginSection(),
                               ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: Dimensions.space10, horizontal: Dimensions.space10),
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: MyStrings.byCreatingAnAccountYouAreAgreeingToOur,
-                                        style: TextStyle(
-                                          color: MyColor.colorBlack,
-                                          fontSize: Dimensions.space12,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: MyStrings.termsAndConditions,
-                                        style: TextStyle(
-                                          color: MyColor.primaryColor,
-                                          fontSize: Dimensions.space12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )
+                              // const Padding(
+                              //   padding: EdgeInsets.symmetric(vertical: Dimensions.space10, horizontal: Dimensions.space10),
+                              //   child: Text.rich(
+                              //     TextSpan(
+                              //       children: [
+                              //         TextSpan(
+                              //           text: MyStrings.byCreatingAnAccountYouAreAgreeingToOur,
+                              //           style: TextStyle(
+                              //             color: MyColor.colorBlack,
+                              //             fontSize: Dimensions.space12,
+                              //           ),
+                              //         ),
+                              //         TextSpan(
+                              //           text: MyStrings.termsAndConditions,
+                              //           style: TextStyle(
+                              //             color: MyColor.primaryColor,
+                              //             fontSize: Dimensions.space12,
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //     textAlign: TextAlign.center,
+                              //   ),
+                              // )
                             ],
                           ),
                         ),

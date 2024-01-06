@@ -14,10 +14,11 @@ class CategoryProductListController extends GetxController {
   final TextEditingController discountController = TextEditingController();
   List<ProductModel> productList = [];
   List<ProductModel> uomList = [];
+  List<CartProductModel> cartList = [];
   int quantity = 1;
- bool percentDiscount = false;
-
-
+  bool percentDiscount = false;
+  String categoryTitle = "";
+  String totalCartItems = "";
   @override
   void onInit() {
     super.onInit();
@@ -28,6 +29,7 @@ class CategoryProductListController extends GetxController {
       await databaseHelper.initializeDatabase();
 
       productList = await databaseHelper.getProductsByCategory(category);
+      cartList = await databaseHelper.getCartItems();
       update();
     } catch (e) {
       print('Error loading product data: $e');
@@ -60,12 +62,9 @@ class CategoryProductListController extends GetxController {
 
   void showAddToCartBottomSheet(ProductModel product, BuildContext context, int index) {
     totalAmount = double.parse(product.price.toString());
-    
+
     productQuantityController.text = quantity.toString();
-    CustomAlertDialog(
-      child: AddToCartAlertDialogue(index: index),
-      actions: []
-    ).customAlertDialog(context);
+    CustomAlertDialog(child: AddToCartAlertDialogue(index: index), actions: []).customAlertDialog(context);
   }
 
   Future<void> loadCartData() async {
@@ -82,60 +81,59 @@ class CategoryProductListController extends GetxController {
     }
   }
 
-Future<void> addToCart(ProductModel product, int quantity) async {
-  try {
-    await databaseHelper.insertCartItem(product, quantity);
-    CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
-    print("Successfully added to cart");
+  Future<void> addToCart(ProductModel product, int quantity) async {
+    try {
+      await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
+      CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
+      print("Successfully added to cart");
 
-    // Clear the text field and set the value to "1"
-    productQuantityController.clear();
-    productQuantityController.text = "1";
+      // Clear the text field and set the value to "1"
+      productQuantityController.clear();
+      productQuantityController.text = "1";
 
-    // Reset the quantity back to 1
-    this.quantity = 1;
+      // Reset the quantity back to 1
+      this.quantity = 1;
 
-    update();
-    Get.back();
-  } catch (e) {
-    CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
-    print("Failed to add to cart: $e");
+      update();
+      Get.back();
+    } catch (e) {
+      CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
+      print("Failed to add to cart: $e");
+    }
   }
-}
-changeRememberMe() {
+
+  changeRememberMe() {
     percentDiscount = !percentDiscount;
     update();
   }
 
   double calculateTotalAmount(ProductModel product, int quantity) {
-  double price = double.parse(product.price ?? '0.0');
-  return price * quantity;
-}
+    double price = double.parse(product.price ?? '0.0');
+    return price * quantity;
+  }
 
   void updateTotalAmountWithDiscount(ProductModel product, int quantity, double discount) {
-  double price = double.parse(product.price ?? '0.0');
-  double totalAmount = price * quantity;
-  
-  if (percentDiscount) {
-    double discountedAmount = totalAmount - (totalAmount * discount / 100);
-    this.totalAmount = discountedAmount;
-  } else {
-    double discountedAmount = totalAmount - discount;
-    this.totalAmount = discountedAmount;
+    double price = double.parse(product.price ?? '0.0');
+    double totalAmount = price * quantity;
+
+    if (percentDiscount) {
+      double discountedAmount = totalAmount - (totalAmount * discount / 100);
+      this.totalAmount = discountedAmount;
+    } else {
+      double discountedAmount = totalAmount - discount;
+      this.totalAmount = discountedAmount;
+    }
+
+    update();
   }
 
-  update();
-}
-
-void handleDiscountChange(String value, int index) {
-  if (percentDiscount) {
-    double discountPercentage = double.tryParse(value) ?? 0;
-    updateTotalAmountWithDiscount(productList[index], quantity, discountPercentage);
-  } else {
-    double directDiscount = double.tryParse(value) ?? 0;
-    updateTotalAmountWithDiscount(productList[index], quantity, directDiscount);
+  void handleDiscountChange(String value, int index) {
+    if (percentDiscount) {
+      double discountPercentage = double.tryParse(value) ?? 0;
+      updateTotalAmountWithDiscount(productList[index], quantity, discountPercentage);
+    } else {
+      double directDiscount = double.tryParse(value) ?? 0;
+      updateTotalAmountWithDiscount(productList[index], quantity, directDiscount);
+    }
   }
-}
-
-
 }

@@ -48,7 +48,7 @@ class DatabaseHelper {
   }
 
   
-   Future<void> insertCartItem(ProductModel product, int quantity) async {
+   Future<void> insertCartItem(ProductModel product, int quantity,String totalAmount) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -61,7 +61,7 @@ class DatabaseHelper {
       'uom': product.uom,
       'imagePath': product.imagePath,
       'quantity': quantity,
-      'totalAmount': double.parse(product.price ?? '0.0') * quantity,
+      'totalAmount': totalAmount.toString(),
     });
   }
 Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod) async {

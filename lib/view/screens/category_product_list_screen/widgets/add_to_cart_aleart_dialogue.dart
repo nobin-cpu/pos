@@ -21,6 +21,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
         decoration:const BoxDecoration(color: MyColor.colorWhite),
         child: Column(
           children: [
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.space15),
               child: Row(
@@ -69,59 +70,62 @@ class AddToCartAlertDialogue extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Dimensions.space10),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            con.increaseCartItem();
-                            con.updateTotalAmount(con.productList[index], con.quantity);
-                          },
-                          child: Image.asset(
-                            MyImages.increase,
-                            height: Dimensions.space50,
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.space110),
-                        child: CustomTextField(
-                            fillColor: MyColor.colorInputField,
-                            onChanged: (value) {
-                              int enteredQuantity = int.tryParse(value) ?? 0;
-                              con.quantity = enteredQuantity;
-                              con.updateTotalAmount(con.productList[index], enteredQuantity);
-                            },
-                            controller: con.productQuantityController,
-                            needOutlineBorder: false,
-                            disableBorder: true,
-                            centerText: true),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            if (con.quantity > 1) {
-                              con.decreaseCartItem();
-                              con.updateTotalAmount(con.productList[index], con.quantity);
-                            }
-                          },
-                          child: Image.asset(
-                            MyImages.decrease,
-                            height: Dimensions.space50,
-                          )),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: Dimensions.space20),
-                  child: Text(
-                    con.productList[index].uom ?? "",
-                    style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
-                  ),
-                )
-              ],
+           Row(
+  children: [
+    Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              con.increaseCartItem();
+              con.updateTotalAmount(con.productList[index], con.quantity);
+            },
+            child: Image.asset(
+              MyImages.increase,
+              height: Dimensions.space50,
             ),
-            const SizedBox(height: Dimensions.space20),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/3.7),
+            child: CustomTextField(
+              fillColor: MyColor.colorInputField,
+              onChanged: (value) {
+                int enteredQuantity = int.tryParse(value) ?? 0;
+                con.quantity = enteredQuantity;
+                con.updateTotalAmount(con.productList[index], enteredQuantity);
+              },
+              controller: con.productQuantityController,
+              
+              disableBorder: true,
+              centerText: true,
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              if (con.quantity > 1) {
+                con.decreaseCartItem();
+                con.updateTotalAmount(con.productList[index], con.quantity);
+              }
+            },
+            child: Image.asset(
+              MyImages.decrease,
+              height: Dimensions.space50,
+            ),
+          ),
+        ],
+      ),
+    ),
+    Center(
+          child: Text(
+            con.productList[index].uom ?? "",
+            style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
+          ),
+        ),
+       const  SizedBox(width:Dimensions.space10,)
+  ],
+),
+   const SizedBox(height: Dimensions.space20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20, vertical: Dimensions.space20),
               child: Row(

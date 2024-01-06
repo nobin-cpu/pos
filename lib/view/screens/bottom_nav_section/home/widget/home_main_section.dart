@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/route/route.dart';
-import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/controller/home/home_controller.dart';
 import 'package:flutter_prime/view/screens/bottom_nav_section/home/widget/home_button.dart';
 import 'package:get/get.dart';
@@ -11,8 +10,8 @@ class HomeMainSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
-      builder: (controller) => Expanded(
-      child: GridView.builder(
+      builder: (controller) => GridView.builder(
+        shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5),
         itemCount: controller.homeButtons.length,
         itemBuilder: (context, index) => HomeButtonContainer(
@@ -30,7 +29,6 @@ class HomeMainSection extends StatelessWidget {
           },
         ),
       ),
-              ),
     );
   }
 }

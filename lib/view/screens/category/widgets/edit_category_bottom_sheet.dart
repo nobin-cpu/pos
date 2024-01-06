@@ -40,7 +40,7 @@ class _EditCategoryBottomSheetState extends State<EditCategoryBottomSheet> {
               animatedLabel: false,
               needOutlineBorder: true,
             ),
-            const SizedBox(height: Dimensions.space10),
+           const SizedBox(height: Dimensions.contentToButtonSpace),
             RoundedButton(text: MyStrings.done, press: (){
                controller.editCategoryData(widget.id!);
             }),

@@ -56,6 +56,7 @@ dependencies:
   sqflite: ^2.3.0
   path: ^1.8.3
   draggable_scrollbar: ^0.1.0
+  flutter_slidable: ^3.0.1
 
 dev_dependencies:
   flutter_test:

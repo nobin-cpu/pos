@@ -21,6 +21,8 @@ class HomeButtonContainer extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             margin: const EdgeInsets.all(Dimensions.space5),

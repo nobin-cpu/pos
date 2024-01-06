@@ -24,7 +24,6 @@ class MyUtils {
   return " ৳ ";
 }
 
-
   static dynamic getBottomSheetShadow() {
     return [
       BoxShadow(
@@ -36,17 +35,26 @@ class MyUtils {
     ];
   }
 
-  static dynamic getCardShadow() {
+  // static dynamic getCardShadow() {
+  //   return [
+  //     BoxShadow(
+  //       color: Colors.grey.shade400.withOpacity(0.05),
+  //       spreadRadius: 2,
+  //       blurRadius: 2,
+  //       offset: const Offset(0, 3),
+  //     ),
+  //   ];
+  // }
+ static dynamic getCardShadow() {
     return [
       BoxShadow(
-        color: Colors.grey.shade400.withOpacity(0.05),
+        color: Colors.grey.shade400.withOpacity(0.09),
         spreadRadius: 2,
         blurRadius: 2,
         offset: const Offset(0, 3),
       ),
     ];
   }
-
   static getOperationTitle(String value) {
     String number = value;
     RegExp regExp = RegExp(r'^(\d+)(\w+)$');

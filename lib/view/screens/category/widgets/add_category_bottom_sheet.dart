@@ -33,7 +33,7 @@ class _AddCategoryBottomSheetState extends State<AddCategoryBottomSheet> {
             animatedLabel: true,
             labelText: MyStrings.addaCategory.tr,
           ),
-            const SizedBox(height: Dimensions.space25),
+           const SizedBox(height: Dimensions.contentToButtonSpace),
           RoundedButton(
             press: () {
               controller.addCategory();

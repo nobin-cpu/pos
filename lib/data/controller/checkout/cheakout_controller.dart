@@ -84,7 +84,7 @@ class CheakoutController extends GetxController {
       uomList = uomData;
       categoryList = categoryData;
       print(uomList);
-      print("--------------------.............................");
+   
       update();
     } catch (e) {
       print('Error loading dropdown data: $e');
@@ -106,7 +106,6 @@ class CheakoutController extends GetxController {
     CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
 
     cartItem.name = productName;
-
     cartItem.totalAmount = cartItem.totalAmount;
     cartItem.imagePath = newPickedImage?.path ?? cartItem.imagePath;
     cartItem.category = newCategory;

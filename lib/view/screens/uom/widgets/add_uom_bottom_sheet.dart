@@ -39,7 +39,7 @@ class _AddUomBottomSheetState extends State<AddUomBottomSheet> {
               animatedLabel: true,
               labelText: MyStrings.addAnUnit,
             ),
-              const SizedBox(height: Dimensions.space25),
+           const SizedBox(height: Dimensions.contentToButtonSpace),
             RoundedButton(
               press: () async {
                 if (controller.uomController.text.isNotEmpty) {

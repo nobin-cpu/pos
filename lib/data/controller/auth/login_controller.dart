@@ -1,19 +1,17 @@
-import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_prime/core/helper/secured_storage_helper.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
-import 'package:flutter_prime/data/model/auth/login/login_response_model.dart';
-import 'package:flutter_prime/data/model/global/response_model/response_model.dart';
 import 'package:flutter_prime/data/repo/auth/login_repo.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as prefix;
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   LoginRepo loginRepo;
@@ -25,9 +23,13 @@ class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   String? email;
   String? password;
-  String uniqueID = "";
+  String? uniqueID = "";
+  bool? rememberMe = false;
   List<String> errors = [];
   bool remember = false;
 
@@ -36,9 +38,11 @@ class LoginController extends GetxController {
   }
 
   void checkAndGotoNextStep() async {
+     
+   
+
     if (remember) {
-      final storage = new FlutterSecureStorage();
-      await storage.write(key: SecuredStorageHelper.uniqueID, value: uniqueID);
+    
       Get.offAllNamed(RouteHelper.bottomNavBar);
     } else {
       await loginRepo.apiClient.sharedPreferences.setBool(SharedPreferenceHelper.rememberMeKey, false);
@@ -50,7 +54,6 @@ class LoginController extends GetxController {
     }
   }
 
-  prefix.FirebaseAuth _auth = prefix.FirebaseAuth.instance;
   bool isSubmitLoading = false;
   loginUser() async {
     isSubmitLoading = true;
@@ -62,20 +65,16 @@ class LoginController extends GetxController {
         password: passwordController.text,
       );
 
-      // Login successful, handle further steps here...
-      // For example, check if the user's email is verified
+   
 
       prefix.User? user = userCredential.user;
       if (user != null) {
-        if (user.emailVerified) {
-          print("Login successful. Email is verified.");
-          await _saveUidAndUserDataToSecureStorage(user.uid, user.displayName, user.email, user.photoURL);
-        } else {
+         
           print("Login successful, but email is not verified.");
           await _saveUidAndUserDataToSecureStorage(user.uid, user.displayName, user.email, user.photoURL);
           CustomSnackBar.success(successList: [MyStrings.success]);
           checkAndGotoNextStep();
-        }
+        
       } else {
         print("Login failed. User is null.");
         CustomSnackBar.error(errorList: [MyStrings.loginFailedTryAgain]);
@@ -107,37 +106,39 @@ class LoginController extends GetxController {
   bool loading = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void handleGoogleSignIn() async {
+  Future<void> handleGoogleSignIn() async {
     loading = true;
     update();
 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) {
-      return;
-    }
-
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final prefix.AuthCredential credential = prefix.GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
     try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: ['email']).signIn();
+
+      if (googleUser == null) {
+        loading = false;
+        update();
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final prefix.AuthCredential credential = prefix.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
       final prefix.UserCredential authResult = await prefix.FirebaseAuth.instance.signInWithCredential(credential);
       final prefix.User? user = authResult.user;
 
       if (user != null) {
+        
         print("Google Sign-In Successful: ${user.displayName}");
 
-        // Check if the user is registered in Firebase
         bool isRegisteredUser = await isUserRegistered(user.email!);
 
         if (isRegisteredUser) {
           bool isDeletedUser = await isUserDeleted(user.email!);
 
           if (!isDeletedUser) {
-            await _saveUidAndUserDataToSecureStorage(user.uid, user.displayName, user.email, user.photoURL);
-
+            await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
             checkAndGotoNextStep();
             CustomSnackBar.success(successList: [MyStrings.success]);
           } else {
@@ -149,6 +150,7 @@ class LoginController extends GetxController {
           // User is not registered, handle accordingly (e.g., show an error message).
           print('User is not registered. Please register first.');
           await prefix.FirebaseAuth.instance.signOut();
+          CustomSnackBar.error(errorList: [MyStrings.thisAccIsdeleted]);
         }
       }
     } catch (error) {
@@ -187,6 +189,15 @@ class LoginController extends GetxController {
     print("succesfully saved everything=====================================================" + uis.toString());
     print("send $uid=====================================================get the uid: " + uis.toString());
     uniqueID = uis.toString();
+  }
+
+    Future<void> _saveUidToSharedPreference(String uid, bool rememberMe,String userName,String email) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString(SharedPreferenceHelper.userIdKey, uid);
+    await preferences.setString(SharedPreferenceHelper.userNameKey, userName);
+    await preferences.setString(SharedPreferenceHelper.userNameKey, email);
+    await preferences.setBool(SharedPreferenceHelper.rememberMeKey, rememberMe);
+    print("my name i s " + rememberMe.toString());
   }
 
   Future<bool> isUserDeleted(String email) async {

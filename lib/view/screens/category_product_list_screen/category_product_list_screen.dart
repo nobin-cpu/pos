@@ -1,9 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/data/controller/category_product_list_model/category_product_list_controller.dart';
 import 'package:flutter_prime/data/controller/pos/pos_controller.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
@@ -20,17 +22,13 @@ class CategoryProductListScreen extends StatefulWidget {
 }
 
 class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
-  late final CategoryProductListController controller;
-  late final PosController posController;
-  late final CategoryModel category;
-
   @override
   void initState() {
     super.initState();
-    controller = Get.put(CategoryProductListController());
-    posController = Get.find();
-    category = Get.arguments.isNotEmpty ? Get.arguments[0] : CategoryModel();
-    controller.initData(category.title!);
+    final controller = Get.put(CategoryProductListController());
+     controller.categoryTitle = Get.arguments.isNotEmpty ? Get.arguments[0] : "";
+    controller.loadProductData(controller.categoryTitle);
+    controller.initData(controller.categoryTitle);
   }
 
   @override
@@ -38,48 +36,72 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
     return GetBuilder<CategoryProductListController>(
       builder: (controller) => Scaffold(
         appBar: CustomAppBar(
-          title: '${category.title}',
+          title: controller.categoryTitle,
           isActionImage: true,
           isShowActionBtn: true,
-          actionIcon: MyImages.cart,
-          actionPress: () {
-            Get.toNamed(RouteHelper.cartScreen);
-          },
-        ),
-        body: ListView.builder(
-          itemCount: controller.productList.length,
-          itemBuilder: (context, index) {
-            ProductModel product = controller.productList[index];
-            return Padding(
-              padding: const EdgeInsets.all(Dimensions.space5),
-              child: InkWell(
-                onTap: () {
-                  print("object");
-                  //controller.showQuantityDialog(product, context);
-                },
-                child: CustomCard(
-                    width: double.infinity,
-                    child: ListTile(
-                      title: Text(product.name ?? ""),
-                      subtitle: Text('Price: ${product.price}'),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(Dimensions.space3),
-                        child: Image.file(
-                          File(product.imagePath ?? ""),
-                          height: Dimensions.space70,
-                          width: Dimensions.space70,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+          action: [
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(Dimensions.space8),
+                  child: InkWell(
                       onTap: () {
-                        print("object");
-                        controller.showAddToCartBottomSheet(product, context, index);
+                        Get.toNamed(RouteHelper.cartScreen);
                       },
-                    )),
-              ),
-            );
-          },
+                      child: Image.asset(
+                        MyImages.cart,
+                        color: MyColor.colorWhite,
+                        height: Dimensions.space20,
+                      )),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(Dimensions.space4),
+                    decoration: const BoxDecoration(color: MyColor.colorWhite, shape: BoxShape.circle),
+                    child: Text(
+                      controller.cartList.length.toString(),
+                      style: regularDefault.copyWith(color: MyColor.colorBlack),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
         ),
+        body: controller.productList.isEmpty
+            ? Center(
+                child: Image.asset(
+                MyImages.noDataFound,
+                height: Dimensions.space300,
+              ))
+            : ListView.builder(
+                itemCount: controller.productList.length,
+                itemBuilder: (context, index) {
+                  ProductModel product = controller.productList[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:  Dimensions.space10,vertical: Dimensions.space5),
+                    child: CustomCard( width: double.infinity,
+                        child: ListTile(
+                          title: Text(product.name ?? ""),
+                          subtitle: Text('${MyStrings.price} ${product.price}'),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(Dimensions.space3),
+                            child: Image.file(
+                              File(product.imagePath ?? ""),
+                              height: Dimensions.space70,
+                              width: Dimensions.space70,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          onTap: () {
+                            controller.showAddToCartBottomSheet(product, context, index);
+                          },
+                        )),
+                  );
+                },
+              ),
       ),
     );
   }

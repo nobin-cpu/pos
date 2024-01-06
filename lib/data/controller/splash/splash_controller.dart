@@ -1,9 +1,11 @@
 import 'package:flutter_prime/core/helper/secured_storage_helper.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/data/controller/localization/localization_controller.dart';
 import 'package:flutter_prime/data/repo/auth/general_setting_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashController extends GetxController {
   GeneralSettingRepo repo;
@@ -11,17 +13,19 @@ class SplashController extends GetxController {
   SplashController({required this.repo, required this.localizationController});
 
   bool isLoading = true;
+  bool ?rememberMe = false;
   String? userID = "";
   gotoNextPage() async {
     
-    final storage = new FlutterSecureStorage();
-    userID = await storage.read(key: SecuredStorageHelper.uniqueID);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    userID = await sharedPreferences.getString( SharedPreferenceHelper.userIdKey);
+    rememberMe = await sharedPreferences.getBool( SharedPreferenceHelper.rememberMeKey);
    
     noInternet = false;
     update();
-    if (userID != null) {
+    if (userID != null && rememberMe==true) {
       Future.delayed(const Duration(seconds: 2), () {
-        Get.offAndToNamed(RouteHelper.bottomNavBar);
+         Get.offAndToNamed(RouteHelper.bottomNavBar);
       });
     } else {
       Future.delayed(const Duration(seconds: 2), () {

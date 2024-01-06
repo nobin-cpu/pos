@@ -50,21 +50,13 @@ Widget build(BuildContext context) {
             appBar: CustomAppBar(
               title: "",
               isShowBackBtn: false,
-              todaysDate: DateTime.now(),
+              // todaysDate: DateTime.now(),
             ),
             backgroundColor: MyColor.getScreenBgColor(),
             body: controller.isLoading
                 ? const CustomLoader()
-                : const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dimensions.space15),
-                  child: Column(
-                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: Dimensions.space10),
-                      HomeMainSection(),
-                    ],
-                  ),
+                : const Center(
+                  child: HomeMainSection(),
                 ),
           ),
         ),

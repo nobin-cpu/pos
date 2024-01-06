@@ -17,6 +17,7 @@ class Dimensions{
   static const double cardRadius        = 8;
   static const double bottomSheetRadius = 15;
   static const double textToTextSpace   = 8;
+  static const double contentToButtonSpace   = 30;
 
   static const double space0  = 0;
   static const double space5  = 5;
@@ -41,6 +42,7 @@ class Dimensions{
   static const double space120 = 120;
   static const double space100 = 100;
   static const double space200 = 200;
+  static const double space300 = 300;
   static const double space110 = 110;
 
   static const double screenPaddingH = 15;

@@ -35,18 +35,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             children: [
               SingleChildScrollView(
-                
-          scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: const [
-                    DataColumn(
-                      label: Text(MyStrings.image),
-                    ),
+                    // DataColumn(
+                    //   label: Text(MyStrings.image),
+                    // ),
                     DataColumn(label: Text(MyStrings.products)),
                     DataColumn(label: Text(MyStrings.price)),
                     DataColumn(label: Text(MyStrings.quantity)),
                     DataColumn(label: Text(MyStrings.total)),
-                    DataColumn(label: Text(MyStrings.actions)),
+                    // DataColumn(label: Text(MyStrings.actions)),
                   ],
                   rows: controller.cartProductList.map((CartProductModel product) {
                         
@@ -54,83 +53,110 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           
                     return DataRow(
                       cells: [
-                        DataCell(
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(Dimensions.space5),
-                            child: Image.file(
-                              File(product.imagePath ?? ""),
-                              height: Dimensions.space40,
-                              width: Dimensions.space40,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        // DataCell(
+                        //   ClipRRect(
+                        //     borderRadius: BorderRadius.circular(Dimensions.space5),
+                        //     child: Image.file(
+                        //       File(product.imagePath ?? ""),
+                        //       height: Dimensions.space40,
+                        //       width: Dimensions.space40,
+                        //       fit: BoxFit.cover,
+                        //     ),
+                        //   ),
+                        // ),
                         DataCell(Text(product.name ?? "")),
                         DataCell(Text('${MyUtils.getCurrency()}${product.price}')),
                         DataCell(Text(product.quantity.toString())),
-                        DataCell(Text('${MyUtils.getCurrency()}$perProductTotal ')),
-                        DataCell(
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap: () {
-                                    controller.showEditOrDeleteBottomSheet(
-                                      context,
-                                      product,
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    MyImages.edit,
-                                    height: Dimensions.space20,
-                                  )),
-                              const SizedBox(width: Dimensions.space10),
-                              InkWell(
-                                  onTap: () {
-                                    controller.deleteCartItem(product.id);
-                                  },
-                                  child: Image.asset(
-                                    MyImages.delete,
-                                    height: Dimensions.space20,
-                                    color: MyColor.colorRed,
-                                  )),
-                            ],
-                          ),
-                        ),
+                        DataCell(Text('${MyUtils.getCurrency()}${product.totalAmount} ')),
+                        // DataCell(
+                        //   Row(
+                        //     children: [
+                        //       InkWell(
+                        //           onTap: () {
+                        //             controller.showEditOrDeleteBottomSheet(
+                        //               context,
+                        //               product,
+                        //             );
+                        //           },
+                        //           child: Image.asset(
+                        //             MyImages.edit,
+                        //             height: Dimensions.space20,
+                        //           )),
+                        //       const SizedBox(width: Dimensions.space10),
+                        //       InkWell(
+                        //           onTap: () {
+                        //             controller.deleteCartItem(product.id);
+                        //           },
+                        //           child: Image.asset(
+                        //             MyImages.delete,
+                        //             height: Dimensions.space20,
+                        //             color: MyColor.colorRed,
+                        //           )),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     );
                   }).toList(),
                 ),
               ),
-              SizedBox(height: 100,)
+             const SizedBox(height:Dimensions.space100)
             ],
           ),
         ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Dimensions.space25, vertical: Dimensions.space20),
-          child: InkWell(
-            onTap: () {
-              controller.showConfirmPopUp(context);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.space10),
-                color: MyColor.primaryColor,
-              ),
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.space15),
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(MyImages.checkout, color: MyColor.colorWhite, height: Dimensions.space20),
-                  const SizedBox(width: Dimensions.space5),
-                  Text(
-                    MyStrings.confirmCheckout,
-                    style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/2,bottom: Dimensions.space10),
+                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.space10),
+                    color: MyColor.primaryColor,
                   ),
-                  Text(' ${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularExtraLarge.copyWith(color: MyColor.colorWhite))
-                ],
+                  padding: const EdgeInsets.symmetric(vertical: Dimensions.space10,horizontal: Dimensions.space5),
+                  width: double.infinity,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          MyStrings.total,
+                          style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
+                        ),
+                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularExtraLarge.copyWith(color: MyColor.colorWhite))
+                      ],
+                    ),
+                  ),
+                ),
+              InkWell(
+                onTap: () {
+                  controller.showConfirmPopUp(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.space10),
+                    color: MyColor.primaryColor,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: Dimensions.space15),
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(MyImages.checkout, color: MyColor.colorWhite, height: Dimensions.space20),
+                      const SizedBox(width: Dimensions.space5),
+                      Text(
+                        MyStrings.confirmCheckout,
+                        style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
+                      ),
+                     // Text(' ${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularExtraLarge.copyWith(color: MyColor.colorWhite))
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
