@@ -4,7 +4,7 @@ class MyColor{
 
   static const Color primaryColor                = Color(0xFF000000);
   static const Color secondaryColor              = Color(0xffF6F7FE);
-  static const Color screenBgColor               = Color(0xFFF9F9F9);
+  static const Color screenBgColor               = Color(0xFFF1F1F1);
   static const Color primaryTextColor            = Color(0xff262626);
   static const Color contentTextColor            = Color(0xff777777);
   static const Color greyColor                   = Color(0xFFCFCFCF);
@@ -41,20 +41,20 @@ class MyColor{
   static const Color colorInputField             = Color(0xFFF3F3F3);
   static const Color transparentColor            = Colors.transparent;
 
-  static const Color greenSuccessColor           = greenP;
-  static const Color redCancelTextColor          = Color(0xFFF93E2C);
-  static const Color highPriorityPurpleColor     = Color(0xFF7367F0);
-  static const Color pendingColor                = Colors.orange;
+  static const Color greenSuccessColor       = greenP;
+  static const Color redCancelTextColor      = Color(0xFFF93E2C);
+  static const Color highPriorityPurpleColor = Color(0xFF7367F0);
+  static const Color pendingColor            = Colors.orange;
 
-  static const Color greenP                      = Color(0xFF28C76F);
-  static const Color containerBgColor            = Color(0xffF9F9F9);
-  static const Color pickImageBgColor            = Color(0xFFECECEC);
-  static const Color invernToryBtnColor            = Color(0xFF264653);
-  static const Color stockBtnColor            = Color(0xFF2a9d8f);
-  static const Color posBtnColor            = Color(0xFFe9c46a);
-  static const Color reportBtnColor            = Color(0xFFf4a261);
-  static const Color issueBtnColor            = Color(0xFFe76f51);
-  static const Color contactBtnColor            = Color(0xFFe97c61);
+  static const Color greenP             = Color(0xFF28C76F);
+  static const Color containerBgColor   = Color(0xffF9F9F9);
+  static const Color pickImageBgColor   = Color(0xFFECECEC);
+  static const Color invernToryBtnColor = Color(0xFF264653);
+  static const Color stockBtnColor      = Color(0xFF2a9d8f);
+  static const Color posBtnColor        = Color(0xFFe9c46a);
+  static const Color reportBtnColor     = Color(0xFFf4a261);
+  static const Color issueBtnColor      = Color(0xFFe76f51);
+  static const Color contactBtnColor    = Color(0xFFe97c61);
 
 
   static Color getPrimaryColor(){

@@ -10,6 +10,7 @@ import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/controller/product/product_controller.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
+import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
 import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/chip_filter.dart';
 import 'package:get/get.dart';
 
@@ -19,8 +20,6 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  String selectedCategory = ''; // Track the selected category
-
   @override
   void initState() {
     super.initState();
@@ -39,48 +38,48 @@ class _ProductScreenState extends State<ProductScreen> {
               actionIcon: MyImages.add,
               actionPress: () {},
               action: [
-
                 InkWell(
-              customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width*.1),
-        ),
-  onTap: () {
-     controller.showAddProductBottomSheet(context);
-  },
-  hoverColor: Colors.transparent, 
-  child: Ink(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(Dimensions.space10), 
-      color: MyColor.transparentColor,
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(Dimensions.space17), 
-      child: Image.asset(
-        MyImages.add,
-        height: Dimensions.space15,
-        color: MyColor.colorWhite,
-      ),
-    ),
-  ),
-)
-],
-            ),
-            body: Column(
-              children: [
-               
-             controller.productList.isEmpty?const SizedBox():
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: ChipFilter(
-                    categories: controller.categoryList,
-                    onChipSelected: (category) {
-                      setState(() {
-                        selectedCategory = category.title!;
-                      });
-                    },
-                    selectedCategory: selectedCategory,
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * .1),
                   ),
-                ),
+                  onTap: () {
+                    controller.showAddProductBottomSheet(context);
+                  },
+                  hoverColor: Colors.transparent,
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.space10),
+                      color: MyColor.transparentColor,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(Dimensions.space17),
+                      child: Image.asset(
+                        MyImages.add,
+                        height: Dimensions.space15,
+                        color: MyColor.colorWhite,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            body: controller.loading?const CustomLoader():
+             Column(
+              children: [
+                controller.productList.isEmpty
+                    ? const SizedBox()
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: ChipFilter(
+                          categories: controller.categoryList,
+                          onChipSelected: (category) {
+                            controller.selectedCategory = category.title!;
+                            controller.update();
+                          },
+                          selectedCategory:controller.selectedCategory,
+                        ),
+                      ),
+                      controller.productList.isEmpty ?Image.asset(MyImages.noDataFound,height: Dimensions.space200,):
                 Expanded(
                   child: GetBuilder<ProductController>(
                       builder: (controller) => controller.productList.isEmpty
@@ -88,7 +87,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           : ListView.builder(
                               itemCount: controller.productList.length,
                               itemBuilder: (context, index) {
-                                if (selectedCategory.isEmpty || controller.productList[index].category == selectedCategory) {
+                                if (controller.selectedCategory.isEmpty || controller.productList[index].category == controller.selectedCategory) {
                                   return Padding(
                                     padding: const EdgeInsets.all(Dimensions.space5),
                                     child: CustomCard(
@@ -97,7 +96,9 @@ class _ProductScreenState extends State<ProductScreen> {
                                       child: Row(
                                         children: [
                                           Image.file(File(controller.productList[index].imagePath ?? ""), height: Dimensions.space50, width: Dimensions.space50),
-                                          const SizedBox(width: Dimensions.space10,),
+                                          const SizedBox(
+                                            width: Dimensions.space10,
+                                          ),
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [

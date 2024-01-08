@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
-import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/data/controller/uom/uom_controller.dart';
-import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/bottom_sheet_header_row.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
@@ -29,7 +27,7 @@ class _AddUomBottomSheetState extends State<AddUomBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
       
           children: [
-            const BottomSheetHeaderRow(header:  MyStrings.uniteOfMeasure,),
+            const BottomSheetHeaderRow(header:  MyStrings.addAUnit,),
              
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
@@ -37,7 +35,7 @@ class _AddUomBottomSheetState extends State<AddUomBottomSheet> {
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
-              labelText: MyStrings.addAnUnit,
+              labelText: MyStrings.addAnUnitName,
             ),
            const SizedBox(height: Dimensions.contentToButtonSpace),
             RoundedButton(

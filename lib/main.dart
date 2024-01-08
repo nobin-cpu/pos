@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
@@ -54,6 +55,10 @@ class _MyAppState extends State<MyApp> {
     return GetBuilder<LocalizationController>(
       builder: (localizeController) => GetMaterialApp(
         title: MyStrings.appName,
+         theme: ThemeData(
+          scaffoldBackgroundColor: MyColor.getScreenBgColor(),
+        
+        ),
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.noTransition,
         transitionDuration: const Duration(milliseconds: 200),

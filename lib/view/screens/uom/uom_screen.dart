@@ -70,40 +70,43 @@ class _UomScreenState extends State<UomScreen> {
                           : ListView.builder(
               itemCount: controller.uomData.length,
               itemBuilder: (context, index) {
-                return Slidable(
-                  startActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    children: [
-                      SlidableAction(
-                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.space8), bottomLeft: Radius.circular(Dimensions.space8)),
-                        onPressed: (BuildContext context) {
-                          controller.deleteUom(controller.uomData[index].id!);
-                        },
-                        backgroundColor: MyColor.colorRed,
-                        foregroundColor: MyColor.colorWhite,
-                        icon: Icons.delete,
-                        label: MyStrings.delete,
-                      ),
-                    ],
-                  ),
-                  child: CustomCard(
-                    radius: Dimensions.space8,
-                    width: double.infinity,
-                    child: Row(
+                return Padding(
+                  padding: const EdgeInsets.all(Dimensions.space5),
+                  child: Slidable(
+                    startActionPane: ActionPane(
+                      motion: const ScrollMotion(),
                       children: [
-                        Text(controller.uomData[index].title!, style: regularMediumLarge),
-                        const Spacer(),
-                        InkWell(
-                          onTap: () {
-                            controller.showUomDetails(controller.uomData[index], context);
+                        SlidableAction(
+                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.space8), bottomLeft: Radius.circular(Dimensions.space8)),
+                          onPressed: (BuildContext context) {
+                            controller.deleteUom(controller.uomData[index].id!);
                           },
-                          child: Image.asset(
-                            MyImages.edit,
-                            height: Dimensions.space15,
-                            color: MyColor.colorBlack,
-                          ),
+                          backgroundColor: MyColor.colorRed,
+                          foregroundColor: MyColor.colorWhite,
+                          icon: Icons.delete,
+                          label: MyStrings.delete,
                         ),
                       ],
+                    ),
+                    child: CustomCard(
+                      radius: Dimensions.space8,
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Text(controller.uomData[index].title!, style: regularMediumLarge),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              controller.showUomDetails(controller.uomData[index], context);
+                            },
+                            child: Image.asset(
+                              MyImages.edit,
+                              height: Dimensions.space15,
+                              color: MyColor.colorBlack,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
@@ -13,8 +14,9 @@ import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CheakoutController extends GetxController {
+class ConfirmCheakoutController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -31,23 +33,52 @@ class CheakoutController extends GetxController {
   String newCategory = '';
   String newUom = '';
   int quantity = 1;
-  double? totalPric = 0.0;
+  double? totalAmount = 0.0;
   String productName = "";
-  String price = "";
+  String perProductPrice = "";
   String uom = "";
-
+  String vatAmount = "";
+  bool isVatEnable = true;
+  bool isVatInPercent = true;
+  int id = 0;
   List<CartProductModel> cartProductList = [];
-
+  double vat = 0.0;
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
     cartProductList = await databaseHelper.getCartItems();
-
     update();
   }
 
-  void initData() {
+  void initData() async {
     getCartList();
+    await getVatData();
     loadDropdownData();
+  }
+
+  getVatData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    vatAmount = preferences.getString(SharedPreferenceHelper.vatAmountKey) ?? "00";
+
+    print('vat amount: $vatAmount');
+
+    update();
+    try {
+      print('before parse vat: $vatAmount');
+      vat = double.parse(vatAmount);
+      print('afteer parse: $vat');
+      print("this is vat");
+      print(vat);
+    } catch (e) {
+      print('error vat: $vat');
+      vat = 0.0;
+    }
+
+    print('final vat: $vat');
+    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
+
+   
+
+    update();
   }
 
   void showEditOrDeleteBottomSheet(
@@ -57,8 +88,8 @@ class CheakoutController extends GetxController {
     productQuantityController.clear();
     update();
     productName = cartProductModel.name ?? "";
-    price = cartProductModel.price ?? "";
-    totalPric = double.parse(cartProductModel.totalAmount.toString());
+    perProductPrice = cartProductModel.price ?? "";
+    totalAmount = double.parse(cartProductModel.totalAmount.toString());
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
     newPickedImage = File(cartProductModel.imagePath ?? "");
@@ -85,7 +116,7 @@ class CheakoutController extends GetxController {
       uomList = uomData;
       categoryList = categoryData;
       print(uomList);
-   
+
       update();
     } catch (e) {
       print('Error loading dropdown data: $e');
@@ -126,12 +157,15 @@ class CheakoutController extends GetxController {
     update();
   }
 
- void checkOutProductBottomSheet(BuildContext context, CartProductModel cartProductModel, ) {
+  void checkOutProductBottomSheet(
+    BuildContext context,
+    CartProductModel cartProductModel,
+  ) {
     productQuantityController.clear();
     update();
     productName = cartProductModel.name ?? "";
-    price = cartProductModel.price ?? "";
-    totalPric = double.parse(cartProductModel.totalAmount.toString());
+    perProductPrice = cartProductModel.price ?? "";
+    totalAmount = double.parse(cartProductModel.totalAmount.toString());
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
     newPickedImage = File(cartProductModel.imagePath ?? "");
@@ -139,8 +173,6 @@ class CheakoutController extends GetxController {
     newUom = cartProductModel.uom ?? "";
     uom = cartProductModel.uom ?? "";
     update();
-    print(quantity);
-    print(quantity);
     CustomBottomSheet(
       child: EditCheakoutProductBottomSheet(
         id: int.parse(cartProductModel.id.toString()),
@@ -159,30 +191,24 @@ class CheakoutController extends GetxController {
     productQuantityController.text = quantity.toString();
     update();
   }
-
-  void updateTotalAmount(int id, quantity) {
-    print("cartItem.totalAmount1");
-    CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
-    double price = double.parse(cartItem.price ?? '0.0');
-    cartItem.totalAmount = price * quantity;
-    newPriceController.text = cartItem.totalAmount.toString();
-    totalPric = cartItem.totalAmount;
-
-    print(cartItem.totalAmount);
-    print("cartItem.totalAmount");
-    update();
-  }
+  
 
   int get totalCount => cartProductList.length;
 
-  double get totalPrice {
-    return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
-  }
+ double get totalPrice {
+  return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
+}
 
+double get grandTotalPrice {
+  double totalPriceWithoutVat = totalPrice;
+  double vatAmount = (totalPriceWithoutVat * (vat / 100.0));
+
+  return totalPriceWithoutVat - vatAmount;
+}
   void showConfirmPopUp(
     BuildContext context,
   ) {
-    CustomAlertDialog(child: ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
+    CustomAlertDialog(child:const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
   }
 
   Future<void> completeCheckout(String paymentMethod) async {

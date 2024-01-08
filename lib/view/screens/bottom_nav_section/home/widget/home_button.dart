@@ -35,6 +35,7 @@ class HomeButtonContainer extends StatelessWidget {
             child: Image.asset(
               imagePath,
               height: Dimensions.space50,
+              color: MyColor.colorWhite.withOpacity(0.9),
             ),
           ),
           Text(

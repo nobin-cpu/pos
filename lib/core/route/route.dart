@@ -7,9 +7,11 @@ import 'package:flutter_prime/view/screens/category/category_screen.dart';
 import 'package:flutter_prime/view/screens/category_product_list_screen/category_product_list_screen.dart';
 import 'package:flutter_prime/view/screens/cheakout/cheakout_screen.dart';
 import 'package:flutter_prime/view/screens/inventory/inventory_screen.dart';
+import 'package:flutter_prime/view/screens/confirm_checkout/confirm_checkout_screen.dart';
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
+import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
 import 'package:flutter_prime/view/screens/splash/splash_screen.dart';
 import 'package:flutter_prime/view/screens/uom/uom_screen.dart';
 import 'package:get/get.dart';
@@ -42,6 +44,8 @@ static const String posCategoryProductSection        = '/pos_category_product_sc
 static const String categoryProductListScreen        = '/category_Product_List_Screen';
 static const String cartScreen        = '/cart_Screen';
 static const String cheakOutScreen        = '/cheak_out_Screen';
+static const String invoiceScreen        = '/invoice_Screen';
+static const String settingsScreen        = '/settings_Screen';
 
 
   List<GetPage> routes = [
@@ -68,6 +72,8 @@ static const String cheakOutScreen        = '/cheak_out_Screen';
     GetPage(name: posCategoryProductSection,                page: () =>const  PosCategorySection()),
     GetPage(name: categoryProductListScreen,                page: () =>const  CategoryProductListScreen()),
     GetPage(name: cartScreen,                page: () =>const  CartScreen()),
-    GetPage(name: cheakOutScreen,                page: () =>CheckoutScreen ()),
+    GetPage(name: cheakOutScreen,                page: () =>const CheckoutScreen ()),
+    GetPage(name: invoiceScreen,                page: () =>const ConfirmCheckOutScreen ()),
+    GetPage(name: settingsScreen,                page: () =>const SettingsScreen ()),
   ];
 }

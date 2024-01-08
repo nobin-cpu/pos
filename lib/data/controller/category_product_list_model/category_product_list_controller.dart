@@ -60,7 +60,7 @@ class CategoryProductListController extends GetxController {
     update();
   }
 
-  void showAddToCartBottomSheet(ProductModel product, BuildContext context, int index) {
+  void showAddToCartAlertDialogue(ProductModel product, BuildContext context, int index) {
     totalAmount = double.parse(product.price.toString());
 
     productQuantityController.text = quantity.toString();
@@ -81,28 +81,62 @@ class CategoryProductListController extends GetxController {
     }
   }
 
+  // Future<void> addToCart(ProductModel product, int quantity) async {
+  //   try {
+  //     await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
+  //     CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
+  //     print("Successfully added to cart");
+
+  //     // Clear the text field and set the value to "1"
+  //     productQuantityController.clear();
+  //     productQuantityController.text = "1";
+
+  //     // Reset the quantity back to 1
+  //     this.quantity = 1;
+
+  //     update();
+  //     Get.back();
+  //   } catch (e) {
+  //     CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
+  //     print("Failed to add to cart: $e");
+  //   }
+  // }
+
   Future<void> addToCart(ProductModel product, int quantity) async {
     try {
-      await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
+      List<CartProductModel> existingCartItems = await databaseHelper.getCartItems();
+      CartProductModel? existingCartItem = existingCartItems.firstWhere(
+        (cartItem) => cartItem.productId == product.id,
+        orElse: () => CartProductModel(),
+      );
+
+      if (existingCartItem != null && existingCartItem.id != null) {
+        existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
+        existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
+        await databaseHelper.updateCartItem(existingCartItem);
+      } else {
+        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
+      
+      }
+
       CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
       print("Successfully added to cart");
 
-      // Clear the text field and set the value to "1"
       productQuantityController.clear();
       productQuantityController.text = "1";
 
-      // Reset the quantity back to 1
       this.quantity = 1;
 
       update();
       Get.back();
+       initData(categoryTitle);
     } catch (e) {
       CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
       print("Failed to add to cart: $e");
     }
   }
 
-  changeRememberMe() {
+  changediscountCheckBox() {
     percentDiscount = !percentDiscount;
     update();
   }

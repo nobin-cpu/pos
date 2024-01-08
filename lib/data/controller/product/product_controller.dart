@@ -7,7 +7,7 @@ import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/add_product_bottom_sheet.dart';
-import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/edit_or_delete_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/edit_or_delete_product_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,6 +23,9 @@ class ProductController extends GetxController {
   final TextEditingController purchasePriceController = TextEditingController();
   TextEditingController newNameController = TextEditingController();
   TextEditingController newPriceController = TextEditingController();
+  TextEditingController newStockController = TextEditingController();
+  TextEditingController newWholesalePriceController = TextEditingController();
+  TextEditingController newpurchasePriceController = TextEditingController();
   List<CategoryModel> categoryList = [];
   List<UomModel> uomList = [];
   List<ProductModel> productList = [];
@@ -30,6 +33,8 @@ class ProductController extends GetxController {
   File? newPickedImage;
   String newCategory = '';
   String newUom = '';
+  String selectedCategory = '';
+  bool loading = false;
   @override
   void onInit() {
     super.onInit();
@@ -42,7 +47,6 @@ class ProductController extends GetxController {
       List<UomModel> uomData = await databaseHelper.getUomList();
       List<CategoryModel> categoryData = await databaseHelper.getCategoryList();
 
-      
       categoryList.add(CategoryModel(title: MyStrings.selectOne, id: -1));
       categoryList.addAll(categoryData);
       uomList.add(UomModel(title: MyStrings.selectOne, id: -1));
@@ -56,10 +60,13 @@ class ProductController extends GetxController {
   }
 
   Future<void> initializeData() async {
-    
+    loading = true;
+    update();
     await loadDatabase();
     await loadDropdownData();
     await getProductList();
+     loading = false;
+    update();
     print("Category List: ${categoryList}");
     print("UOM List: ${uomList}");
   }
@@ -97,6 +104,9 @@ class ProductController extends GetxController {
   void showEditOrDeleteBottomSheet(BuildContext context, ProductModel productModel) {
     newNameController.text = productModel.name ?? "";
     newPriceController.text = productModel.price ?? "";
+    newStockController.text = productModel.stock ?? "";
+    newWholesalePriceController.text = productModel.wholesalePrice ?? "";
+    newpurchasePriceController.text = productModel.purchasePrice ?? "";
     newPickedImage = File(productModel.imagePath ?? "");
     newCategory = productModel.category ?? "";
     newUom = productModel.uom ?? "";
@@ -105,14 +115,14 @@ class ProductController extends GetxController {
     print(newCategory);
     print(newUom);
     CustomBottomSheet(
-      child: EditOrDeleteBottomSheet(
+      child: EditOrDeleteProductBottomSheet(
         id: productModel.id,
       ),
     ).customBottomSheet(context);
   }
 
-  Future<void> updateProduct(int id, String newName, String price, String newCategory, String newUom, String newImagePath) async {
-    await databaseHelper.updateProduct(id, newName, price, newCategory, newUom, newImagePath);
+  Future<void> updateProduct(int id, String newName, String price, String newCategory, String newUom, String newImagePath, String newStocks, String newWholeSalePrice, String newPurchasePrice) async {
+    await databaseHelper.updateProduct(id, newName, price, newCategory, newUom, newImagePath, newStocks, newWholeSalePrice, newPurchasePrice);
     await getProductList();
     update();
   }
@@ -127,10 +137,13 @@ class ProductController extends GetxController {
     await updateProduct(
       id,
       newNameController.text.isNotEmpty ? newNameController.text : name,
-      newPriceController.text.isNotEmpty ? newPriceController.text : name,
+      newPriceController.text.isNotEmpty ? newPriceController.text : "",
       newCategory,
       newUom,
       newPickedImage != null ? newPickedImage!.path : image,
+      newStockController.text.isNotEmpty ? newStockController.text : "",
+      newWholesalePriceController.text.isNotEmpty ? newWholesalePriceController.text : "",
+      newpurchasePriceController.text.isNotEmpty ? newpurchasePriceController.text : "",
     );
     update();
   }

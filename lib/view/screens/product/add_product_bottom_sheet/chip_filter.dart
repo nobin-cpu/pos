@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
 
 class ChipFilter extends StatelessWidget {
@@ -13,16 +14,17 @@ class ChipFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding:const EdgeInsets.all(Dimensions.space8),
+      padding: const EdgeInsets.all(Dimensions.space8),
       child: Row(
         children: categories.skip(1).map((category) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal:Dimensions.space8),
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.space8),
             child: FilterChip(
-              shape:RoundedRectangleBorder(
-    side: BorderSide.none, 
-    borderRadius: BorderRadius.circular(8.0),
-  ) ,
+              backgroundColor: MyColor.greyColor,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: MyColor.colorWhite, style: BorderStyle.none),
+                borderRadius: BorderRadius.circular(Dimensions.space10),
+              ),
               label: Text(category.title!),
               selected: category.title == selectedCategory,
               onSelected: (selected) {

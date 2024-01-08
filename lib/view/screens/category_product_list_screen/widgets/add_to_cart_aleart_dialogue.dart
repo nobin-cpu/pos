@@ -18,10 +18,9 @@ class AddToCartAlertDialogue extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<CategoryProductListController>(builder: (con) {
       return Container(
-        decoration:const BoxDecoration(color: MyColor.colorWhite),
+        decoration: const BoxDecoration(color: MyColor.colorWhite),
         child: Column(
           children: [
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.space15),
               child: Row(
@@ -70,62 +69,63 @@ class AddToCartAlertDialogue extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Dimensions.space10),
-           Row(
-  children: [
-    Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: () {
-              con.increaseCartItem();
-              con.updateTotalAmount(con.productList[index], con.quantity);
-            },
-            child: Image.asset(
-              MyImages.increase,
-              height: Dimensions.space50,
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          con.increaseCartItem();
+                          con.updateTotalAmount(con.productList[index], con.quantity);
+                        },
+                        child: Image.asset(
+                          MyImages.increase,
+                          height: Dimensions.space50,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.space15),
+                        child: CustomTextField(
+                          fillColor: MyColor.colorInputField,
+                          onChanged: (value) {
+                            int enteredQuantity = int.tryParse(value) ?? 0;
+                            con.quantity = enteredQuantity;
+                            con.updateTotalAmount(con.productList[index], enteredQuantity);
+                          },
+                          controller: con.productQuantityController,
+                          disableBorder: true,
+                          centerText: true,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (con.quantity > 1) {
+                            con.decreaseCartItem();
+                            con.updateTotalAmount(con.productList[index], con.quantity);
+                          }
+                        },
+                        child: Image.asset(
+                          MyImages.decrease,
+                          height: Dimensions.space50,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    con.productList[index].uom ?? "",
+                    style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
+                  ),
+                ),
+                const SizedBox(
+                  width: Dimensions.space10,
+                )
+              ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/3.7),
-            child: CustomTextField(
-              fillColor: MyColor.colorInputField,
-              onChanged: (value) {
-                int enteredQuantity = int.tryParse(value) ?? 0;
-                con.quantity = enteredQuantity;
-                con.updateTotalAmount(con.productList[index], enteredQuantity);
-              },
-              controller: con.productQuantityController,
-              
-              disableBorder: true,
-              centerText: true,
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              if (con.quantity > 1) {
-                con.decreaseCartItem();
-                con.updateTotalAmount(con.productList[index], con.quantity);
-              }
-            },
-            child: Image.asset(
-              MyImages.decrease,
-              height: Dimensions.space50,
-            ),
-          ),
-        ],
-      ),
-    ),
-    Center(
-          child: Text(
-            con.productList[index].uom ?? "",
-            style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
-          ),
-        ),
-       const  SizedBox(width:Dimensions.space10,)
-  ],
-),
-   const SizedBox(height: Dimensions.space20),
+            const SizedBox(height: Dimensions.space20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20, vertical: Dimensions.space20),
               child: Row(
@@ -138,7 +138,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       child: CustomTextField(
                           fillColor: MyColor.colorInputField,
                           onChanged: (value) {
-                       con.handleDiscountChange(value,index);
+                            con.handleDiscountChange(value, index);
                           },
                           controller: con.discountController,
                           needOutlineBorder: false,
@@ -147,19 +147,17 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     ),
                   ),
                   Checkbox(
-                      
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
-                          activeColor: MyColor.primaryColor,
-                          checkColor: MyColor.colorWhite,
-                          value: con.percentDiscount,
-                          side: MaterialStateBorderSide.resolveWith(
-                            (states) => BorderSide(width: 1.0, color: con.percentDiscount ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
-                          ),
-                          onChanged: (value) {
-                            con.changeRememberMe();
-                          }),
-                          Image.asset(MyImages.percentImage,height: Dimensions.space10),
-                  
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
+                      activeColor: MyColor.primaryColor,
+                      checkColor: MyColor.colorWhite,
+                      value: con.percentDiscount,
+                      side: MaterialStateBorderSide.resolveWith(
+                        (states) => BorderSide(width: 1.0, color: con.percentDiscount ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
+                      ),
+                      onChanged: (value) {
+                        con.changediscountCheckBox();
+                      }),
+                  Image.asset(MyImages.percentImage, height: Dimensions.space10),
                 ],
               ),
             ),
@@ -188,6 +186,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       text: MyStrings.addTOCart,
                       press: () {
                         con.addToCart(con.productList[index], con.quantity);
+                        print("from screen" + con.productList[index].uom.toString());
                         con.loadCartData();
                         Get.back();
                       }),

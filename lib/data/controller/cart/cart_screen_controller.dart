@@ -38,7 +38,9 @@ class CartScreenController extends GetxController {
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
     cartProductList = await databaseHelper.getCartItems();
-
+    print(cartProductList[0].uom);
+    print(cartProductList[0].name);
+    print("this is cart product list");
     update();
   }
 

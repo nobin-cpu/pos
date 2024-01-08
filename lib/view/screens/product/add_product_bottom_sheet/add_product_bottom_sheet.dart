@@ -12,8 +12,6 @@ import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_b
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 
-
-
 class AddProductBottomSheet extends StatefulWidget {
   const AddProductBottomSheet({super.key});
 
@@ -30,19 +28,19 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const BottomSheetHeaderRow(header: MyStrings.addProduct),
-           Row(
-             children: [
-              const  Text(
-               MyStrings.productName,
+          Row(
+            children: [
+              const Text(
+                MyStrings.productName,
                 style: mediumLarge,
-                         ),
-                       const  SizedBox(width: Dimensions.space10),
-                          Text(
-               MyStrings.required,
+              ),
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
                 style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-                         ),
-             ],
-           ),
+              ),
+            ],
+          ),
           const SizedBox(height: Dimensions.space10),
           CustomTextField(
             controller: controller.productNameController,
@@ -57,11 +55,11 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                 MyStrings.price,
                 style: mediumLarge,
               ),
-              const  SizedBox(width: Dimensions.space10),
-                          Text(
-               MyStrings.required,
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
                 style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-                         ),
+              ),
             ],
           ),
           const SizedBox(height: Dimensions.space10),
@@ -79,11 +77,11 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                 MyStrings.stocks.tr,
                 style: mediumLarge,
               ),
-              const  SizedBox(width: Dimensions.space10),
-                          Text(
-               MyStrings.required,
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
                 style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-                         ),
+              ),
             ],
           ),
           const SizedBox(height: Dimensions.space10),
@@ -138,19 +136,22 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.space10),
-          Row(
+        controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
+        controller.categoryList.length > 1?  Row(
             children: [
-              Text(MyStrings.category, style: mediumLarge,),
-              const  SizedBox(width: Dimensions.space10),
-                          Text(
-               MyStrings.required,
+              const Text(
+                MyStrings.category,
+                style: mediumLarge,
+              ),
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
                 style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-                         ),
+              ),
             ],
-          ),
-          const SizedBox(height: Dimensions.space10),
-          controller.categoryList.isNotEmpty
+          ): const SizedBox(),
+         controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
+          controller.categoryList.isNotEmpty && controller.categoryList.length > 1
               ? CustomDropDownTextField2(
                   labelText: MyStrings.category,
                   needLabel: false,
@@ -165,20 +166,22 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                     );
                   }).toList())
               : const SizedBox(),
-          const SizedBox(height: Dimensions.space10),
-        
-          Row(
+         controller.uomList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
+        controller.uomList.length > 1?  Row(
             children: [
-              const Text(MyStrings.uom, style: mediumLarge,),
-              const  SizedBox(width: Dimensions.space10),
-                          Text(
-               MyStrings.required,
+              const Text(
+                MyStrings.uom,
+                style: mediumLarge,
+              ),
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
                 style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-                         ),
+              ),
             ],
-          ),
-           const SizedBox(height: Dimensions.space10),
-          controller.uomList.isNotEmpty
+          ):const SizedBox(),
+          const SizedBox(height: Dimensions.space10),
+          controller.uomList.isNotEmpty && controller.uomList.length > 1
               ? CustomDropDownTextField2(
                   needLabel: false,
                   selectedValue: controller.uomController.text.isEmpty ? null : controller.uomController.text,
@@ -193,7 +196,21 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   }).toList(),
                 )
               : const SizedBox(),
-          const SizedBox(height: Dimensions.space20),
+          const SizedBox(height: Dimensions.space10),
+          Row(
+            children: [
+              const Text(
+                MyStrings.productsImage,
+                style: mediumLarge,
+              ),
+              const SizedBox(width: Dimensions.space10),
+              Text(
+                MyStrings.required,
+                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
+              ),
+            ],
+          ),
+          const SizedBox(height: Dimensions.space10),
           InkWell(
             onTap: () => controller.pickImage(),
             child: Container(
@@ -207,21 +224,26 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               child: controller.pickedImage != null ? Image.file(controller.pickedImage!, height: Dimensions.space100) : Image.asset(MyImages.uploadImage, color: MyColor.colorBlack, height: Dimensions.space50),
             ),
           ),
-          
           const SizedBox(height: Dimensions.contentToButtonSpace),
           RoundedButton(
-            press: () async {
-              if (controller.categoryController.text.isEmpty) {
-                CustomSnackBar.error(errorList: [MyStrings.selectACatagory]);
-              }
-              if (controller.productNameController.text.isNotEmpty && controller.categoryController.text.isNotEmpty && controller.pickedImage != null) {
-                controller.addProducts();
-              } else {
-                CustomSnackBar.error(errorList: [MyStrings.fillAllFields]);
-              }
-            },
-            text: MyStrings.save,
-          ),
+  press: () {
+    if (controller.productNameController.text.isEmpty) {
+      CustomSnackBar.error(errorList: [MyStrings.enterProductName]);
+    } else if (controller.priceController.text.isEmpty) {
+      CustomSnackBar.error(errorList: [MyStrings.enterPrice]);
+    } else if (controller.stocksController.text.isEmpty) {
+      CustomSnackBar.error(errorList: [MyStrings.enterStocks]);
+    } else if (controller.categoryController.text.isEmpty || controller.categoryController.text == "Select One") {
+      CustomSnackBar.error(errorList: [MyStrings.selectACatagory]);
+    } else if (controller.uomController.text.isEmpty || controller.uomController.text == "Select One") {
+      CustomSnackBar.error(errorList: [MyStrings.selectAUnit]);
+    } else {
+      controller.addProducts();
+    }
+  },
+  text: MyStrings.save,
+),
+
         ],
       ),
     );

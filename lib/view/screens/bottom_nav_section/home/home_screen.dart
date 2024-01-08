@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/screens/bottom_nav_section/home/widget/home_main_section.dart';
 import 'package:get/get.dart';
@@ -42,12 +41,13 @@ Widget build(BuildContext context) {
     builder: (controller) => WillPopWidget(
       nextRoute: "",
       child: SafeArea(
+        
         child: RefreshIndicator(
           onRefresh: () async {
             await controller.initialData(shouldLoad: false);
           },
           child: Scaffold(
-            appBar: CustomAppBar(
+            appBar:const CustomAppBar(
               title: "",
               isShowBackBtn: false,
               // todaysDate: DateTime.now(),

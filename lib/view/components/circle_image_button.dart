@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/utils/my_color.dart';
-import '../../../core/utils/my_images.dart';
 import 'image/custom_svg_picture.dart';
 
 class CircleImageWidget extends StatelessWidget {

@@ -5,23 +5,24 @@ import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/data/controller/cart/cart_screen_controller.dart';
+import 'package:flutter_prime/data/controller/checkout/cheakout_controller.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/bottom_sheet_header_row.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 
-class EditCartBottomSheet extends StatefulWidget {
+class EditCheakoutProductBottomSheet extends StatefulWidget {
   final int? id;
-  const EditCartBottomSheet({super.key, this.id});
+  const EditCheakoutProductBottomSheet({super.key, this.id});
 
   @override
-  State<EditCartBottomSheet> createState() => _EditCartBottomSheetState();
+  State<EditCheakoutProductBottomSheet> createState() => _EditCheakoutProductBottomSheetState();
 }
 
-class _EditCartBottomSheetState extends State<EditCartBottomSheet> {
+class _EditCheakoutProductBottomSheetState extends State<EditCheakoutProductBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CartScreenController>(builder: (controller) {
+    return GetBuilder<CheakoutController>(builder: (controller) {
     
       return Padding(
         padding: const EdgeInsets.all(Dimensions.space15),

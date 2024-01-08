@@ -1,6 +1,5 @@
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_prime/data/controller/cart/cart_screen_controller.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
-import 'package:flutter_prime/view/components/divider/custom_divider.dart';
 import 'package:get/get.dart';
 
 class CartScreen extends StatefulWidget {
@@ -53,7 +51,6 @@ class _CartScreenState extends State<CartScreen> {
                         padding: const EdgeInsets.only(left: Dimensions.space12, right: Dimensions.space12, top: Dimensions.space10),
                         child: InkWell(
                           onTap: () {
-                            print("object");
                             controller.showEditOrDeleteBottomSheet(context, controller.cartProductList[index],index);
                           },
                           child: Stack(
@@ -63,7 +60,6 @@ class _CartScreenState extends State<CartScreen> {
                                   paddingRight: Dimensions.space5,
                                   paddingTop: Dimensions.space5,
                                   paddingBottom: Dimensions.space5,
-                                  backgroundColor: MyColor.colorLightGrey,
                                   width: double.infinity,
                                   child: ListTile(
                                     title: Text(
@@ -134,12 +130,12 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: Dimensions.space5, left: Dimensions.space20, right: Dimensions.space20),
-                        child: CustomDivider(
-                          space: Dimensions.space5,
-                        ),
-                      ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(top: Dimensions.space5, left: Dimensions.space20, right: Dimensions.space20),
+                      //   child: CustomDivider(
+                      //     space: Dimensions.space5,
+                      //   ),
+                      // ),
                     ],
                   );
                 },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/view/components/divider/custom_divider.dart';
 import 'package:flutter_prime/view/screens/auth/login/widgets/google_login_section.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';

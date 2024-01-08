@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
-import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_button_with_text_field2.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';

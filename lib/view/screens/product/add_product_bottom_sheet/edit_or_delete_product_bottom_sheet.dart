@@ -12,15 +12,15 @@ import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_t
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 
-class EditOrDeleteBottomSheet extends StatefulWidget {
+class EditOrDeleteProductBottomSheet extends StatefulWidget {
   final int id;
-  const EditOrDeleteBottomSheet({super.key, required this.id});
+  const EditOrDeleteProductBottomSheet({super.key, required this.id});
 
   @override
-  State<EditOrDeleteBottomSheet> createState() => _EditOrDeleteBottomSheetState();
+  State<EditOrDeleteProductBottomSheet> createState() => _EditOrDeleteProductBottomSheetState();
 }
 
-class _EditOrDeleteBottomSheetState extends State<EditOrDeleteBottomSheet> {
+class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProductController>(builder: (controller) {
@@ -48,6 +48,50 @@ class _EditOrDeleteBottomSheetState extends State<EditOrDeleteBottomSheet> {
             controller: controller.newPriceController,
             needOutlineBorder: true,
           ),
+           const SizedBox(height: Dimensions.space10),
+          const Text(
+            MyStrings.stock,
+            style: semiBoldDefault,
+          ),
+          CustomTextField(
+            onChanged: () {},
+            controller: controller.newStockController,
+            needOutlineBorder: true,
+          ),
+           const SizedBox(height: Dimensions.space10),
+          Row(children: [
+            Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              const Text(
+              MyStrings.wholesalePrice,
+              style: semiBoldDefault,
+            ),
+            CustomTextField(
+              onChanged: () {},
+              controller: controller.newWholesalePriceController,
+              needOutlineBorder: true,
+            ),
+            ],),
+          ),
+           const SizedBox(width: Dimensions.space10),
+          Expanded(
+            child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              const Text(
+              MyStrings.purchasePrice,
+              style: semiBoldDefault,
+            ),
+            CustomTextField(
+              onChanged: () {},
+              controller: controller.newpurchasePriceController,
+              needOutlineBorder: true,
+            ),
+            ],),
+          )
+          ]),
           const SizedBox(height: Dimensions.space10),
           const Text(
             MyStrings.productImage,
@@ -73,7 +117,7 @@ class _EditOrDeleteBottomSheetState extends State<EditOrDeleteBottomSheet> {
             text: MyStrings.changeImage,
           ),
           const SizedBox(height: Dimensions.space10),
-        controller.categoryList.isNotEmpty?  CustomDropDownTextField(
+        controller.categoryList.length >1?  CustomDropDownTextField(
             labelText: MyStrings.category,
             selectedValue: controller.newCategory.isEmpty?null:controller.newCategory,
             onChanged: (newValue) {
@@ -87,7 +131,7 @@ class _EditOrDeleteBottomSheetState extends State<EditOrDeleteBottomSheet> {
             }).toList(),
           ):const SizedBox(),
           const SizedBox(height: Dimensions.space10),
-         controller.uomList.isNotEmpty?  CustomDropDownTextField2(
+         controller.uomList.length >1?  CustomDropDownTextField2(
             selectedValue: controller.uomController.text.isEmpty ? null : controller.uomController.text,
             onChanged: (newValue) {
               controller.newUom= newValue!;
