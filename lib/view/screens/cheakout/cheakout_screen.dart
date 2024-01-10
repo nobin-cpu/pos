@@ -17,7 +17,6 @@ class CheckoutScreen extends StatefulWidget {
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
-
 class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
@@ -37,67 +36,67 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: [
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const [
-                    // DataColumn(
-                    //   label: Text(MyStrings.image),
-                    // ),
-                    DataColumn(label: Text(MyStrings.products)),
-                    DataColumn(label: Text(MyStrings.price)),
-                    DataColumn(label: Text(MyStrings.quantity)),
-                    DataColumn(label: Text(MyStrings.total)),
-                    DataColumn(label: Text(MyStrings.actions)),
-                  ],
-                  rows: controller.cartProductList.map((CartProductModel product) {
-                    double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
-
-                    return DataRow(
-                      cells: [
-                        // DataCell(
-                        //   ClipRRect(
-                        //     borderRadius: BorderRadius.circular(Dimensions.space5),
-                        //     child: Image.file(
-                        //       File(product.imagePath ?? ""),
-                        //       height: Dimensions.space40,
-                        //       width: Dimensions.space40,
-                        //       fit: BoxFit.cover,
-                        //     ),
-                        //   ),
-                        // ),
-                        DataCell(Text(product.name ?? "")),
-                        DataCell(Text('${MyUtils.getCurrency()}${product.price}')),
-                        DataCell(Text(product.quantity.toString())),
-                        DataCell(Text('${MyUtils.getCurrency()}${product.totalAmount} ')),
-                        DataCell(
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap: () {
-                                    controller.checkOutProductBottomSheet(context, product);
-                                  },
-                                  child: Image.asset(
-                                    MyImages.edit,
-                                    height: Dimensions.space20,
-                                  )),
-                              const SizedBox(width: Dimensions.space10),
-                              InkWell(
-                                  onTap: () {
-                                    controller.deleteCartItem(product.id);
-                                  },
-                                  child: Image.asset(
-                                    MyImages.delete,
-                                    height: Dimensions.space20,
-                                    color: MyColor.colorRed,
-                                  )),
-                            ],
-                          ),
-                        ),
+                child: Table(
+                  border: TableBorder.all(),
+                  columnWidths: const {
+                    0: IntrinsicColumnWidth(),
+                    1: IntrinsicColumnWidth(),
+                    2: IntrinsicColumnWidth(),
+                    3: IntrinsicColumnWidth(),
+                    4: IntrinsicColumnWidth(),
+                    5: IntrinsicColumnWidth(),
+                  },
+                  children: [
+                    const TableRow(
+                      decoration: BoxDecoration(),
+                      children: [
+                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
+                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
+                        
+                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
+                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text("")))),
                       ],
-                    );
-                  }).toList(),
+                    ),
+                    ...controller.cartProductList.map((CartProductModel product) {
+                      double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
+
+                      return TableRow(
+                        children: [
+                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
+                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')))),
+                          
+                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text("${product.discountAmount}${controller.percentDiscount == true ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}")))),
+                         TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
+                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(Dimensions.space8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      controller.checkOutProductBottomSheet(context, product);
+                                    },
+                                    child: Image.asset(
+                                      MyImages.edit,
+                                      height: Dimensions.space20,
+                                    ),
+                                  ),
+                                  
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ],
                 ),
               ),
-              const SizedBox(height: Dimensions.space100)
+              const SizedBox(height: Dimensions.space100),
             ],
           ),
         ),
@@ -106,7 +105,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-             
               InkWell(
                 onTap: () {
                   Get.toNamed(RouteHelper.invoiceScreen);
@@ -127,7 +125,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         MyStrings.confirmCheckout,
                         style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
                       ),
-                      // Text(' ${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularExtraLarge.copyWith(color: MyColor.colorWhite))
                     ],
                   ),
                 ),

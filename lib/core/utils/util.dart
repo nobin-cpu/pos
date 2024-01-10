@@ -23,6 +23,12 @@ class MyUtils {
  static String getCurrency() {
   return " ৳ ";
 }
+ static String getPercentSymbol() {
+  return " % ";
+}
+ static String getDot() {
+  return " . ";
+}
 
   static dynamic getBottomSheetShadow() {
     return [

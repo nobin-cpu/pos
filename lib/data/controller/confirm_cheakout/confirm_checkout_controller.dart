@@ -3,12 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
+import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/cheak_out_product_edit_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop_up.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_bottom_sheet.dart';
@@ -38,11 +42,14 @@ class ConfirmCheakoutController extends GetxController {
   String perProductPrice = "";
   String uom = "";
   String vatAmount = "";
-  bool isVatEnable = true;
-  bool isVatInPercent = true;
+  bool isVatEnable = false;
+  bool isVatInPercent = false;
+  bool paidOnline = false;
+  bool paidinCash = false;
   int id = 0;
   List<CartProductModel> cartProductList = [];
   double vat = 0.0;
+
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
     cartProductList = await databaseHelper.getCartItems();
@@ -58,7 +65,8 @@ class ConfirmCheakoutController extends GetxController {
   getVatData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     vatAmount = preferences.getString(SharedPreferenceHelper.vatAmountKey) ?? "00";
-
+    isVatEnable = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
+    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
     print('vat amount: $vatAmount');
 
     update();
@@ -75,8 +83,6 @@ class ConfirmCheakoutController extends GetxController {
 
     print('final vat: $vat');
     isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
-
-   
 
     update();
   }
@@ -191,24 +197,24 @@ class ConfirmCheakoutController extends GetxController {
     productQuantityController.text = quantity.toString();
     update();
   }
-  
 
   int get totalCount => cartProductList.length;
 
- double get totalPrice {
-  return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
-}
+  double get totalPrice {
+    return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
+  }
 
-double get grandTotalPrice {
-  double totalPriceWithoutVat = totalPrice;
-  double vatAmount = (totalPriceWithoutVat * (vat / 100.0));
+  double get grandTotalPrice {
+    double totalPriceWithoutVat = totalPrice;
+    double vatAmount = (totalPriceWithoutVat * (vat / 100.0));
 
-  return totalPriceWithoutVat - vatAmount;
-}
+    return totalPriceWithoutVat + vatAmount;
+  }
+
   void showConfirmPopUp(
     BuildContext context,
   ) {
-    CustomAlertDialog(child:const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
+    CustomAlertDialog(child: const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
   }
 
   Future<void> completeCheckout(String paymentMethod) async {
@@ -219,5 +225,62 @@ double get grandTotalPrice {
     update();
 
     Get.back();
+  }
+
+  void showDropdownMenu(BuildContext context) {
+    showMenu(
+      color: MyColor.colorWhite,
+      context: context,
+      position: RelativeRect.fromLTRB(
+        MediaQuery.of(context).size.width - 150.0,
+        MediaQuery.of(context).size.height - 150.0,
+        0.0,
+        0.0,
+      ),
+      items: [
+        PopupMenuItem(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimensions.space8),
+            child: RoundedButton(
+                text: MyStrings.paidByCash,
+                press: () {
+                  paidinCash = true;
+                  paidOnline = false;
+                  print("cash" + paidinCash.toString());
+                  print("online" + paidOnline.toString());
+                  Get.back();
+                  update();
+                }),
+          ),
+        ),
+        PopupMenuItem(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimensions.space8),
+            child: RoundedButton(
+                text: MyStrings.paidOnline,
+                press: () {
+                  paidOnline = true;
+                  paidinCash = false;
+                  print("cash" + paidinCash.toString());
+                  print("online" + paidOnline.toString());
+                  Get.back();
+                  update();
+                }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  changeonlinePaid() {
+    paidOnline = !paidOnline;
+    paidinCash = true;
+    update();
+  }
+
+  changeCashPaid() {
+    paidinCash = !paidinCash;
+    paidOnline = false;
+    update();
   }
 }

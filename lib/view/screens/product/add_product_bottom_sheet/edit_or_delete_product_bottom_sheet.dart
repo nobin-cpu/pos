@@ -28,7 +28,7 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const BottomSheetHeaderRow(header: MyStrings.edit,),
+          const BottomSheetHeaderRow(header: MyStrings.editProduct),
           const Text(
             MyStrings.productName,
             style: semiBoldDefault,

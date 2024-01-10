@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CheakoutController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -35,6 +37,7 @@ class CheakoutController extends GetxController {
   String productName = "";
   String price = "";
   String uom = "";
+  bool? percentDiscount = false;
 
   List<CartProductModel> cartProductList = [];
 
@@ -45,9 +48,10 @@ class CheakoutController extends GetxController {
     update();
   }
 
-  void initData() {
+  void initData() async{
     getCartList();
     loadDropdownData();
+  await  getDiscountInpercentOrNot();
   }
 
   void showEditOrDeleteBottomSheet(
@@ -66,8 +70,6 @@ class CheakoutController extends GetxController {
     newUom = cartProductModel.uom ?? "";
     uom = cartProductModel.uom ?? "";
     update();
-    print(quantity);
-    print(quantity);
     CustomBottomSheet(
       child: CheckoutProductEditBottomSheet(
         id: int.parse(cartProductModel.id.toString()),
@@ -85,7 +87,7 @@ class CheakoutController extends GetxController {
       uomList = uomData;
       categoryList = categoryData;
       print(uomList);
-   
+
       update();
     } catch (e) {
       print('Error loading dropdown data: $e');
@@ -126,7 +128,10 @@ class CheakoutController extends GetxController {
     update();
   }
 
- void checkOutProductBottomSheet(BuildContext context, CartProductModel cartProductModel, ) {
+  void checkOutProductBottomSheet(
+    BuildContext context,
+    CartProductModel cartProductModel,
+  ) {
     productQuantityController.clear();
     update();
     productName = cartProductModel.name ?? "";
@@ -193,5 +198,10 @@ class CheakoutController extends GetxController {
     update();
 
     Get.back();
+  }
+
+   getDiscountInpercentOrNot() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    percentDiscount = preferences.getBool(SharedPreferenceHelper.isDiscountInPercentiseKey)!;
   }
 }

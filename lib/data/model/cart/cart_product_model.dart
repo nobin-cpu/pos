@@ -8,6 +8,8 @@ class CartProductModel {
   String ?imagePath;
   int? quantity;
   double ?totalAmount;
+  double ?discountAmount;
+  int ?isDiscountInPercent;
 
   CartProductModel({
     this.id,
@@ -19,6 +21,8 @@ class CartProductModel {
     this.imagePath,
     this.quantity,
     this.totalAmount,
+    this.discountAmount,
+    this.isDiscountInPercent,
   });
 
   
@@ -33,6 +37,8 @@ class CartProductModel {
       'imagePath': imagePath,
       'quantity': quantity,
       'totalAmount': totalAmount,
+      'discountAmount': discountAmount,
+      'isDiscountInPercent': isDiscountInPercent,
     };
   }
 
@@ -48,6 +54,8 @@ class CartProductModel {
       imagePath: map['imagePath'],
       quantity: map['quantity'],
       totalAmount: map['totalAmount'],
+      discountAmount: map['discountAmount'],
+      isDiscountInPercent: map['isDiscountInPercent'],
     );
   }
 }

@@ -26,5 +26,7 @@ class SharedPreferenceHelper{
   static const String languageListKey               = 'language-list-key';
   static const String vatAmountKey               = 'vat-amount-key';
   static const String isVatInPercentiseKey               = 'is-vat-in-percentise-key';
+  static const String isDiscountInPercentiseKey               = 'is-discount-in-percentise-key';
+  static const String isVatactiveOrNot               = 'is-vat-active-or-not-key';
 
 }

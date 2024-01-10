@@ -42,5 +42,6 @@ class MyImages{
   static const String emptyCartImage      = "assets/images/empty-cart.png";
   static const String percentImage      = "assets/images/percentage.png";
   static const String settings      = "assets/images/settings.png";
+  static const String dropDown      = "assets/images/dropdown.png";
 
 }

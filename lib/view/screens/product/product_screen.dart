@@ -65,6 +65,7 @@ class _ProductScreenState extends State<ProductScreen> {
             ),
             body: controller.loading?const CustomLoader():
              Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 controller.productList.isEmpty
                     ? const SizedBox()
@@ -79,7 +80,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           selectedCategory:controller.selectedCategory,
                         ),
                       ),
-                      controller.productList.isEmpty ?Image.asset(MyImages.noDataFound,height: Dimensions.space200,):
+                      controller.productList.isEmpty ?Center(child: Image.asset(MyImages.noDataFound,height: Dimensions.space200,)):
                 Expanded(
                   child: GetBuilder<ProductController>(
                       builder: (controller) => controller.productList.isEmpty

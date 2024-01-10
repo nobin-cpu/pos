@@ -18,30 +18,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     final controller = Get.put(SettingsController());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    controller.getVatActivationValue();
+  });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: MyStrings.setting,
+      appBar: const CustomAppBar(
+        title: MyStrings.setting,
       ),
       body: GetBuilder<SettingsController>(
         builder: (controller) => SingleChildScrollView(
           child: Padding(
-            padding:const EdgeInsets.all(Dimensions.space5),
+            padding: const EdgeInsets.all(Dimensions.space5),
             child: Column(
               children: [
-                
                 Padding(
-                  padding:const EdgeInsets.all(Dimensions.space5),
+                  padding: const EdgeInsets.all(Dimensions.space5),
                   child: CustomCard(
                     width: double.infinity,
                     onPressed: () {
-                     controller.showVatCustomizeAleartDialogue(context);
-                    
+                      if (controller.percentDiscount) {
+                        controller.showVatCustomizeAleartDialogue(context);
+                      }
                     },
                     isPress: true,
-                    child: Text(MyStrings.vat+controller.cheakAmount),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: Dimensions.space10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(MyStrings.vat + controller.cheakAmount),
+                            Switch(
+                              value: controller.vatCheckBox,
+                              onChanged: (value) {
+                                controller.changevatCheckBox();
+                                if (value) {
+                                  controller.showVatCustomizeAleartDialogue(context);
+                                }
+                                controller.saveUidToSharedPreference();
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

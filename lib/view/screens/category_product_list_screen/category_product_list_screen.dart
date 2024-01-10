@@ -106,8 +106,8 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
                               },
                               child: Container(
                               
-                                padding:const EdgeInsets.all(Dimensions.space5),
-                                decoration:const BoxDecoration(color: MyColor.primaryColor,borderRadius: BorderRadius.all(Radius.circular(20))),
+                                padding:const EdgeInsets.all(Dimensions.space7),
+                                decoration:const BoxDecoration(color: MyColor.primaryColor,borderRadius: BorderRadius.all(Radius.circular(Dimensions.space20))),
                                 child: Text(MyStrings.addTOCart,style: regularLarge.copyWith(color: MyColor.colorWhite),)),
                             ),
                           )),

@@ -86,6 +86,7 @@ class MyStrings{
   static const String editProfile   = "Edit Profile";
   static const String updateProfile = "Update Profile";
   static const String update        = "Update";
+  static const String zero        = "0";
 
   static const String selectALanguage          = 'Select Language';
   static const String twoFactorAuth            = 'Two Factor Authentication';
@@ -284,6 +285,7 @@ class MyStrings{
   static const String quantity                               = "Quantity:";
   static const String cart                                   = "Cart";
   static const String edit                                   = 'Edit';
+  static const String editProduct                            = 'Edit product';
   static const String editItem                               = 'Edit item';
   static const String editCategory                           = 'Edit Category';
   static const String checkout                               = 'Checkout';
@@ -309,6 +311,9 @@ class MyStrings{
   static const String required                               = "(Required)";
   static const String enterVat                               = "Enter vat";
   static const String enterVatMsg                               = "If you want to put vat in percentage than fill the cheakbox";
+  static const String selectPaymentGatewat                               = "Select payment gatewat";
+  static const String billAndPayment                               = "Bill and Payment";
+  static const String selectPaymentType                               = "Select Payment Type";
 
 
 

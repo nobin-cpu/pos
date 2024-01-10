@@ -58,9 +58,10 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text("${con.productList[index].price}${MyUtils.getCurrency()}/${con.productList[index].uom ?? ""}"),
+                        const SizedBox(height:Dimensions.space10),
                         Text(
                           "${MyStrings.amt} ${con.totalAmount.toString()}${MyUtils.getCurrency()}",
-                          style: regularDefault.copyWith(color: MyColor.colorRed),
+                          style: semiBoldLarge.copyWith(color: MyColor.colorRed),
                         )
                       ],
                     ),
@@ -77,8 +78,8 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          con.increaseCartItem();
-                          con.updateTotalAmount(con.productList[index], con.quantity);
+                          con.increaseInputFieldProductQuantity();
+                          con.updateTotalAmount(index, con.quantity);
                         },
                         child: Image.asset(
                           MyImages.increase,
@@ -86,24 +87,26 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.space15),
+                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.space30),
                         child: CustomTextField(
                           fillColor: MyColor.colorInputField,
                           onChanged: (value) {
-                            int enteredQuantity = int.tryParse(value) ?? 0;
-                            con.quantity = enteredQuantity;
-                            con.updateTotalAmount(con.productList[index], enteredQuantity);
+                            double enteredQuantity = double.tryParse(value.toString()) ?? 0;
+                            con.quantity = enteredQuantity.toInt();
+                            con.updateTotalAmount(index, enteredQuantity);
                           },
                           controller: con.productQuantityController,
                           disableBorder: true,
                           centerText: true,
+                          textInputType: TextInputType.number,
+                          
                         ),
                       ),
                       InkWell(
                         onTap: () {
                           if (con.quantity > 1) {
-                            con.decreaseCartItem();
-                            con.updateTotalAmount(con.productList[index], con.quantity);
+                            con.decreaseInputFieldProductQuantity();
+                            con.updateTotalAmount(index, con.quantity);
                           }
                         },
                         child: Image.asset(
@@ -114,28 +117,33 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     ],
                   ),
                 ),
+
+               
                 Center(
                   child: Text(
                     con.productList[index].uom ?? "",
                     style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
                   ),
                 ),
+
                 const SizedBox(
                   width: Dimensions.space10,
                 )
               ],
             ),
-            const SizedBox(height: Dimensions.space20),
+            const SizedBox(height: Dimensions.space10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20, vertical: Dimensions.space20),
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20, vertical: Dimensions.space30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(MyStrings.discount),
+                  const Text(MyStrings.discount,style: semiBoldLarge,),
                   Expanded(
+                 
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20),
+                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.space2,vertical: Dimensions.space10),
                       child: CustomTextField(
+                           
                           fillColor: MyColor.colorInputField,
                           onChanged: (value) {
                             con.handleDiscountChange(value, index);
@@ -143,16 +151,18 @@ class AddToCartAlertDialogue extends StatelessWidget {
                           controller: con.discountController,
                           needOutlineBorder: false,
                           disableBorder: true,
-                          centerText: true),
+                          centerText: true,
+                          textInputType: TextInputType.number,
+                          ),
                     ),
                   ),
                   Checkbox(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
                       activeColor: MyColor.primaryColor,
                       checkColor: MyColor.colorWhite,
-                      value: con.percentDiscount,
+                      value: con.isDiscountInpercent,
                       side: MaterialStateBorderSide.resolveWith(
-                        (states) => BorderSide(width: 1.0, color: con.percentDiscount ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
+                        (states) => BorderSide(width: 1.0, color: con.isDiscountInpercent ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
                       ),
                       onChanged: (value) {
                         con.changediscountCheckBox();
@@ -161,6 +171,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                 ],
               ),
             ),
+             const SizedBox(height: Dimensions.space30),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

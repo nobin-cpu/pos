@@ -10,6 +10,7 @@ class ProductModel {
   final String ?wholesalePrice;
   final String ?mrp;
   final String ?purchasePrice;
+  final String ?retailPrice;
 
   ProductModel({
      required this.id,
@@ -19,7 +20,7 @@ class ProductModel {
      this.category,
      this.uom,
      this.imagePath,
-     this.stock, this.wholesalePrice, this.mrp, this.purchasePrice,
+     this.stock, this.wholesalePrice, this.mrp, this.purchasePrice,this.retailPrice,
   });
 
   // Factory method to create a ProductModel instance from a map
@@ -36,6 +37,7 @@ class ProductModel {
       wholesalePrice: map['wholesalePrice'],
       mrp: map['mrp'],
       purchasePrice: map['purchasePrice'],
+      retailPrice: map['retailPrice'],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
@@ -7,16 +8,19 @@ import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.d
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/category_product_list_screen/widgets/add_to_cart_aleart_dialogue.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryProductListController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   final TextEditingController productQuantityController = TextEditingController();
+  final TextEditingController retailProductQuantityController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
   List<ProductModel> productList = [];
   List<ProductModel> uomList = [];
   List<CartProductModel> cartList = [];
   int quantity = 1;
-  bool percentDiscount = false;
+
+  bool isDiscountInpercent = false;
   String categoryTitle = "";
   String totalCartItems = "";
   @override
@@ -40,23 +44,29 @@ class CategoryProductListController extends GetxController {
     await loadProductData(category);
   }
 
-  increaseCartItem() {
+  void increaseInputFieldProductQuantity() {
     quantity++;
     productQuantityController.text = quantity.toString();
     update();
   }
 
-  decreaseCartItem() {
-    quantity--;
-    productQuantityController.text = quantity.toString();
-    update();
+  void decreaseInputFieldProductQuantity() {
+    if (quantity > 1) {
+      quantity--;
+      productQuantityController.text = quantity.toString();
+      update();
+    }
   }
 
   double totalAmount = 0.0;
 
-  void updateTotalAmount(ProductModel product, int quantity) {
+  void updateTotalAmount(int index, dynamic quantity) {
+    ProductModel product = productList[index];
+
     double price = double.parse(product.price ?? '0.0');
+
     totalAmount = price * quantity;
+
     update();
   }
 
@@ -81,27 +91,7 @@ class CategoryProductListController extends GetxController {
     }
   }
 
-  // Future<void> addToCart(ProductModel product, int quantity) async {
-  //   try {
-  //     await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
-  //     CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
-  //     print("Successfully added to cart");
-
-  //     // Clear the text field and set the value to "1"
-  //     productQuantityController.clear();
-  //     productQuantityController.text = "1";
-
-  //     // Reset the quantity back to 1
-  //     this.quantity = 1;
-
-  //     update();
-  //     Get.back();
-  //   } catch (e) {
-  //     CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
-  //     print("Failed to add to cart: $e");
-  //   }
-  // }
-
+  double previousDiscount = 0.0;
   Future<void> addToCart(ProductModel product, int quantity) async {
     try {
       List<CartProductModel> existingCartItems = await databaseHelper.getCartItems();
@@ -110,13 +100,18 @@ class CategoryProductListController extends GetxController {
         orElse: () => CartProductModel(),
       );
 
+      double discount = double.tryParse(discountController.text) ?? 0.0;
+
       if (existingCartItem != null && existingCartItem.id != null) {
         existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
         existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
+        existingCartItem.discountAmount = discount;
+
         await databaseHelper.updateCartItem(existingCartItem);
       } else {
-        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString());
-      
+        print(isDiscountInpercent);
+        print("discount...........................................");
+        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, true);
       }
 
       CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
@@ -129,15 +124,18 @@ class CategoryProductListController extends GetxController {
 
       update();
       Get.back();
-       initData(categoryTitle);
+      initData(categoryTitle);
     } catch (e) {
+       print(isDiscountInpercent);
+       
+        print("discount...........................................");
       CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
       print("Failed to add to cart: $e");
     }
   }
 
   changediscountCheckBox() {
-    percentDiscount = !percentDiscount;
+    isDiscountInpercent = !isDiscountInpercent;
     update();
   }
 
@@ -146,23 +144,26 @@ class CategoryProductListController extends GetxController {
     return price * quantity;
   }
 
-  void updateTotalAmountWithDiscount(ProductModel product, int quantity, double discount) {
+  void updateTotalAmountWithDiscount(ProductModel product, int quantity, double discount) async {
     double price = double.parse(product.price ?? '0.0');
     double totalAmount = price * quantity;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    if (percentDiscount) {
+    if (isDiscountInpercent) {
       double discountedAmount = totalAmount - (totalAmount * discount / 100);
       this.totalAmount = discountedAmount;
+      await preferences.setBool(SharedPreferenceHelper.isDiscountInPercentiseKey, isDiscountInpercent);
     } else {
       double discountedAmount = totalAmount - discount;
       this.totalAmount = discountedAmount;
+      await preferences.setBool(SharedPreferenceHelper.isDiscountInPercentiseKey, isDiscountInpercent);
     }
-
+    print(".........................................................................");
     update();
   }
 
   void handleDiscountChange(String value, int index) {
-    if (percentDiscount) {
+    if (isDiscountInpercent) {
       double discountPercentage = double.tryParse(value) ?? 0;
       updateTotalAmountWithDiscount(productList[index], quantity, discountPercentage);
     } else {

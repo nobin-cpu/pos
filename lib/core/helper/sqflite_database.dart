@@ -22,13 +22,13 @@ class DatabaseHelper {
           'CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,price TEXT, category TEXT, uom TEXT, imagePath TEXT,stock TEXT,wholesalePrice TEXT,mrp TEXT,purchasePrice TEXT)',
         );
         db.execute(
-          'CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL)',
+          'CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, discountAmount REAL, isDiscountInPercent INTEGER)',
         );
         db.execute(
-          'CREATE TABLE checkout_history(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, checkoutTime TEXT, paymentMethod TEXT)',
+          'CREATE TABLE invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, checkoutTime TEXT, paymentMethod TEXT)',
         );
       },
-      version: 10,
+      version: 13,
     );
   }
 
@@ -46,11 +46,12 @@ class DatabaseHelper {
     await _database.insert('category', {'title': categoryTitle});
   }
 
-  Future<void> insertCartItem(ProductModel product, int quantity, String totalAmount) async {
+  Future<void> insertCartItem(ProductModel product, int quantity, String totalAmount, double discountAmount, bool isDiscountInPercentOrNot) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
-   
+    print(isDiscountInPercentOrNot);
+    print("from sqf...........................................");
     await _database.insert('cart', {
       'productId': product.id,
       'name': product.name,
@@ -60,8 +61,9 @@ class DatabaseHelper {
       'imagePath': product.imagePath,
       'quantity': quantity,
       'totalAmount': totalAmount.toString(),
+      'discountAmount': discountAmount,
+      'isDiscountInPercent':  1 ,
     });
-    
   }
 
   Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod) async {
@@ -70,7 +72,7 @@ class DatabaseHelper {
     }
 
     for (var cartItem in cartProductList) {
-      await _database.insert('checkout_history', {
+      await _database.insert('invoice_history', {
         'productId': cartItem.productId,
         'name': cartItem.name,
         'price': cartItem.price,
@@ -90,7 +92,7 @@ class DatabaseHelper {
       throw Exception("Database not initialized");
     }
 
-    final List<Map<String, dynamic>> maps = await _database.query('checkout_history');
+    final List<Map<String, dynamic>> maps = await _database.query('invoice_history');
     return List.generate(maps.length, (index) {
       return CartProductModel.fromMap(maps[index]);
     });
@@ -260,7 +262,7 @@ class DatabaseHelper {
     return _database.isOpen;
   }
 
-  Future<void> updateProduct(int id, String newName, String price, String newCategory, String newUom, String newImagePath,String newStocks,String newWholeSalePrice,String newPurchasePrice) async {
+  Future<void> updateProduct(int id, String newName, String price, String newCategory, String newUom, String newImagePath, String newStocks, String newWholeSalePrice, String newPurchasePrice) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -273,9 +275,9 @@ class DatabaseHelper {
         'category': newCategory,
         'uom': newUom,
         'imagePath': newImagePath,
-        'stock': newStocks,  
-      'wholesalePrice': newWholeSalePrice,  
-      'purchasePrice': newPurchasePrice,  
+        'stock': newStocks,
+        'wholesalePrice': newWholeSalePrice,
+        'purchasePrice': newPurchasePrice,
       },
       where: 'id = ?',
       whereArgs: [id],

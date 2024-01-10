@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
@@ -90,7 +92,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       textAlignVertical:widget.centerText? TextAlignVertical.center:null,
       
       decoration: InputDecoration(
-        contentPadding:widget.centerText?EdgeInsets.zero: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
+        
+        contentPadding:widget.centerText?const EdgeInsets.all(Dimensions.space10): const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
         labelText: widget.labelText?.tr??'',
         labelStyle: regularDefault.copyWith(color: MyColor.getLabelTextColor()),
         fillColor: widget.fillColor,
@@ -140,7 +143,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           textAlign:widget.centerText?TextAlign.center:TextAlign.start,
            textAlignVertical:widget.centerText? TextAlignVertical.center:null,
           decoration: InputDecoration(
-            contentPadding:widget.centerText?EdgeInsets.zero: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
+            contentPadding:widget.centerText?const EdgeInsets.all(Dimensions.space10): const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 5),
             hintText: widget.hintText!=null?widget.hintText!.tr:'',
             hintStyle: regularSmall.copyWith(color: MyColor.getHintTextColor().withOpacity(0.7)),
             fillColor: widget.fillColor,
@@ -186,7 +189,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       textAlign:widget.centerText?TextAlign.center:TextAlign.start,
        textAlignVertical:widget.centerText? TextAlignVertical.center:null,
       decoration: InputDecoration(
-        contentPadding:widget.centerText?null: const EdgeInsets.only(top: 5, left: 0, right: 0, bottom: 5),
+        contentPadding:widget.centerText?const EdgeInsets.all(Dimensions.space10): const EdgeInsets.only(top: 5, left: 0, right: 0, bottom: 5),
         labelText:  widget.labelText?.tr,
         labelStyle: regularDefault.copyWith(color: MyColor.getLabelTextColor()),
         fillColor: widget.fillColor,

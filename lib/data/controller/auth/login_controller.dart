@@ -131,12 +131,12 @@ class LoginController extends GetxController {
       if (user != null) {
         
         print("Google Sign-In Successful: ${user.displayName}");
-
+          
         bool isRegisteredUser = await isUserRegistered(user.email!);
 
         if (isRegisteredUser) {
           bool isDeletedUser = await isUserDeleted(user.email!);
-
+                await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
           if (!isDeletedUser) {
             await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
             checkAndGotoNextStep();
