@@ -31,8 +31,6 @@ class SettingsController extends GetxController {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     cheakAmount = preferences.getString(SharedPreferenceHelper.vatAmountKey)!;
     bools = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey);
-    print("this is amount" + cheakAmount);
-    print("this is bool" + bools.toString());
     update();
   }
 

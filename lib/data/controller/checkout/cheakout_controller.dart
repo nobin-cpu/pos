@@ -1,20 +1,16 @@
-import 'dart:io';
+
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
-import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
-import 'package:flutter_prime/view/screens/cheakout/widgets/cheak_out_product_edit_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop_up.dart';
-import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_alart_dialogue.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CheakoutController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -22,25 +18,22 @@ class CheakoutController extends GetxController {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
   final TextEditingController uomController = TextEditingController();
+  final TextEditingController discountController = TextEditingController();
   TextEditingController newNameController = TextEditingController();
   TextEditingController newPriceController = TextEditingController();
   final TextEditingController productQuantityController = TextEditingController();
   List<CategoryModel> categoryList = [];
   List<UomModel> uomList = [];
   List<ProductModel> productList = [];
-  File? pickedImage;
-  File? newPickedImage;
-  String newCategory = '';
-  String newUom = '';
   int quantity = 1;
-  double? totalPric = 0.0;
+  double? totalProductPrice = 0.0;
   String productName = "";
   String price = "";
   String uom = "";
   bool? percentDiscount = false;
 
   List<CartProductModel> cartProductList = [];
-
+  bool isDiscountInpercent = false;
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
     cartProductList = await databaseHelper.getCartItems();
@@ -48,10 +41,10 @@ class CheakoutController extends GetxController {
     update();
   }
 
-  void initData() async{
+  void initData() async {
     getCartList();
     loadDropdownData();
-  await  getDiscountInpercentOrNot();
+    // await getDiscountInpercentOrNot();
   }
 
   void showEditOrDeleteBottomSheet(
@@ -62,19 +55,13 @@ class CheakoutController extends GetxController {
     update();
     productName = cartProductModel.name ?? "";
     price = cartProductModel.price ?? "";
-    totalPric = double.parse(cartProductModel.totalAmount.toString());
+    totalProductPrice = double.parse(cartProductModel.totalAmount.toString());
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
-    newPickedImage = File(cartProductModel.imagePath ?? "");
-    newCategory = cartProductModel.category ?? "";
-    newUom = cartProductModel.uom ?? "";
     uom = cartProductModel.uom ?? "";
+    percentDiscount = cartProductModel.isDiscountInPercent == '0'? false : true;
+
     update();
-    CustomBottomSheet(
-      child: CheckoutProductEditBottomSheet(
-        id: int.parse(cartProductModel.id.toString()),
-      ),
-    ).customBottomSheet(context);
   }
 
   Future<void> loadDropdownData() async {
@@ -94,25 +81,12 @@ class CheakoutController extends GetxController {
     }
   }
 
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      pickedImage = File(pickedFile.path);
-      newPickedImage = pickedImage;
-      update();
-    }
-  }
-
   Future<void> editCartItem(int? id) async {
     CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
 
     cartItem.name = productName;
-    cartItem.totalAmount = cartItem.totalAmount;
-    cartItem.imagePath = newPickedImage?.path ?? cartItem.imagePath;
-    cartItem.category = newCategory;
-    cartItem.uom = uomController.text;
+    cartItem.totalAmount = totalProductPrice;
+    cartItem.uom = uom;
     cartItem.quantity = quantity;
 
     await databaseHelper.updateCartItem(cartItem);
@@ -128,7 +102,7 @@ class CheakoutController extends GetxController {
     update();
   }
 
-  void checkOutProductBottomSheet(
+  void productEditDialog(
     BuildContext context,
     CartProductModel cartProductModel,
   ) {
@@ -136,21 +110,22 @@ class CheakoutController extends GetxController {
     update();
     productName = cartProductModel.name ?? "";
     price = cartProductModel.price ?? "";
-    totalPric = double.parse(cartProductModel.totalAmount.toString());
+    totalProductPrice = double.parse(cartProductModel.totalAmount.toString());
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
-    newPickedImage = File(cartProductModel.imagePath ?? "");
-    newCategory = cartProductModel.category ?? "";
-    newUom = cartProductModel.uom ?? "";
     uom = cartProductModel.uom ?? "";
+
+    //init discount
+
     update();
     print(quantity);
     print(quantity);
-    CustomBottomSheet(
-      child: EditCheakoutProductBottomSheet(
+    CustomAlertDialog(
+      child: EditCheakoutProductAlartDialogue(
         id: int.parse(cartProductModel.id.toString()),
       ),
-    ).customBottomSheet(context);
+      actions: [],
+    ).customAlertDialog(context);
   }
 
   increaseCartItem() {
@@ -165,16 +140,29 @@ class CheakoutController extends GetxController {
     update();
   }
 
-  void updateTotalAmount(int id, quantity) {
-    print("cartItem.totalAmount1");
-    CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
-    double price = double.parse(cartItem.price ?? '0.0');
-    cartItem.totalAmount = price * quantity;
-    newPriceController.text = cartItem.totalAmount.toString();
-    totalPric = cartItem.totalAmount;
+  void updateTotalAmount() {
+    print("-------------updateTotalAmount called");
 
-    print(cartItem.totalAmount);
-    print("cartItem.totalAmount");
+    double productPrice = double.parse(price ?? '0.0');
+    double totalProductAmount = productPrice * quantity;
+
+    double discount = double.tryParse(discountController.text) ?? 0.0;
+    double discountedAmount = 0.0;
+
+    print('-------is discount in percent${discount}');
+    print('-------is discount in percent${isDiscountInpercent}');
+    print('-------is total product amount${totalProductAmount}');
+
+    if (isDiscountInpercent) {
+      discountedAmount = totalProductAmount - (totalProductAmount * discount / 100);
+    } else {
+      discountedAmount = totalProductAmount - discount;
+    }
+
+    totalProductPrice = discountedAmount;
+
+    print('-------------updateTotalAmount final value: $totalProductPrice');
+
     update();
   }
 
@@ -191,7 +179,7 @@ class CheakoutController extends GetxController {
   }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod);
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId());
     await databaseHelper.clearCart();
 
     cartProductList.clear();
@@ -199,9 +187,35 @@ class CheakoutController extends GetxController {
 
     Get.back();
   }
+int generateUniqueId() {
+  Random random = Random();
+  int id = 0;
 
-   getDiscountInpercentOrNot() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    percentDiscount = preferences.getBool(SharedPreferenceHelper.isDiscountInPercentiseKey)!;
+  for (int i = 0; i < 9; i++) {
+    id += random.nextInt(10);
+  }
+
+  return id;
+}
+
+
+  // getDiscountInpercentOrNot() async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   percentDiscount = preferences.getBool(SharedPreferenceHelper.isDiscountInPercentiseKey)!;
+  // }
+
+  changeDiscountCheckBox() {
+    isDiscountInpercent = !isDiscountInpercent;
+    update();
+  }
+
+  void handleDiscountChange(String value) {
+    double discount = double.tryParse(value) ?? 0.0;
+    updateTotalAmount();
+    update();
+  }
+
+  double calculateTotalPrice() {
+    return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
   }
 }

@@ -32,72 +32,78 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         appBar: const CustomAppBar(title: MyStrings.checkout),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Table(
-                  border: TableBorder.all(),
-                  columnWidths: const {
-                    0: IntrinsicColumnWidth(),
-                    1: IntrinsicColumnWidth(),
-                    2: IntrinsicColumnWidth(),
-                    3: IntrinsicColumnWidth(),
-                    4: IntrinsicColumnWidth(),
-                    5: IntrinsicColumnWidth(),
-                  },
-                  children: [
-                    const TableRow(
-                      decoration: BoxDecoration(),
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimensions.space10),
+              child: Column(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Table(
+                      border: TableBorder.all(),
+                      columnWidths: const {
+                        0: IntrinsicColumnWidth(),
+                        1: IntrinsicColumnWidth(),
+                        2: IntrinsicColumnWidth(),
+                        3: IntrinsicColumnWidth(),
+                        4: IntrinsicColumnWidth(),
+                        5: IntrinsicColumnWidth(),
+                      },
                       children: [
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
-                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
-                        
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
-                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
-                        TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text("")))),
+                        const TableRow(
+                          decoration: BoxDecoration(),
+                          children: [
+                            TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
+                            TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
+                            
+                            TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
+                            TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                            TableCell(child: Padding(padding:  EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                            TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text("")))),
+                          ],
+                        ),
+                        ...controller.cartProductList.map((CartProductModel product) {
+                          double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
+              
+                          return TableRow(
+                            children: [
+                              TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
+                              TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${ product.price}')))),
+                              
+                              TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text("${product.discountAmount}${product.isDiscountInPercent ==1? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}")))),
+                              TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
+                              TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(Dimensions.space8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          controller.productEditDialog(context, product);
+                                        },
+                                        child: Image.asset(
+                                          MyImages.edit,
+                                          height: Dimensions.space20,
+                                        ),
+                                      ),
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ],
                     ),
-                    ...controller.cartProductList.map((CartProductModel product) {
-                      double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
-
-                      return TableRow(
-                        children: [
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
-                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')))),
-                          
-                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text("${product.discountAmount}${controller.percentDiscount == true ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}")))),
-                         TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
-                          TableCell(child: Padding(padding:  const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(Dimensions.space8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      controller.checkOutProductBottomSheet(context, product);
-                                    },
-                                    child: Image.asset(
-                                      MyImages.edit,
-                                      height: Dimensions.space20,
-                                    ),
-                                  ),
-                                  
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: Dimensions.space100),
+                ],
               ),
-              const SizedBox(height: Dimensions.space100),
-            ],
+            ),
           ),
         ),
         floatingActionButton: Padding(
@@ -107,7 +113,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: [
               InkWell(
                 onTap: () {
-                  Get.toNamed(RouteHelper.invoiceScreen);
+                  Get.toNamed(RouteHelper.confirmCheckoutScreen);
                 },
                 child: Container(
                   decoration: BoxDecoration(

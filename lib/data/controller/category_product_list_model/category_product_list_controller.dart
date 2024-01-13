@@ -74,6 +74,7 @@ class CategoryProductListController extends GetxController {
     totalAmount = double.parse(product.price.toString());
 
     productQuantityController.text = quantity.toString();
+    discountController.text = "";
     CustomAlertDialog(child: AddToCartAlertDialogue(index: index), actions: []).customAlertDialog(context);
   }
 
@@ -103,15 +104,19 @@ class CategoryProductListController extends GetxController {
       double discount = double.tryParse(discountController.text) ?? 0.0;
 
       if (existingCartItem != null && existingCartItem.id != null) {
-        existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
-        existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
+        existingCartItem.quantity =  quantity;
+       // existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
+      //  existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
+        existingCartItem.totalAmount =  totalAmount;
         existingCartItem.discountAmount = discount;
 
-        await databaseHelper.updateCartItem(existingCartItem);
+        await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
+        print("discount type.............." + isDiscountInpercent.toString());
       } else {
-        print(isDiscountInpercent);
-        print("discount...........................................");
-        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, true);
+        print("discount type.............." + isDiscountInpercent.toString());
+        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
+
+        update();
       }
 
       CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
@@ -126,9 +131,9 @@ class CategoryProductListController extends GetxController {
       Get.back();
       initData(categoryTitle);
     } catch (e) {
-       print(isDiscountInpercent);
-       
-        print("discount...........................................");
+      print(isDiscountInpercent);
+
+      print("discount...........................................");
       CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
       print("Failed to add to cart: $e");
     }
@@ -153,10 +158,12 @@ class CategoryProductListController extends GetxController {
       double discountedAmount = totalAmount - (totalAmount * discount / 100);
       this.totalAmount = discountedAmount;
       await preferences.setBool(SharedPreferenceHelper.isDiscountInPercentiseKey, isDiscountInpercent);
+      update();
     } else {
       double discountedAmount = totalAmount - discount;
       this.totalAmount = discountedAmount;
       await preferences.setBool(SharedPreferenceHelper.isDiscountInPercentiseKey, isDiscountInpercent);
+      update();
     }
     print(".........................................................................");
     update();

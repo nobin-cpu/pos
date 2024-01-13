@@ -8,6 +8,7 @@ class PosController extends GetxController {
 
   List<CategoryModel> categoryList = [];
   List<ProductModel> productList = [];
+  bool isLoading = false;
 
   @override
   void onInit() {
@@ -16,6 +17,8 @@ class PosController extends GetxController {
   }
 
   Future<void> loadCategoryData() async {
+    isLoading = true;
+    update();
     try {
       await databaseHelper.initializeDatabase();
 
@@ -29,20 +32,21 @@ class PosController extends GetxController {
     } catch (e) {
       print('Error loading dropdown data: $e');
     }
+    isLoading = false;
+    update();
   }
 
-Future<void> loadProductData() async {
-  try {
-    List<ProductModel> productsData = await databaseHelper.getProductList();
-    productList = productsData;
-  } catch (e) {
-    print('Error loading product data: $e');
+  Future<void> loadProductData() async {
+    try {
+      List<ProductModel> productsData = await databaseHelper.getProductList();
+      productList = productsData;
+    } catch (e) {
+      print('Error loading product data: $e');
+    }
   }
-}
-
 
   Future<void> initData() async {
-   await loadProductData();
+    await loadProductData();
     await loadCategoryData();
   }
 }

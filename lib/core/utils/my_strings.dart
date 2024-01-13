@@ -60,10 +60,11 @@ class MyStrings{
   static const String home            = "Home";
   static const String transaction     = "Transaction";
   static const String transactionId   = "Transaction ID";
+  static const String trxId   = "Trx ID:";
   static const String withdrawHistory = "Withdraw History";
 
   static const String amount        = "Amount";
-  static const String date          = "Date";
+  static const String date          = "Date:";
   static const String charge        = "Charge";
   static const String payableAmount = "Payable Amount";
   static const String payable       = "Payable";
@@ -159,7 +160,6 @@ class MyStrings{
   static const String withdrawPreview        = "Withdraw Preview";
   static const String searchByTrxId          = "Search by trx id";
   static const String noTrxFound             = "No Transaction Found";
-  static const String trxId                  = "Trx Id";
   static const String complete               = "Completed";
   static const String cancel                 = "Cancel";
   static const String time                   = "Time";
@@ -314,6 +314,12 @@ class MyStrings{
   static const String selectPaymentGatewat                               = "Select payment gatewat";
   static const String billAndPayment                               = "Bill and Payment";
   static const String selectPaymentType                               = "Select Payment Type";
+  static const String invoice                               = "Invoice";
+  static const String invoiceDetails                               = "Invoice Details";
+  static const String voids                               = "Void";
+  static const String print                               = "Print";
+  static const String from                               = "From";
+  static const String to                               = "To";
 
 
 

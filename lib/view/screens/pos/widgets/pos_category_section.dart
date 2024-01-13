@@ -20,7 +20,7 @@ class _PosCategorySectionState extends State<PosCategorySection> {
         builder: (controller) => GridView.builder(
           itemCount: controller.categoryList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 2.3,
+            childAspectRatio: 2.2,
             crossAxisCount: 3,
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,

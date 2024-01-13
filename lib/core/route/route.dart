@@ -8,6 +8,8 @@ import 'package:flutter_prime/view/screens/category_product_list_screen/category
 import 'package:flutter_prime/view/screens/cheakout/cheakout_screen.dart';
 import 'package:flutter_prime/view/screens/inventory/inventory_screen.dart';
 import 'package:flutter_prime/view/screens/confirm_checkout/confirm_checkout_screen.dart';
+import 'package:flutter_prime/view/screens/invoice/invoice_screen.dart';
+import 'package:flutter_prime/view/screens/invoice_details/invoice_details_screen.dart';
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
@@ -15,6 +17,8 @@ import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
 import 'package:flutter_prime/view/screens/splash/splash_screen.dart';
 import 'package:flutter_prime/view/screens/uom/uom_screen.dart';
 import 'package:get/get.dart';
+
+import '../../view/screens/void_items/void_items_screen.dart';
 
 class RouteHelper{
 
@@ -44,8 +48,11 @@ static const String posCategoryProductSection        = '/pos_category_product_sc
 static const String categoryProductListScreen        = '/category_Product_List_Screen';
 static const String cartScreen        = '/cart_Screen';
 static const String cheakOutScreen        = '/cheak_out_Screen';
-static const String invoiceScreen        = '/invoice_Screen';
+static const String confirmCheckoutScreen        = '/confirm_checkout_Screen';
 static const String settingsScreen        = '/settings_Screen';
+static const String invoiceScreen        = '/invoice_Screen';
+static const String invoiceDetailsScreen        = '/invoice_details_Screen';
+static const String voidItemsScreen        = '/void_items_Screen';
 
 
   List<GetPage> routes = [
@@ -57,6 +64,7 @@ static const String settingsScreen        = '/settings_Screen';
     GetPage(name: registrationScreen,           page: () => const RegistrationScreen()),
         // GetPage(name: profileCompleteScreen,        page: () => const ProfileCompleteScreen()),
     GetPage(name: bottomNavBar,                 page: () => const BottomNavBar()),
+    GetPage(name: voidItemsScreen,                 page: () => const VoidItemsScreen()),
 
     //  GetPage(name: profileScreen,                page: () => const ProfileScreen()),
     // GetPage(name: editProfileScreen,            page: () => const EditProfileScreen()),
@@ -73,7 +81,9 @@ static const String settingsScreen        = '/settings_Screen';
     GetPage(name: categoryProductListScreen,                page: () =>const  CategoryProductListScreen()),
     GetPage(name: cartScreen,                page: () =>const  CartScreen()),
     GetPage(name: cheakOutScreen,                page: () =>const CheckoutScreen ()),
-    GetPage(name: invoiceScreen,                page: () =>const ConfirmCheckOutScreen ()),
+    GetPage(name: confirmCheckoutScreen,                page: () =>const ConfirmCheckOutScreen ()),
     GetPage(name: settingsScreen,                page: () =>const SettingsScreen ()),
+    GetPage(name: invoiceScreen,                page: () =>const InvoiceScreen ()),
+    GetPage(name: invoiceDetailsScreen,                page: () => InvoiceDetailsScreen ()),
   ];
 }

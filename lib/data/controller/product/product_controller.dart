@@ -116,7 +116,7 @@ class ProductController extends GetxController {
     print(newUom);
     CustomBottomSheet(
       child: EditOrDeleteProductBottomSheet(
-        id: productModel.id,
+        id: productModel.id??0,
       ),
     ).customBottomSheet(context);
   }

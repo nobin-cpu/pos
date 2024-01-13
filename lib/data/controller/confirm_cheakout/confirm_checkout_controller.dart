@@ -1,8 +1,9 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
@@ -13,9 +14,8 @@ import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
-import 'package:flutter_prime/view/screens/cheakout/widgets/cheak_out_product_edit_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop_up.dart';
-import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_alart_dialogue.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,8 +63,8 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   getVatData() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    vatAmount = preferences.getString(SharedPreferenceHelper.vatAmountKey) ?? "00";
+    SharedPreferences? preferences;
+    vatAmount = preferences!.getString(SharedPreferenceHelper.vatAmountKey) ?? "00";
     isVatEnable = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
     isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
     print('vat amount: $vatAmount');
@@ -105,11 +105,11 @@ class ConfirmCheakoutController extends GetxController {
     update();
     print(quantity);
     print(quantity);
-    CustomBottomSheet(
-      child: CheckoutProductEditBottomSheet(
-        id: int.parse(cartProductModel.id.toString()),
-      ),
-    ).customBottomSheet(context);
+    // CustomBottomSheet(
+    //   child: CheckoutProductEditBottomSheet(
+    //     id: int.parse(cartProductModel.id.toString()),
+    //   ),
+    // ).customBottomSheet(context);
   }
 
   Future<void> loadDropdownData() async {
@@ -180,7 +180,7 @@ class ConfirmCheakoutController extends GetxController {
     uom = cartProductModel.uom ?? "";
     update();
     CustomBottomSheet(
-      child: EditCheakoutProductBottomSheet(
+      child: EditCheakoutProductAlartDialogue(
         id: int.parse(cartProductModel.id.toString()),
       ),
     ).customBottomSheet(context);
@@ -218,59 +218,26 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod);
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId());
     await databaseHelper.clearCart();
 
     cartProductList.clear();
     update();
 
     Get.back();
+    Get.offAllNamed(RouteHelper.bottomNavBar);
+  }
+int generateUniqueId() {
+  Random random = Random();
+  int id = 0;
+
+  for (int i = 0; i < 9; i++) {
+    id *= 10;
+    id += random.nextInt(10);
   }
 
-  void showDropdownMenu(BuildContext context) {
-    showMenu(
-      color: MyColor.colorWhite,
-      context: context,
-      position: RelativeRect.fromLTRB(
-        MediaQuery.of(context).size.width - 150.0,
-        MediaQuery.of(context).size.height - 150.0,
-        0.0,
-        0.0,
-      ),
-      items: [
-        PopupMenuItem(
-          child: Padding(
-            padding: const EdgeInsets.all(Dimensions.space8),
-            child: RoundedButton(
-                text: MyStrings.paidByCash,
-                press: () {
-                  paidinCash = true;
-                  paidOnline = false;
-                  print("cash" + paidinCash.toString());
-                  print("online" + paidOnline.toString());
-                  Get.back();
-                  update();
-                }),
-          ),
-        ),
-        PopupMenuItem(
-          child: Padding(
-            padding: const EdgeInsets.all(Dimensions.space8),
-            child: RoundedButton(
-                text: MyStrings.paidOnline,
-                press: () {
-                  paidOnline = true;
-                  paidinCash = false;
-                  print("cash" + paidinCash.toString());
-                  print("online" + paidOnline.toString());
-                  Get.back();
-                  update();
-                }),
-          ),
-        ),
-      ],
-    );
-  }
+  return id;
+}
 
   changeonlinePaid() {
     paidOnline = !paidOnline;

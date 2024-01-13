@@ -4,71 +4,53 @@ import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
-import 'package:flutter_prime/core/utils/util.dart';
-import 'package:flutter_prime/data/controller/category_product_list_model/category_product_list_controller.dart';
+import 'package:flutter_prime/data/controller/checkout/cheakout_controller.dart';
+import 'package:flutter_prime/view/components/bottom-sheet/bottom_sheet_header_row.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 
-class AddToCartAlertDialogue extends StatelessWidget {
-  final int index;
-  const AddToCartAlertDialogue({super.key, required this.index});
+class EditCheakoutProductAlartDialogue extends StatefulWidget {
+  final int? id;
+  const EditCheakoutProductAlartDialogue({super.key, this.id});
 
   @override
+  State<EditCheakoutProductAlartDialogue> createState() => _EditCheakoutProductAlartDialogueState();
+}
+
+class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAlartDialogue> {
+  @override
   Widget build(BuildContext context) {
-    return GetBuilder<CategoryProductListController>(builder: (controller) {
-      return Container(
-        decoration: const BoxDecoration(color: MyColor.colorWhite),
+    return GetBuilder<CheakoutController>(builder: (controller) {
+      print('updated product price: ${controller.totalProductPrice}');
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.space15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      // ClipRRect(
-                      //   borderRadius: BorderRadius.circular(Dimensions.space3),
-                      //   child: Image.file(
-                      //     File(con.productList[index].imagePath ?? ""),
-                      //     height: Dimensions.space50,
-                      //     width: Dimensions.space50,
-                      //     fit: BoxFit.cover,
-                      //   ),
-                      // ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.space15,
-                            ),
-                            child: Text(
-                              controller.productList[index].name.toString(),
-                              style: semiBoldLarge,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text("${controller.productList[index].price}${MyUtils.getCurrency()}/${controller.productList[index].uom ?? ""}"),
-                        const SizedBox(height: Dimensions.space10),
-                        Text(
-                          "${MyStrings.amt} ${controller.totalAmount.toString()}${MyUtils.getCurrency()}",
-                          style: semiBoldLarge.copyWith(color: MyColor.colorRed),
-                        )
-                      ],
+            const BottomSheetHeaderRow(header: MyStrings.editItem),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  controller.productName.toString(),
+                  style: semiBoldMediumLarge,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "${controller.price}/${controller.uom}",
+                      style: regularDefault,
                     ),
-                  )
-                ],
-              ),
+                    Text("${MyStrings.preview} ${controller.totalProductPrice.toString()}", style: semiBoldDefault.copyWith(color: MyColor.colorRed)),
+                  ],
+                )
+              ],
             ),
+
             const SizedBox(height: Dimensions.space10),
             Row(
               children: [
@@ -78,8 +60,8 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          controller.increaseInputFieldProductQuantity();
-                          controller.updateTotalAmount(index, controller.quantity);
+                          controller.increaseCartItem();
+                          controller.updateTotalAmount();
                         },
                         child: Image.asset(
                           MyImages.increase,
@@ -93,7 +75,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                           onChanged: (value) {
                             double enteredQuantity = double.tryParse(value.toString()) ?? 0;
                             controller.quantity = enteredQuantity.toInt();
-                            controller.updateTotalAmount(index, enteredQuantity);
+                            controller.updateTotalAmount();
                           },
                           controller: controller.productQuantityController,
                           disableBorder: true,
@@ -104,8 +86,8 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           if (controller.quantity > 1) {
-                            controller.decreaseInputFieldProductQuantity();
-                            controller.updateTotalAmount(index, controller.quantity);
+                            controller.decreaseCartItem();
+                            controller.updateTotalAmount();
                           }
                         },
                         child: Image.asset(
@@ -118,7 +100,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                 ),
                 Center(
                   child: Text(
-                    controller.productList[index].uom ?? "",
+                    controller.uom ?? "",
                     style: regularExtraLarge.copyWith(color: MyColor.getGreyText()),
                   ),
                 ),
@@ -127,7 +109,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: Dimensions.space10),
+            //fdfsfsdf
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.space20, vertical: Dimensions.space30),
               child: Row(
@@ -143,7 +125,9 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       child: CustomTextField(
                         fillColor: MyColor.colorInputField,
                         onChanged: (value) {
-                          controller.handleDiscountChange(value, index);
+                          controller.handleDiscountChange(
+                            value,
+                          );
                         },
                         controller: controller.discountController,
                         needOutlineBorder: false,
@@ -162,44 +146,38 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         (states) => BorderSide(width: 1.0, color: controller.isDiscountInpercent ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
                       ),
                       onChanged: (value) {
-                        controller.changediscountCheckBox();
-                        controller.handleDiscountChange(controller.discountController.text, index);
+                        controller.changeDiscountCheckBox();
+                        controller.handleDiscountChange(controller.discountController.text);
                       }),
                   Image.asset(MyImages.percentImage, height: Dimensions.space10),
                 ],
               ),
             ),
-            const SizedBox(height: Dimensions.space30),
+            const SizedBox(height: Dimensions.space10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.space10),
                   child: RoundedButton(
-                      horizontalPadding: Dimensions.space10,
-                      verticalPadding: Dimensions.space10,
-                      color: MyColor.redCancelTextColor,
-                      text: MyStrings.cancel,
-                      press: () {
-                        Get.back();
-                      }),
-                )),
+                    verticalPadding: Dimensions.space10,
+                    press: () async {
+                      controller.editCartItem(widget.id);
+                      Get.back();
+                    },
+                    text: MyStrings.update.tr,
+                  ),
+                ),
+                const SizedBox(width: Dimensions.space10),
                 Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.space10),
                   child: RoundedButton(
-                      horizontalPadding: Dimensions.space10,
-                      verticalPadding: Dimensions.space10,
-                      color: MyColor.primaryColor,
-                      text: MyStrings.addTOCart,
-                      press: () {
-                        controller.addToCart(controller.productList[index], controller.quantity);
-                        print("from screen" + controller.productList[index].uom.toString());
-                        controller.loadCartData();
-                        Get.back();
-                      }),
-                )),
+                    verticalPadding: Dimensions.space10,
+                    color: MyColor.colorRed,
+                    press: () async {
+                      controller.deleteCartItem(widget.id);
+                      Get.back();
+                    },
+                    text: MyStrings.delete.tr,
+                  ),
+                ),
               ],
             )
           ],

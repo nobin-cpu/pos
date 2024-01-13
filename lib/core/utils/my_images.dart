@@ -43,5 +43,9 @@ class MyImages{
   static const String percentImage      = "assets/images/percentage.png";
   static const String settings      = "assets/images/settings.png";
   static const String dropDown      = "assets/images/dropdown.png";
+  static const String voids      = "assets/images/void.png";
+  static const String invoice      = "assets/images/invoice.png";
+  static const String calendar      = "assets/images/calendar.png";
+  static const String filter      = "assets/images/filter.png";
 
 }
