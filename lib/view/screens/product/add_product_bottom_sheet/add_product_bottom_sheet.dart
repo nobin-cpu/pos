@@ -237,7 +237,11 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
       CustomSnackBar.error(errorList: [MyStrings.selectACatagory]);
     } else if (controller.uomController.text.isEmpty || controller.uomController.text == "Select One") {
       CustomSnackBar.error(errorList: [MyStrings.selectAUnit]);
-    } else {
+    }
+    else if (controller.pickedImage ==null ) {
+      CustomSnackBar.error(errorList: [MyStrings.pickAnImage]);
+    }
+     else {
       controller.addProducts();
     }
   },

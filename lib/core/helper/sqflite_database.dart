@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 
 class DatabaseHelper {
   late Database _database;
-
+   Database get database => _database;
   Future<void> initializeDatabase() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'product_database.db'),
@@ -29,13 +29,13 @@ class DatabaseHelper {
           'CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, discountAmount REAL, isDiscountInPercent INTEGER)',
         );
         db.execute(
-          'CREATE TABLE invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
+         'CREATE TABLE invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT, status TEXT)'
         );
         db.execute(
           'CREATE TABLE voidItems(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
         );
       },
-      version: 17,
+      version: 18,
     );
   }
 
@@ -74,40 +74,42 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId) async {
-    if (!isDatabaseInitialized()) {
-      throw Exception("Database not initialized");
-    }
-
-    double grandTotal = 0.0;
-    print(transactionId);
-    print("this is transection id");
-    for (var cartItem in cartProductList) {
-      grandTotal += double.parse(cartItem.totalAmount.toString());
-    }
-
-    String getProductDetails(List<CartProductModel> cartProductList) {
-      List<String> details = cartProductList.map((cartItem) {
-        return '${cartItem.name}: ${cartItem.totalAmount}';
-      }).toList();
-
-      return details.join(', ');
-    }
-
-    try {
-      int invoiceId = await _database.insert('invoice_history', {
-        'invoiceId': transactionId,
-        'totalAmount': grandTotal.toString(),
-        'checkoutTime': DateTime.now().toString(),
-        'paymentMethod': paymentMethod,
-        'productDetails': getProductDetails(cartProductList),
-      });
-      print(cartProductList.length);
-      print(cartProductList);
-    } catch (e) {
-      print("Error during insertCheckoutHistory: $e");
-    }
+Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId, bool isVoid ) async {
+  if (!isDatabaseInitialized()) {
+    throw Exception("Database not initialized");
   }
+
+  double grandTotal = 0.0;
+  print(transactionId);
+  print("this is transaction id");
+  for (var cartItem in cartProductList) {
+    grandTotal += double.parse(cartItem.totalAmount.toString());
+  }
+
+  String getProductDetails(List<CartProductModel> cartProductList) {
+    List<String> details = cartProductList.map((cartItem) {
+      return '${cartItem.name}: ${cartItem.totalAmount}';
+    }).toList();
+
+    return details.join(', ');
+  }
+
+  try {
+    int invoiceId = await _database.insert('invoice_history', {
+      'invoiceId': transactionId,
+      'totalAmount': grandTotal.toString(),
+      'checkoutTime': DateTime.now().toString(),
+      'paymentMethod': paymentMethod,
+      'productDetails': getProductDetails(cartProductList),
+      'status': isVoid ? 'VOID' : 'NOT VOID',
+    });
+    print(cartProductList.length);
+    print(cartProductList);
+  } catch (e) {
+    print("Error during insertCheckoutHistory: $e");
+  }
+}
+
 
   Future<List<InvoiceDetailsModel>> getProductsByTransactionId(int transactionId) async {
     print('single transaction called');
@@ -152,6 +154,28 @@ class DatabaseHelper {
 
     return products;
   }
+
+
+Future<void> updateInvoiceItemStatus(int itemId, String status) async {
+  if (!isDatabaseInitialized()) {
+    throw Exception("Database not initialized");
+  }
+
+  try {
+    await _database.update(
+      'invoice_history',
+      {'status': status},
+      where: 'id = ?',
+      whereArgs: [itemId],
+    );
+
+    print("Invoice item status updated successfully.");
+  } catch (e) {
+    print("Error during updateInvoiceItemStatus: $e");
+  }
+}
+
+
 
   Future<List<InvoiceProductModel>> getInvoiceList() async {
     if (!isDatabaseInitialized()) {
@@ -235,33 +259,34 @@ class DatabaseHelper {
       return UomModel.fromMap(maps[index]);
     });
   }
-Future<void> deleteInvoiceByTransactionId(int transactionId) async {
+Future<void> deleteInvoiceByTransactionId(Database _database, int transactionId) async {
   if (!isDatabaseInitialized()) {
     throw Exception("Database not initialized");
   }
 
   try {
-    // Fetch the invoice details using transactionId
     List<InvoiceDetailsModel> products = await getProductsByTransactionId(transactionId);
 
     if (products.isNotEmpty) {
-      // Delete the invoice from the 'invoice_history' table
+    
       await _database.delete(
         'invoice_history',
-        where: 'invoiceId = ?',  // Change 'id' to 'invoiceId'
+        where: 'invoiceId = ?',  
         whereArgs: [transactionId],
       );
       print("Invoice deleted successfully.....");
 
-      // Insert the voided items into the 'voidItems' table
       for (var product in products) {
         await _database.insert('voidItems', {
           'invoiceId': transactionId,
-          'totalAmount': product.totalAmount?.toString() ?? '0.0', // Handle null values
+          'totalAmount': product.totalAmount?.toString() ?? '0.0', 
           'checkoutTime': DateTime.now().toString(),
           'paymentMethod': 'VOIDED', 
-          'productDetails': '${product.name ?? 'Unknown'}: ${product.price?.toString() ?? '0.0'}', // Handle null values
+          'productDetails': '${product.name ?? 'Unknown'}: ${product.price?.toString() ?? '0.0'}', 
         });
+
+        // Print the inserted data
+        print("Voided item inserted - InvoiceId: $transactionId, TotalAmount: ${product.totalAmount?.toString() ?? '0.0'}, ProductDetails: ${product.name ?? 'Unknown'}: ${product.price?.toString() ?? '0.0'}");
       }
       print("Voided items inserted successfully.....");
     } else {
@@ -273,6 +298,22 @@ Future<void> deleteInvoiceByTransactionId(int transactionId) async {
 }
 
 
+Future<List<VoidItemsModel>> getVoidedItemsByInvoiceId(int invoiceId) async {
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
+    }
+
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'voidItems',
+      where: 'invoiceId = ?',
+      whereArgs: [invoiceId],
+    );
+
+    return List.generate(maps.length, (index) {
+      return VoidItemsModel.fromMap(maps[index]);
+    });
+  }
+
 
   
 Future<List<VoidItemsModel>> getVoidedItems() async {
@@ -281,10 +322,13 @@ Future<List<VoidItemsModel>> getVoidedItems() async {
   }
 
   final List<Map<String, dynamic>> maps = await _database.query('voidItems');
+  print("VoidItems from database: $maps");
+
   return List.generate(maps.length, (index) {
     return VoidItemsModel.fromMap(maps[index]);
   });
 }
+
 
   Future<List<ProductModel>> getProductsByCategory(String category) async {
     if (!isDatabaseInitialized()) {

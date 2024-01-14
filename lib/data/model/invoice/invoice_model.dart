@@ -12,6 +12,8 @@ class InvoiceProductModel {
   String? discountAmount;
   int? isDiscountInPercent;
   String? dateTime;
+  String? status;
+  String? productDetails;  // Add this line for productDetails or replace it with your actual field name
 
   InvoiceProductModel({
     this.id,
@@ -26,7 +28,9 @@ class InvoiceProductModel {
     this.totalAmount,
     this.discountAmount,
     this.isDiscountInPercent,
-    this.dateTime
+    this.dateTime,
+    this.status,
+    this.productDetails,  // Add this line for productDetails or replace it with your actual field name
   });
 
   Map<String, dynamic> toMap() {
@@ -44,6 +48,8 @@ class InvoiceProductModel {
       'discountAmount': discountAmount,
       'isDiscountInPercent': isDiscountInPercent,
       'checkoutTime': dateTime,
+      'status': status,
+      'productDetails': productDetails,  // Add this line for productDetails or replace it with your actual field name
     };
   }
 
@@ -62,6 +68,8 @@ class InvoiceProductModel {
       discountAmount: map['discountAmount'],
       isDiscountInPercent: map['isDiscountInPercent'],
       dateTime: map['checkoutTime'],
+      status: map['status'],
+      productDetails: map['productDetails'],  // Add this line for productDetails or replace it with your actual field name
     );
   }
 }

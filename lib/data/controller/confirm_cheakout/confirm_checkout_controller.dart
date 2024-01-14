@@ -218,7 +218,7 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId());
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId(),false);
     await databaseHelper.clearCart();
 
     cartProductList.clear();

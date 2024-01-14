@@ -12,6 +12,7 @@ class VoidItemsModel {
   String? discountAmount;
   int? isDiscountInPercent;
   String? dateTime;
+  String? status;  
 
   VoidItemsModel({
     this.id,
@@ -26,7 +27,8 @@ class VoidItemsModel {
     this.totalAmount,
     this.discountAmount,
     this.isDiscountInPercent,
-    this.dateTime
+    this.dateTime,
+    this.status,  
   });
 
   Map<String, dynamic> toMap() {
@@ -44,6 +46,7 @@ class VoidItemsModel {
       'discountAmount': discountAmount,
       'isDiscountInPercent': isDiscountInPercent,
       'checkoutTime': dateTime,
+      'status': status,  
     };
   }
 
@@ -62,6 +65,7 @@ class VoidItemsModel {
       discountAmount: map['discountAmount'],
       isDiscountInPercent: map['isDiscountInPercent'],
       dateTime: map['checkoutTime'],
+      status: map['status'],  
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
+import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/core/utils/util.dart';
@@ -31,7 +32,12 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     int invoiceId = Get.arguments[0];
     controller.dateTime = Get.arguments[1];
     controller.transectionId = Get.arguments[2];
+    controller.isFromVoidScreen = Get.arguments[3];
     controller.fetchProducts(invoiceId);
+    print(invoiceId);
+    print(controller.transectionId);
+    print("..................invoice and transection id...................");
+
   }
 
   @override
@@ -39,7 +45,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     return GetBuilder<InvoiceDetailsController>(builder: (controller) {
       return Scaffold(
         appBar: CustomAppBar(
-          title: MyStrings.invoiceDetails,
+          title:controller.isFromVoidScreen?MyStrings.voidDetails: MyStrings.invoiceDetails,
           action: [
             Text(
               DateConverter.formatValidityDate(controller.dateTime),
@@ -48,15 +54,16 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
           ],
         ),
         body: GetBuilder<InvoiceDetailsController>(builder: (controller) {
-          return Column(
+          return   Column(
             children: [
-              Expanded(
+              const SizedBox(height:Dimensions.space20),
+            controller.products.isEmpty?Center(child: Image.asset(MyImages.noDataFound,height:Dimensions.space200)):  Expanded(
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: controller.products.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.all(Dimensions.space10),
+                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.space10,vertical: Dimensions.space5),
                         child: CustomCard(
                             width: double.infinity,
                             child: Row(
@@ -72,9 +79,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
             ],
           );
         }),
-        floatingActionButton: Row(
+        floatingActionButton:  Row(
           children: [
-            Expanded(
+          controller.isFromVoidScreen?const SizedBox():  Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(Dimensions.space10),
                 child: RoundedButton(
@@ -82,7 +89,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                     color: MyColor.colorRed,
                     press: () {
                       print(controller.transectionId);
-                      controller.deleteInvoiceItems();
+                      controller.updateVoidStatus();
                     },
                     text: MyStrings.voids),
               ),

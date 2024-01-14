@@ -147,10 +147,9 @@ class LoginController extends GetxController {
             CustomSnackBar.error(errorList: [MyStrings.thisAccIsdeleted]);
           }
         } else {
-          // User is not registered, handle accordingly (e.g., show an error message).
           print('User is not registered. Please register first.');
           await prefix.FirebaseAuth.instance.signOut();
-          CustomSnackBar.error(errorList: [MyStrings.thisAccIsdeleted]);
+          CustomSnackBar.error(errorList: [MyStrings.userIsNotRegistered]);
         }
       }
     } catch (error) {

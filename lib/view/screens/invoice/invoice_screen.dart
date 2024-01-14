@@ -37,7 +37,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
         appBar: CustomAppBar(
           title: MyStrings.invoice,
           action: [
-            InkWell(
+           controller.invoiceProductList.isEmpty? const SizedBox(): InkWell(
                 child: Padding(
               padding: const EdgeInsets.all(Dimensions.space10),
               child: InkWell(
@@ -52,92 +52,98 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
             ))
           ],
         ),
-        body: Column(
+        body:Column(
           children: [
           controller.showFilter?
           
             Row(
               children: [
                 Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(Dimensions.space8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(Dimensions.space5),
-                        child: Text(MyStrings.from, style: semiBoldLarge),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: controller.isFrom ? MyColor.getGreyText() : MyColor.colorBlack),
-                          borderRadius: BorderRadius.circular(Dimensions.space8),
-                          color: MyColor.getGreyText(),
-                        ),
-                        child: CustomCard(
-                            isPress: true,
-                            onPressed: () {
-                              controller.isFrom = true;
-                              controller.isTo = false;
-                              controller.selectDate(context, true);
-                            },
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Image.asset(MyImages.calendar, height: Dimensions.space20),
-                                const SizedBox(width: Dimensions.space10),
-                                Text(DateConverter.formatValidityDate(controller.fromDate.toString())),
-                              ],
-                            )),
-                      ),
-                    ],
-                  ),
-                )),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(Dimensions.space8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(Dimensions.space5),
-                        child: Text(
-                          MyStrings.to,
-                          style: semiBoldLarge,
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: controller.isTo ? MyColor.getGreyText() : MyColor.primaryColor,
-                          ),
-                          borderRadius: BorderRadius.circular(Dimensions.space8),
-                        ),
-                        child: CustomCard(
-                            isPress: true,
-                            onPressed: () {
-                              controller.isFrom = false;
-                              controller.isTo = true;
-                              controller.selectDate(context, true);
-                            },
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Image.asset(MyImages.calendar, height: Dimensions.space20),
-                                const SizedBox(width: Dimensions.space10),
-                                Text(DateConverter.formatValidityDate(controller.toDate.toString())),
-                              ],
-                            )),
-                      ),
-                    ],
-                  ),
-                )),
-              ],
+    child: Padding(
+      padding: const EdgeInsets.all(Dimensions.space8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(Dimensions.space5),
+            child: Text(MyStrings.from, style: semiBoldLarge),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: controller.isFrom ? MyColor.getGreyText() : MyColor.colorBlack,
+              ),
+              borderRadius: BorderRadius.circular(Dimensions.space8),
+              color: MyColor.getGreyText(),
+            ),
+            child: CustomCard(
+              isPress: true,
+              onPressed: () {
+                controller.isFrom = true;
+                controller.isTo = false;
+                controller.selectDate(context, true);
+              },
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Image.asset(MyImages.calendar, height: Dimensions.space20),
+                  const SizedBox(width: Dimensions.space10),
+                  Text(DateConverter.formatValidityDate(controller.fromDate.toString())),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+  Expanded(
+    child: Padding(
+      padding: const EdgeInsets.all(Dimensions.space8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(Dimensions.space5),
+            child: Text(
+              MyStrings.to,
+              style: semiBoldLarge,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: controller.isTo ? MyColor.getGreyText() : MyColor.primaryColor,
+              ),
+              borderRadius: BorderRadius.circular(Dimensions.space8),
+              color: MyColor.getGreyText(),
+            ),
+            child: CustomCard(
+              isPress: true,
+              onPressed: () {
+                controller.isFrom = false;
+                controller.isTo = true;
+                controller.selectDate(context, false); // Pass false for toDate
+              },
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Image.asset(MyImages.calendar, height: Dimensions.space20),
+                  const SizedBox(width: Dimensions.space10),
+                  Text(DateConverter.formatValidityDate(controller.toDate.toString())),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),],
             )
           :const SizedBox(),
            const SizedBox(height:Dimensions.space20),
            
-            Expanded(
+           controller.invoiceProductList.isEmpty?Center(child: Image.asset(MyImages.noDataFound,height:Dimensions.space200,)) : Expanded(
               child: ListView.builder(
                 itemCount: controller.invoiceProductList.length,
                 itemBuilder: (context, index) {
@@ -146,7 +152,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     child: CustomCard(
                       isPress: true,
                       onPressed: () {
-                        Get.toNamed(RouteHelper.invoiceDetailsScreen, arguments: [controller.invoiceProductList[index].id,controller.invoiceProductList[index].dateTime.toString(),controller.invoiceProductList[index].transectionId]);
+                        Get.toNamed(RouteHelper.invoiceDetailsScreen, arguments: [controller.invoiceProductList[index].id,controller.invoiceProductList[index].dateTime.toString(),controller.invoiceProductList[index].transectionId,false]);
                       },
                       width: double.infinity,
                       child: Column(

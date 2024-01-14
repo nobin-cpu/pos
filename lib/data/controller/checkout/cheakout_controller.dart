@@ -27,6 +27,7 @@ class CheakoutController extends GetxController {
   List<ProductModel> productList = [];
   int quantity = 1;
   double? totalProductPrice = 0.0;
+  double? discount = 0.0;
   String productName = "";
   String price = "";
   String uom = "";
@@ -59,6 +60,7 @@ class CheakoutController extends GetxController {
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
     uom = cartProductModel.uom ?? "";
+    discount = cartProductModel.discountAmount ?? 0.0;
     percentDiscount = cartProductModel.isDiscountInPercent == '0'? false : true;
 
     update();
@@ -88,6 +90,8 @@ class CheakoutController extends GetxController {
     cartItem.totalAmount = totalProductPrice;
     cartItem.uom = uom;
     cartItem.quantity = quantity;
+    cartItem.discountAmount =double.tryParse( discountController.text);
+    cartItem.isDiscountInPercent =isDiscountInpercent?1:0;
 
     await databaseHelper.updateCartItem(cartItem);
     print("cart updated succesfully" + cartItem.totalAmount.toString());
@@ -179,7 +183,7 @@ class CheakoutController extends GetxController {
   }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId());
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId(),false);
     await databaseHelper.clearCart();
 
     cartProductList.clear();
@@ -199,10 +203,7 @@ int generateUniqueId() {
 }
 
 
-  // getDiscountInpercentOrNot() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   percentDiscount = preferences.getBool(SharedPreferenceHelper.isDiscountInPercentiseKey)!;
-  // }
+  
 
   changeDiscountCheckBox() {
     isDiscountInpercent = !isDiscountInpercent;

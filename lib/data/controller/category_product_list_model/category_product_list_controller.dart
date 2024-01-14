@@ -28,7 +28,10 @@ class CategoryProductListController extends GetxController {
     super.onInit();
   }
 
+  bool isLoading = false;
   Future<void> loadProductData(String category) async {
+    isLoading = true;
+    update();
     try {
       await databaseHelper.initializeDatabase();
 
@@ -38,6 +41,8 @@ class CategoryProductListController extends GetxController {
     } catch (e) {
       print('Error loading product data: $e');
     }
+    isLoading = false;
+    update();
   }
 
   Future<void> initData(String category) async {
@@ -104,10 +109,10 @@ class CategoryProductListController extends GetxController {
       double discount = double.tryParse(discountController.text) ?? 0.0;
 
       if (existingCartItem != null && existingCartItem.id != null) {
-        existingCartItem.quantity =  quantity;
-       // existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
-      //  existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
-        existingCartItem.totalAmount =  totalAmount;
+        existingCartItem.quantity = quantity;
+        // existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
+        //  existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
+        existingCartItem.totalAmount = totalAmount;
         existingCartItem.discountAmount = discount;
 
         await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);

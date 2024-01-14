@@ -10,6 +10,7 @@ import 'package:flutter_prime/data/controller/category_product_list_model/catego
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
+import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
 import 'package:get/get.dart';
 
 class CategoryProductListScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
     super.initState();
     final controller = Get.put(CategoryProductListController());
      controller.categoryTitle = Get.arguments.isNotEmpty ? Get.arguments[0] : "";
-    controller.loadProductData(controller.categoryTitle);
+   
     controller.initData(controller.categoryTitle);
   }
 
@@ -72,7 +73,7 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
               )
             ],
           ),
-          body: controller.productList.isEmpty
+          body: controller.isLoading?const CustomLoader():controller.productList.isEmpty
               ? Center(
                   child: Image.asset(
                   MyImages.noDataFound,
@@ -113,7 +114,7 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
                           )),
                     );
                   },
-                ),
+                )
         ),
       ),
     );

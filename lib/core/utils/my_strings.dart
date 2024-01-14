@@ -320,6 +320,9 @@ class MyStrings{
   static const String print                               = "Print";
   static const String from                               = "From";
   static const String to                               = "To";
+  static const String voidDetails                               = "Void Details";
+  static const String pickAnImage                               = "Pick an image";
+  static const String userIsNotRegistered                               = "User is not registered.";
 
 
 

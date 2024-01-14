@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
@@ -66,6 +67,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
     return widget.isShowBackBtn
         ? AppBar(
+          systemOverlayStyle:const SystemUiOverlayStyle(
+          statusBarColor: MyColor.primaryColor, 
+        ),
             elevation: 0,
             titleSpacing: 0,
             leading: widget.isShowBackBtn

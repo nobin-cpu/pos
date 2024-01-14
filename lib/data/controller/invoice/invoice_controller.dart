@@ -14,41 +14,45 @@ class InvoiceController extends GetxController {
   List<InvoiceProductModel> invoiceProductList = [];
   bool isDiscountInpercent = false;
 
-  Future<void> getInvoiceList(DateTime fromDate, DateTime toDate) async {
-    await databaseHelper.initializeDatabase();
-    invoiceProductList = await databaseHelper.getInvoiceList();
+ Future<void> getInvoiceList(DateTime fromDate, DateTime toDate, bool showVoid) async {
+  await databaseHelper.initializeDatabase();
+  invoiceProductList = await databaseHelper.getInvoiceList();
 
-    invoiceProductList = invoiceProductList.where((invoice) {
-      DateTime invoiceDate = DateTime.parse(invoice.dateTime!);
-      return invoiceDate.isAfter(fromDate) && invoiceDate.isBefore(toDate.add(Duration(days: 1)));
-    }).toList();
+  invoiceProductList = invoiceProductList.where((invoice) {
+    DateTime invoiceDate = DateTime.parse(invoice.dateTime!);
+    bool isWithinDateRange = invoiceDate.isAfter(fromDate) && invoiceDate.isBefore(toDate.add(Duration(days: 1)));
+    bool isMatchingStatus = showVoid ? invoice.status == 'VOID' : invoice.status == 'NOT VOID';
+    return isWithinDateRange && isMatchingStatus;
+  }).toList();
 
-    print("Filtered invoice list: $invoiceProductList");
-    update();
-  }
+  print("Filtered invoice list: $invoiceProductList");
+  update();
+}
 
-  Future<void> selectDate(BuildContext context, bool isFromDate) async {
-    DateTime currentDate = isFromDate ? fromDate : toDate;
-    DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: currentDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
 
-    if (selectedDate != null && selectedDate != currentDate) {
-      if (isFromDate) {
-        fromDate = selectedDate;
-      } else {
-        toDate = selectedDate;
-      }
-      loadInvoices();
+ Future<void> selectDate(BuildContext context, bool isFromDate) async {
+  DateTime selectedDate = isFromDate ? fromDate : toDate;
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: selectedDate,
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2101),
+  );
+
+  if (pickedDate != null && pickedDate != selectedDate) {
+    if (isFromDate) {
+     fromDate = pickedDate;
+    } else {
+      toDate = pickedDate;
     }
+    loadInvoices();
   }
+}
 
-  void loadInvoices() {
-    getInvoiceList(fromDate, toDate);
-  }
+
+ void loadInvoices() {
+  getInvoiceList(fromDate, toDate, false);
+}
 
   showFilterSection() {
     showFilter = !showFilter;
