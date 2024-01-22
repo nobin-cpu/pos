@@ -71,7 +71,11 @@ class LoginController extends GetxController {
       if (user != null) {
          
           print("Login successful, but email is not verified.");
-          await _saveUidAndUserDataToSecureStorage(user.uid, user.displayName, user.email, user.photoURL);
+
+          if (remember) {
+            await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
+          }
+            
           CustomSnackBar.success(successList: [MyStrings.success]);
           checkAndGotoNextStep();
         
@@ -133,12 +137,12 @@ class LoginController extends GetxController {
         print("Google Sign-In Successful: ${user.displayName}");
           
         bool isRegisteredUser = await isUserRegistered(user.email!);
-
+   
         if (isRegisteredUser) {
           bool isDeletedUser = await isUserDeleted(user.email!);
-                await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
+                await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
           if (!isDeletedUser) {
-            await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
+            await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
             checkAndGotoNextStep();
             CustomSnackBar.success(successList: [MyStrings.success]);
           } else {

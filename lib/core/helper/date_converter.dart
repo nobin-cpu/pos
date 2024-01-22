@@ -11,7 +11,14 @@ class DateConverter {
     var outputFormat=DateFormat('dd MMM yyyy').format(inputDate);
     return outputFormat;
   }
+  static String formatMonth(DateTime date) {
+    final monthNames = [
+      '', 'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
 
+    return '${monthNames[date.month]} ${date.year}';
+  }
   static String isoToLocalDateAndTime(String dateTime,{String errorResult='--'}) {
     String date = '';
     if(dateTime.isEmpty || dateTime=='null'){

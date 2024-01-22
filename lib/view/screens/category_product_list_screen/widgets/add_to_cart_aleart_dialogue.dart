@@ -5,7 +5,7 @@ import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/core/utils/util.dart';
-import 'package:flutter_prime/data/controller/category_product_list_model/category_product_list_controller.dart';
+import 'package:flutter_prime/data/controller/category_product_list_controller/category_product_list_controller.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
@@ -140,16 +140,19 @@ class AddToCartAlertDialogue extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.space2, vertical: Dimensions.space10),
-                      child: CustomTextField(
-                        fillColor: MyColor.colorInputField,
-                        onChanged: (value) {
-                          controller.handleDiscountChange(value, index);
-                        },
-                        controller: controller.discountController,
-                        needOutlineBorder: false,
-                        disableBorder: true,
-                        centerText: true,
-                        textInputType: TextInputType.number,
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height*.055,
+                        child: CustomTextField(
+                          fillColor: MyColor.colorInputField,
+                          onChanged: (value) {
+                            controller.handleDiscountChange(value, index);
+                          },
+                          controller: controller.discountController,
+                          needOutlineBorder: false,
+                          disableBorder: true,
+                          centerText: true,
+                          textInputType: TextInputType.number,
+                        ),
                       ),
                     ),
                   ),

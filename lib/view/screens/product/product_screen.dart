@@ -72,6 +72,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     : Align(
                         alignment: Alignment.centerLeft,
                         child: ChipFilter(
+                          
                           categories: controller.categoryList,
                           onChipSelected: (category) {
                             controller.selectedCategory = category.title!;

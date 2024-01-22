@@ -110,17 +110,17 @@ class CategoryProductListController extends GetxController {
 
       if (existingCartItem != null && existingCartItem.id != null) {
         existingCartItem.quantity = quantity;
-        // existingCartItem.quantity = (existingCartItem.quantity ?? 0) + quantity;
-        //  existingCartItem.totalAmount = (existingCartItem.totalAmount ?? 0) + totalAmount;
         existingCartItem.totalAmount = totalAmount;
         existingCartItem.discountAmount = discount;
 
         await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
-        print("discount type.............." + isDiscountInpercent.toString());
+        CustomSnackBar.success(successList: [MyStrings.productUpdatededSuccessfully]);
+        Get.back();
       } else {
         print("discount type.............." + isDiscountInpercent.toString());
         await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
-
+        CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
+         Get.back();
         update();
       }
 
@@ -182,5 +182,10 @@ class CategoryProductListController extends GetxController {
       double directDiscount = double.tryParse(value) ?? 0;
       updateTotalAmountWithDiscount(productList[index], quantity, directDiscount);
     }
+  }
+
+  resetFields() {
+    quantity = 1;
+    update();
   }
 }

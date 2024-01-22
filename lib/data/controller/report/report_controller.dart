@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
+import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:get/get.dart';
+import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ReportController extends GetxController {
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  bool isLoading = true;
+
+  final TextEditingController startDateController = TextEditingController();
+  final TextEditingController endDateController = TextEditingController();
+
+  late DateTime _startDate ;
+  late DateTime _endDate ;
+
+  String? vatAmount = "";
+  bool isVatEnable = false;
+  bool isVatInPercent = false;
+  bool isFilteringByMonth = false;
+  double vat = 0.0;
+  int? productVat = 0;
+
+  DateTime get startDate => _startDate;
+
+  void setStartDate(DateTime date) {
+    _startDate = date;
+    update();
+  }
+
+  DateTime get endDate => _endDate;
+
+  void setEndDate(DateTime date) {
+    _endDate = date;
+    update();
+  }
+
+  @override
+  void onInit() {
+    _startDate = DateTime.now();
+    _endDate = DateTime.now();
+
+    super.onInit();
+  }
+
+  List<InvoiceDetailsModel> allInvoiceDetails = [];
+  List<InvoiceDetailsModel> filteredInvoiceDetails = [];
+
+
+
+  Future<void> fetchAllInvoiceDetails() async {
+    await _databaseHelper.initializeDatabase();
+    try {
+      isLoading = true;
+      allInvoiceDetails = await _databaseHelper.getAllInvoiceDetails();
+    } catch (e) {
+      print("Error during fetchAllInvoiceDetails: $e");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> fetchFilteredInvoiceDetails(DateTime date) async {
+    try {
+      isLoading = true;
+
+      filteredInvoiceDetails = await _databaseHelper.getFilteredInvoiceDetails(
+        date,
+      );
+    } catch (e) {
+      print("Error during fetchFilteredInvoiceDetails: $e");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  double grandTotal = 0.0;
+  String calculateGrandTotal() {
+    print("this is vattttttttttttttt${vatAmount}");
+    grandTotal = 0.0;
+
+    for (var invoice in allInvoiceDetails) {
+      grandTotal += invoice.totalAmount!;
+
+      if (invoice.vatAmount != null) {
+        grandTotal += double.parse(invoice.vatAmount.toString());
+      }
+
+      grandTotal += productVat!;
+    }
+
+    update();
+    print(grandTotal);
+    print("this is grandtotal");
+    return grandTotal.toStringAsFixed(2);
+  }
+
+  String calculateTotal() {
+    double totalAmount = 0.0;
+
+    for (var invoice in allInvoiceDetails) {
+      totalAmount += invoice.totalAmount!;
+    }
+    print(totalAmount);
+    print("this is grandtotal");
+    update();
+    return totalAmount.toStringAsFixed(2);
+  }
+
+  Future showDatePickers(BuildContext context, bool isStartDate) async {
+    DateTime selectedDate = DateTime.now();
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: isStartDate ? startDate : endDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (picked != null) {
+      isStartDate ? setStartDate(picked) : setEndDate(picked);
+    }
+  }
+ Future<void> fetchMonthWiseInvoiceDetails(DateTime date) async {
+    try {
+      isLoading = true;
+
+      filteredInvoiceDetails = await _databaseHelper.getMonthWiseInvoiceDetails(
+        date.year,
+        date.month,
+      );
+    } catch (e) {
+      print("Error during fetchMonthWiseInvoiceDetails: $e");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+ void moveFilterMonth() {
+    setStartDate(DateTime(_startDate.year, _startDate.month, 1)); 
+    setEndDate(DateTime(_startDate.year, _startDate.month + 1, 0)); 
+
+    fetchFilteredInvoiceDetails(startDate);
+  }
+
+
+void moveFilterDateForward() {
+  setStartDate(startDate.add(Duration(days: 1)));
+  setEndDate(endDate.add(Duration(days: 1)));
+
+ 
+ fetchFilteredInvoiceDetails(startDate);
+}
+
+void moveFilterDateBackward() {
+  setStartDate(startDate.subtract(Duration(days: 1)));
+  setEndDate(endDate.subtract(Duration(days: 1)));
+
+  
+ fetchFilteredInvoiceDetails(startDate);
+}
+ void moveFilterMonthForward() {
+    setStartDate(_startDate.add(Duration(days: 30))); 
+    setEndDate(_endDate.add(Duration(days: 30)));
+
+    fetchFilteredInvoiceDetails(startDate);
+  }
+
+  void moveFilterMonthBackward() {
+    setStartDate(_startDate.subtract(Duration(days: 30))); 
+    setEndDate(_endDate.subtract(Duration(days: 30)));
+
+    fetchFilteredInvoiceDetails(startDate);
+  }
+  
+}

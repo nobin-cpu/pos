@@ -29,6 +29,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<CheakoutController>(
       builder: (controller) => Scaffold(
+        backgroundColor: MyColor.colorWhite,
         appBar: const CustomAppBar(title: MyStrings.checkout),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -38,6 +39,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               padding: const EdgeInsets.all(Dimensions.space10),
               child: Column(
                 children: [
+                   const SizedBox(height: Dimensions.topSectionToContentSpace,),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Table(

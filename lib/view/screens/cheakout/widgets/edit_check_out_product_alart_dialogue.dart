@@ -30,7 +30,7 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const BottomSheetHeaderRow(header: MyStrings.editItem),
+           
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -122,18 +122,21 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.space2, vertical: Dimensions.space10),
-                      child: CustomTextField(
-                        fillColor: MyColor.colorInputField,
-                        onChanged: (value) {
-                          controller.handleDiscountChange(
-                            value,
-                          );
-                        },
-                        controller: controller.discountController,
-                        needOutlineBorder: false,
-                        disableBorder: true,
-                        centerText: true,
-                        textInputType: TextInputType.number,
+                      child: SizedBox(
+                         height: MediaQuery.of(context).size.height*.055,
+                        child: CustomTextField(
+                          fillColor: MyColor.colorInputField,
+                          onChanged: (value) {
+                            controller.handleDiscountChange(
+                              value,
+                            );
+                          },
+                          controller: controller.discountController,
+                          needOutlineBorder: false,
+                          disableBorder: true,
+                          centerText: true,
+                          textInputType: TextInputType.number,
+                        ),
                       ),
                     ),
                   ),
@@ -153,21 +156,10 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                 ],
               ),
             ),
-            const SizedBox(height: Dimensions.space10),
+            const SizedBox(height: Dimensions.space20),
             Row(
               children: [
-                Expanded(
-                  child: RoundedButton(
-                    verticalPadding: Dimensions.space10,
-                    press: () async {
-                      controller.editCartItem(widget.id);
-                      Get.back();
-                    },
-                    text: MyStrings.update.tr,
-                  ),
-                ),
-                const SizedBox(width: Dimensions.space10),
-                Expanded(
+                    Expanded(
                   child: RoundedButton(
                     verticalPadding: Dimensions.space10,
                     color: MyColor.colorRed,
@@ -178,6 +170,19 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                     text: MyStrings.delete.tr,
                   ),
                 ),
+                const SizedBox(width: Dimensions.space10),
+              
+                Expanded(
+                  child: RoundedButton(
+                    verticalPadding: Dimensions.space10,
+                    press: () async {
+                      controller.editCartItem(widget.id);
+                      Get.back();
+                    },
+                    text: MyStrings.update.tr,
+                  ),
+                ),
+                
               ],
             )
           ],

@@ -10,6 +10,9 @@ class CartProductModel {
   double ?totalAmount;
   double ?discountAmount;
   int ?isDiscountInPercent;
+  double ?discountPrice;
+  double ?grandTotal;
+  DateTime? checkoutTime;
 
   CartProductModel({
     this.id,
@@ -23,6 +26,9 @@ class CartProductModel {
     this.totalAmount,
     this.discountAmount,
     this.isDiscountInPercent,
+    this.discountPrice,
+    this.grandTotal,
+    this.checkoutTime
   });
 
   
@@ -39,6 +45,9 @@ class CartProductModel {
       'totalAmount': totalAmount,
       'discountAmount': discountAmount,
       'isDiscountInPercent': isDiscountInPercent,
+      'discountPrice': discountPrice,
+      'grandTotal': grandTotal,
+      'checkoutTime': checkoutTime,
     };
   }
 
@@ -56,6 +65,9 @@ class CartProductModel {
       totalAmount: map['totalAmount'],
       discountAmount: map['discountAmount'],
       isDiscountInPercent: map['isDiscountInPercent'],
+       discountPrice: map['discountPrice'],
+       grandTotal: map['grandTotal'],
+       checkoutTime: map['checkoutTime'],
     );
   }
 }

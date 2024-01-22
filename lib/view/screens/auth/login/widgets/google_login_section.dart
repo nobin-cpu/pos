@@ -4,6 +4,7 @@ import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/controller/auth/login_controller.dart';
+import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
 import 'package:get/get.dart';
 
 class GoogleLoginSection extends StatelessWidget {
@@ -26,7 +27,10 @@ class GoogleLoginSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Dimensions.space8),
                 color: MyColor.colorWhite,
               ),
-              child: Row(
+              child: controller.loading? const Padding(
+                padding:  EdgeInsets.all(Dimensions.space5),
+                child:  CustomLoader(),
+              ) :Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(

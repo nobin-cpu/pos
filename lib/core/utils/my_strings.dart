@@ -277,15 +277,17 @@ class MyStrings{
   static const String enterStocks                            = "Enter stocks";
   static const String enterPrice                             = "Enter price";
   static const String enterProductName                       = "Enter product name";
-  static const String price                                  = "Price";
+  static const String price                                  = "Price:";
+  static const String onlyPrice                                  = "Price";
   static const String amt                                    = "Amt:";
   static const String addTOCart                              = "Add TO Cart";
   static const String unitPrice                              = "Unite price:";
   static const String totalPrice                             = "Total price:";
-  static const String quantity                               = "Quantity:";
+  static const String quantity                               = "Quantity";
   static const String cart                                   = "Cart";
   static const String edit                                   = 'Edit';
   static const String editProduct                            = 'Edit product';
+  static const String updateProduct                            = 'Update product';
   static const String editItem                               = 'Edit item';
   static const String editCategory                           = 'Edit Category';
   static const String checkout                               = 'Checkout';
@@ -293,8 +295,8 @@ class MyStrings{
   static const String printAndClear                          = 'Print and Clear';
   static const String image                                  = 'Image';
   static const String products                               = 'Product';
-  static const String total                                  = 'Total:';
-  static const String vat                                    = 'VAT:';
+  static const String total                                  = 'Total';
+  static const String vat                                    = 'VAT';
   static const String grandTotal                             = 'Grand Total:';
   static const String actions                                = 'Actions';
   static const String preview                                = 'Preview: ' ;
@@ -306,6 +308,7 @@ class MyStrings{
   static const String purchasePrice                          = "Purchase Price" ;
   static const String discount                               = "Discount" ;
   static const String succesfullyProductAddedToCart          = "Product succesfully added to cart";
+  static const String productCheckoutSuccessfully          = "Product checkout successfully";
   static const String failedToAddToCart                      = "Failed To Add To Cart";
   static const String addProduct                             = "Add Product";
   static const String required                               = "(Required)";
@@ -323,6 +326,10 @@ class MyStrings{
   static const String voidDetails                               = "Void Details";
   static const String pickAnImage                               = "Pick an image";
   static const String userIsNotRegistered                               = "User is not registered.";
+  static const String fromDateCannotBeAfterDate                               = 'From date cannot be after To date';
+  static const String fromDateCannotBeBeforeDate                               = 'To date cannot be before From date';
+  static const String productAddedSuccessfully                               = "Product added successfully";
+  static const String productUpdatededSuccessfully                               = "Product updated successfully";
 
 
 

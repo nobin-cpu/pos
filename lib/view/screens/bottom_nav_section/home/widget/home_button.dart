@@ -19,6 +19,9 @@ class HomeButtonContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+       customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * .9),
+                  ),
       onTap: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

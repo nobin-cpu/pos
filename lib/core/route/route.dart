@@ -13,6 +13,7 @@ import 'package:flutter_prime/view/screens/invoice_details/invoice_details_scree
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
+import 'package:flutter_prime/view/screens/report/report_screen.dart';
 import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
 import 'package:flutter_prime/view/screens/splash/splash_screen.dart';
 import 'package:flutter_prime/view/screens/uom/uom_screen.dart';
@@ -53,6 +54,7 @@ static const String settingsScreen        = '/settings_Screen';
 static const String invoiceScreen        = '/invoice_Screen';
 static const String invoiceDetailsScreen        = '/invoice_details_Screen';
 static const String voidItemsScreen        = '/void_items_Screen';
+static const String reportScreen        = '/report_Screen';
 
 
   List<GetPage> routes = [
@@ -85,5 +87,6 @@ static const String voidItemsScreen        = '/void_items_Screen';
     GetPage(name: settingsScreen,                page: () =>const SettingsScreen ()),
     GetPage(name: invoiceScreen,                page: () =>const InvoiceScreen ()),
     GetPage(name: invoiceDetailsScreen,                page: () => InvoiceDetailsScreen ()),
+    GetPage(name: reportScreen,                page: () => ReportScreen ()),
   ];
 }

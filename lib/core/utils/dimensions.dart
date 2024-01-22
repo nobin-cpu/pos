@@ -18,6 +18,7 @@ class Dimensions{
   static const double bottomSheetRadius = 15;
   static const double textToTextSpace   = 8;
   static const double contentToButtonSpace   = 30;
+  static const double topSectionToContentSpace   = 20;
 
   static const double space0  = 0;
   static const double space5  = 5;

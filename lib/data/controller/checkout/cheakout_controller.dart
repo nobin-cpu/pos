@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -58,11 +57,13 @@ class CheakoutController extends GetxController {
     price = cartProductModel.price ?? "";
     totalProductPrice = double.parse(cartProductModel.totalAmount.toString());
     productQuantityController.text = cartProductModel.quantity.toString();
+    discountController.text = cartProductModel.discountAmount.toString();
     quantity = cartProductModel.quantity as int;
     uom = cartProductModel.uom ?? "";
     discount = cartProductModel.discountAmount ?? 0.0;
-    percentDiscount = cartProductModel.isDiscountInPercent == '0'? false : true;
-
+    percentDiscount = cartProductModel.isDiscountInPercent == '0' ? false : true;
+    print("this is discount amount ${discount}");
+    print("this is discount amount.text ${discountController.text}");
     update();
   }
 
@@ -90,8 +91,11 @@ class CheakoutController extends GetxController {
     cartItem.totalAmount = totalProductPrice;
     cartItem.uom = uom;
     cartItem.quantity = quantity;
-    cartItem.discountAmount =double.tryParse( discountController.text);
-    cartItem.isDiscountInPercent =isDiscountInpercent?1:0;
+    cartItem.discountAmount = double.tryParse(discountController.text);
+    cartItem.isDiscountInPercent = isDiscountInpercent ? 1 : 0;
+    cartItem.discountAmount = discount;
+    print("this is discount amount ${discount}");
+    print("this is discount amount.text ${discountController.text}");
 
     await databaseHelper.updateCartItem(cartItem);
     print("cart updated succesfully" + cartItem.totalAmount.toString());
@@ -111,6 +115,7 @@ class CheakoutController extends GetxController {
     CartProductModel cartProductModel,
   ) {
     productQuantityController.clear();
+    isDiscountInpercent = false;
     update();
     productName = cartProductModel.name ?? "";
     price = cartProductModel.price ?? "";
@@ -118,8 +123,16 @@ class CheakoutController extends GetxController {
     productQuantityController.text = cartProductModel.quantity.toString();
     quantity = cartProductModel.quantity as int;
     uom = cartProductModel.uom ?? "";
-
-    //init discount
+    discountController.text = cartProductModel.discountAmount.toString();
+    quantity = cartProductModel.quantity as int;
+    uom = cartProductModel.uom ?? "";
+    discount = cartProductModel.discountAmount ?? 0.0;
+    percentDiscount = cartProductModel.isDiscountInPercent == '0' ? false : true;
+    isDiscountInpercent = cartProductModel.isDiscountInPercent == 0 ? false : true;
+    print("this is discount amount ${discount}");
+    print("this is ------------ ${cartProductModel.isDiscountInPercent}");
+    print("this is discount  ${isDiscountInpercent}");
+    
 
     update();
     print(quantity);
@@ -176,34 +189,32 @@ class CheakoutController extends GetxController {
     return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
   }
 
-  void showConfirmPopUp(
-    BuildContext context,
-  ) {
-    CustomAlertDialog(child: ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
+  // void showConfirmPopUp(
+  //   BuildContext context,
+  // ) {
+  //   CustomAlertDialog(child: ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
+  // }
+
+  // Future<void> completeCheckout(String paymentMethod) async {
+  //   await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false);
+  //   await databaseHelper.clearCart();
+
+  //   cartProductList.clear();
+  //   update();
+
+  //   Get.back();
+  // }
+
+  int generateUniqueId() {
+    Random random = Random();
+    int id = 0;
+
+    for (int i = 0; i < 9; i++) {
+      id += random.nextInt(10);
+    }
+
+    return id;
   }
-
-  Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId(),false);
-    await databaseHelper.clearCart();
-
-    cartProductList.clear();
-    update();
-
-    Get.back();
-  }
-int generateUniqueId() {
-  Random random = Random();
-  int id = 0;
-
-  for (int i = 0; i < 9; i++) {
-    id += random.nextInt(10);
-  }
-
-  return id;
-}
-
-
-  
 
   changeDiscountCheckBox() {
     isDiscountInpercent = !isDiscountInpercent;
@@ -218,5 +229,11 @@ int generateUniqueId() {
 
   double calculateTotalPrice() {
     return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
+  }
+
+  resetFields() {
+    quantity = 1;
+    discount = 0.0;
+    update();
   }
 }

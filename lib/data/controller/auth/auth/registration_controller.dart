@@ -106,12 +106,12 @@ class RegistrationController extends GetxController {
 
  
 
-  setCountryNameAndCode(String cName, String countryCode, String mobileCode) {
-    countryName = cName;
-    this.countryCode = countryCode;
-    this.mobileCode = mobileCode;
-    update();
-  }
+  // setCountryNameAndCode(String cName, String countryCode, String mobileCode) {
+  //   countryName = cName;
+  //   this.countryCode = countryCode;
+  //   this.mobileCode = mobileCode;
+  //   update();
+  // }
 
   updateAgreeTC() {
     agreeTC = !agreeTC;
@@ -135,22 +135,22 @@ class RegistrationController extends GetxController {
   }
 
   void checkAndGotoNextStep(RegistrationResponseModel responseModel) async {
-    bool needEmailVerification = responseModel.data?.user?.ev == "1" ? false : true;
-    bool needSmsVerification = responseModel.data?.user?.sv == "1" ? false : true;
+    // bool needEmailVerification = responseModel.data?.user?.ev == "1" ? false : true;
+    // bool needSmsVerification = responseModel.data?.user?.sv == "1" ? false : true;
 
     SharedPreferences preferences = registrationRepo.apiClient.sharedPreferences;
 
-    await preferences.setString(SharedPreferenceHelper.userIdKey, responseModel.data?.user?.id.toString() ?? '-1');
+ //   await preferences.setString(SharedPreferenceHelper.userIdKey, responseModel.data?.user?.id.toString() ?? '-1');
     await preferences.setString(SharedPreferenceHelper.accessTokenKey, responseModel.data?.accessToken ?? '');
-    await preferences.setString(SharedPreferenceHelper.accessTokenType, responseModel.data?.tokenType ?? '');
-    await preferences.setString(SharedPreferenceHelper.userEmailKey, responseModel.data?.user?.email ?? '');
-    await preferences.setString(SharedPreferenceHelper.userNameKey, responseModel.data?.user?.username ?? '');
-    await preferences.setString(SharedPreferenceHelper.userPhoneNumberKey, responseModel.data?.user?.mobile ?? '');
+    // await preferences.setString(SharedPreferenceHelper.accessTokenType, responseModel.data?.tokenType ?? '');
+  //  await preferences.setString(SharedPreferenceHelper.userEmailKey, responseModel.data?.user?.email ?? '');
+    // await preferences.setString(SharedPreferenceHelper.userNameKey, responseModel.data?.user?.username ?? '');
+    // await preferences.setString(SharedPreferenceHelper.userPhoneNumberKey, responseModel.data?.user?.mobile ?? '');
 
     await registrationRepo.sendUserToken();
 
-    bool isProfileCompleteEnable = true;
-    bool isTwoFactorEnable = false;
+    // bool isProfileCompleteEnable = true;
+    // bool isTwoFactorEnable = false;
 
     // if (needEmailVerification == false && needSmsVerification == false) {
     //   Get.offAndToNamed(RouteHelper.profileCompleteScreen);
@@ -188,27 +188,27 @@ class RegistrationController extends GetxController {
   void initData() async {
     isLoading = true;
     update();
-    await getCountryData();
+    // await getCountryData();
 
-    ResponseModel response = await generalSettingRepo.getGeneralSetting();
-    if (response.statusCode == 200) {
-      GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(response.responseJson));
-      if (model.status?.toLowerCase() == 'success') {
-        generalSettingMainModel = model;
-        registrationRepo.apiClient.storeGeneralSetting(model);
-      } else {
-        List<String> message = [MyStrings.somethingWentWrong.tr];
-        CustomSnackBar.error(errorList: model.message?.error ?? message);
-        return;
-      }
-    } else {
-      if (response.statusCode == 503) {
-        noInternet = true;
-        update();
-      }
-      CustomSnackBar.error(errorList: [response.message]);
-      return;
-    }
+    // ResponseModel response = await generalSettingRepo.getGeneralSetting();
+    // if (response.statusCode == 200) {
+    //   GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(response.responseJson));
+    //   if (model.status?.toLowerCase() == 'success') {
+    //     generalSettingMainModel = model;
+    //     registrationRepo.apiClient.storeGeneralSetting(model);
+    //   } else {
+    //     List<String> message = [MyStrings.somethingWentWrong.tr];
+    //     CustomSnackBar.error(errorList: model.message?.error ?? message);
+    //     return;
+    //   }
+    // } else {
+    //   if (response.statusCode == 503) {
+    //     noInternet = true;
+    //     update();
+    //   }
+    //   CustomSnackBar.error(errorList: [response.message]);
+    //   return;
+    // }
 
     needAgree = generalSettingMainModel.data?.generalSetting?.agree.toString() == '0' ? false : true;
     checkPasswordStrength = generalSettingMainModel.data?.generalSetting?.securePassword.toString() == '0' ? false : true;
@@ -217,26 +217,26 @@ class RegistrationController extends GetxController {
     update();
   }
 
-  bool countryLoading = true;
+  // bool countryLoading = true;
   // List<Countries> countryList = [];
 
-  Future<dynamic> getCountryData() async {
-    ResponseModel mainResponse = await registrationRepo.getCountryList();
+  // Future<dynamic> getCountryData() async {
+  //   ResponseModel mainResponse = await registrationRepo.getCountryList();
 
-    // if (mainResponse.statusCode == 200) {
-    //   CountryModel model = CountryModel.fromJson(jsonDecode(mainResponse.responseJson));
-    //   List<Countries>? tempList = model.data?.countries;
+  //   // if (mainResponse.statusCode == 200) {
+  //   //   CountryModel model = CountryModel.fromJson(jsonDecode(mainResponse.responseJson));
+  //   //   List<Countries>? tempList = model.data?.countries;
 
-    //   if (tempList != null && tempList.isNotEmpty) {
-    //     countryList.addAll(tempList);
-    //   }
-    // } else {
-    //   CustomSnackBar.error(errorList: [mainResponse.message]);
-    // }
+  //   //   if (tempList != null && tempList.isNotEmpty) {
+  //   //     countryList.addAll(tempList);
+  //   //   }
+  //   // } else {
+  //   //   CustomSnackBar.error(errorList: [mainResponse.message]);
+  //   // }
 
-    countryLoading = false;
-    update();
-  }
+  //   countryLoading = false;
+  //   update();
+  // }
 
   String? validatePassword(String value) {
     if (value.isEmpty) {

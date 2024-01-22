@@ -14,16 +14,16 @@ class ChipFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(Dimensions.space8),
+      padding: const EdgeInsets.all(Dimensions.space5),
       child: Row(
         children: categories.skip(1).map((category) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.space8),
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.space5),
             child: FilterChip(
               backgroundColor: MyColor.greyColor,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(color: MyColor.colorWhite, style: BorderStyle.none),
-                borderRadius: BorderRadius.circular(Dimensions.space10),
+                side: const BorderSide(color: MyColor.colorWhite, style: BorderStyle.none,),
+                borderRadius: BorderRadius.circular(Dimensions.space30),
               ),
               label: Text(category.title!),
               selected: category.title == selectedCategory,

@@ -20,7 +20,7 @@ class MyImages{
   static const String noDataImage       = "assets/images/no_data.svg";
 
   static const String noInternet        = "assets/animation/no_internet.json";
-  static const String noDataFound       = "assets/images/no_data.png";
+  static const String noDataFound       = "assets/images/noData.png";
 
   static const String stock      = "assets/images/stock.png";
   static const String inventory      = "assets/images/inventory.png";
@@ -47,5 +47,9 @@ class MyImages{
   static const String invoice      = "assets/images/invoice.png";
   static const String calendar      = "assets/images/calendar.png";
   static const String filter      = "assets/images/filter.png";
+  static const String signOut      = "assets/images/sign-out-alt.png";
+  static const String noData      = "assets/images/noData.png";
+  static const String back      = "assets/images/back.png";
+  static const String next      = "assets/images/next.png";
 
 }

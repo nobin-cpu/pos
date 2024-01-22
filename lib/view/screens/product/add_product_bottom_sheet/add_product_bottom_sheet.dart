@@ -41,7 +41,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space5),
           CustomTextField(
             controller: controller.productNameController,
             onChanged: () {},
@@ -52,7 +52,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
           Row(
             children: [
               const Text(
-                MyStrings.price,
+                MyStrings.onlyPrice,
                 style: mediumLarge,
               ),
               const SizedBox(width: Dimensions.space10),
@@ -62,7 +62,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space5),
           CustomTextField(
             controller: controller.priceController,
             onChanged: () {},
@@ -84,7 +84,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space5),
           CustomTextField(
             controller: controller.stocksController,
             onChanged: () {},
@@ -103,7 +103,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                       MyStrings.wholesalePrice,
                       style: mediumLarge,
                     ),
-                    const SizedBox(height: Dimensions.space10),
+                    const SizedBox(height: Dimensions.space5),
                     CustomTextField(
                       controller: controller.wholesaleController,
                       onChanged: () {},
@@ -114,7 +114,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   ],
                 ),
               ),
-              const SizedBox(width: Dimensions.space10),
+              const SizedBox(width: Dimensions.space5),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +123,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                       MyStrings.purchasePrice,
                       style: mediumLarge,
                     ),
-                    const SizedBox(height: Dimensions.space10),
+                    const SizedBox(height: Dimensions.space5),
                     CustomTextField(
                       controller: controller.purchasePriceController,
                       onChanged: () {},
@@ -150,7 +150,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ): const SizedBox(),
-         controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
+         controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space5) :const SizedBox(),
           controller.categoryList.isNotEmpty && controller.categoryList.length > 1
               ? CustomDropDownTextField2(
                   labelText: MyStrings.category,
@@ -180,7 +180,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ):const SizedBox(),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space5),
           controller.uomList.isNotEmpty && controller.uomList.length > 1
               ? CustomDropDownTextField2(
                   needLabel: false,
@@ -210,7 +210,7 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space5),
           InkWell(
             onTap: () => controller.pickImage(),
             child: Container(

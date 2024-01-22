@@ -27,7 +27,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return Scaffold(
       appBar: const CustomAppBar(title: MyStrings.inventory),
       body: GetBuilder<InventoryController>(
-        builder: (controller) => ListView.builder(
+        builder: (controller) => Column(children: [
+          
+          const SizedBox(height: Dimensions.topSectionToContentSpace,),
+          
+          ListView.builder(
           shrinkWrap: true,
           itemCount: controller.dataList.length,
           itemBuilder: ((context, index) {
@@ -63,7 +67,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ),
             );
           }),
-        ),
+        ),],)
       ),
     );
   }

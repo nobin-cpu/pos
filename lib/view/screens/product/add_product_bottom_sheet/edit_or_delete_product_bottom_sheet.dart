@@ -28,63 +28,58 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const BottomSheetHeaderRow(header: MyStrings.editProduct),
-          const Text(
-            MyStrings.productName,
-            style: semiBoldDefault,
-          ),
+          const BottomSheetHeaderRow(header: MyStrings.updateProduct),
+        
           CustomTextField(
+            hasLabelText: true,
+            labelText:  MyStrings.productName,
             onChanged: () {},
             controller: controller.newNameController,
             needOutlineBorder: true,
           ),
-          const SizedBox(height: Dimensions.space10),
-          const Text(
-            MyStrings.productPrice,
-            style: semiBoldDefault,
-          ),
+          const SizedBox(height: Dimensions.space15),
+         
           CustomTextField(
+             hasLabelText: true,
+            labelText:   MyStrings.productPrice,
             onChanged: () {},
             controller: controller.newPriceController,
             needOutlineBorder: true,
           ),
-           const SizedBox(height: Dimensions.space10),
-          const Text(
-            MyStrings.stock,
-            style: semiBoldDefault,
-          ),
+           const SizedBox(height: Dimensions.space15),
+         
           CustomTextField(
+             hasLabelText: true,
+            labelText: MyStrings.stock,
             onChanged: () {},
             controller: controller.newStockController,
             needOutlineBorder: true,
           ),
-           const SizedBox(height: Dimensions.space10),
+           const SizedBox(height: Dimensions.space15),
           Row(children: [
             Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              const Text(
-              MyStrings.wholesalePrice,
-              style: semiBoldDefault,
-            ),
+             
             CustomTextField(
+               hasLabelText: true,
+            labelText:  MyStrings.wholesalePrice,
               onChanged: () {},
               controller: controller.newWholesalePriceController,
               needOutlineBorder: true,
             ),
             ],),
           ),
-           const SizedBox(width: Dimensions.space10),
+           const SizedBox(width: Dimensions.space15),
           Expanded(
             child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              const Text(
-              MyStrings.purchasePrice,
-              style: semiBoldDefault,
-            ),
+             
             CustomTextField(
+               hasLabelText: true,
+            labelText:   MyStrings.purchasePrice,
               onChanged: () {},
               controller: controller.newpurchasePriceController,
               needOutlineBorder: true,
@@ -92,31 +87,29 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
             ],),
           )
           ]),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space15),
           const Text(
             MyStrings.productImage,
-            style: semiBoldDefault,
+            style: semiBoldLarge,
           ),
           const SizedBox(height: Dimensions.space10),
           controller.newPickedImage != null
-              ? Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(border: Border.all(color: MyColor.greyColor)),
-                  child: Image.file(controller.newPickedImage!, height: Dimensions.space100, width: Dimensions.space100),
-                )
-              : Container(),
-              const SizedBox(height: Dimensions.space10),
-          RoundedButton(
-            verticalPadding: Dimensions.space8,
-            press: () async {
+              ? InkWell(
+                onTap: ()async {
               await controller.pickImage().then((_) {
                 controller.newPickedImage = controller.pickedImage;
                 controller.update();
               });
             },
-            text: MyStrings.changeImage,
-          ),
-          const SizedBox(height: Dimensions.space10),
+                child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(border: Border.all(color: MyColor.greyColor)),
+                    child: Image.file(controller.newPickedImage!, height: Dimensions.space100, width: Dimensions.space100),
+                  ),
+              )
+              : Container(),
+            
+          const SizedBox(height: Dimensions.space15),
         controller.categoryList.length >1?  CustomDropDownTextField(
             labelText: MyStrings.category,
             selectedValue: controller.newCategory.isEmpty?null:controller.newCategory,
@@ -130,9 +123,9 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
               );
             }).toList(),
           ):const SizedBox(),
-          const SizedBox(height: Dimensions.space10),
+          const SizedBox(height: Dimensions.space15),
          controller.uomList.length >1?  CustomDropDownTextField2(
-            selectedValue: controller.uomController.text.isEmpty ? null : controller.uomController.text,
+            selectedValue: controller.newUom.isEmpty ? null : controller.newUom,
             onChanged: (newValue) {
               controller.newUom= newValue!;
             },

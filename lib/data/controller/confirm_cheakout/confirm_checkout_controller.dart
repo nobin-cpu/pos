@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
-import 'package:flutter_prime/core/utils/dimensions.dart';
-import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
@@ -13,7 +11,7 @@ import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
-import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
+import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop_up.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_alart_dialogue.dart';
 import 'package:get/get.dart';
@@ -41,7 +39,7 @@ class ConfirmCheakoutController extends GetxController {
   String productName = "";
   String perProductPrice = "";
   String uom = "";
-  String vatAmount = "";
+  String? vatAmount = "";
   bool isVatEnable = false;
   bool isVatInPercent = false;
   bool paidOnline = false;
@@ -49,6 +47,7 @@ class ConfirmCheakoutController extends GetxController {
   int id = 0;
   List<CartProductModel> cartProductList = [];
   double vat = 0.0;
+  double? discountPrice;
 
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
@@ -63,17 +62,16 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   getVatData() async {
-    SharedPreferences? preferences;
-    vatAmount = preferences!.getString(SharedPreferenceHelper.vatAmountKey) ?? "00";
-    isVatEnable = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
-    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    vatAmount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
+    isVatEnable = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot) ?? false;
+    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey) ?? false;
     print('vat amount: $vatAmount');
 
-    update();
     try {
       print('before parse vat: $vatAmount');
-      vat = double.parse(vatAmount);
-      print('afteer parse: $vat');
+      vat = double.parse(vatAmount!);
+      print('after parse: $vat');
       print("this is vat");
       print(vat);
     } catch (e) {
@@ -82,7 +80,7 @@ class ConfirmCheakoutController extends GetxController {
     }
 
     print('final vat: $vat');
-    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
+    isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey) ?? false;
 
     update();
   }
@@ -149,9 +147,10 @@ class ConfirmCheakoutController extends GetxController {
     cartItem.category = newCategory;
     cartItem.uom = uomController.text;
     cartItem.quantity = quantity;
+    // cartItem.discountAmount = disc;
 
     await databaseHelper.updateCartItem(cartItem);
-    print("cart updated succesfully" + cartItem.totalAmount.toString());
+    print("cart updated succesfully" + cartItem.discountAmount.toString());
     await getCartList();
     update();
   }
@@ -211,15 +210,20 @@ class ConfirmCheakoutController extends GetxController {
     return totalPriceWithoutVat + vatAmount;
   }
 
-  void showConfirmPopUp(
-    BuildContext context,
-  ) {
-    CustomAlertDialog(child: const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
-  }
+  // void showConfirmPopUp(
+  //   BuildContext context,
+  // ) {
+  //   CustomAlertDialog(child: const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
+  // }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod,generateUniqueId(),false);
+    int? currentVat = int.tryParse(vatAmount.toString());
+    print("this is current vat ${currentVat}");
+    update();
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat??0);
     await databaseHelper.clearCart();
+
+    CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
 
     cartProductList.clear();
     update();
@@ -227,17 +231,37 @@ class ConfirmCheakoutController extends GetxController {
     Get.back();
     Get.offAllNamed(RouteHelper.bottomNavBar);
   }
-int generateUniqueId() {
-  Random random = Random();
-  int id = 0;
 
-  for (int i = 0; i < 9; i++) {
-    id *= 10;
-    id += random.nextInt(10);
+  int generateUniqueId() {
+    Random random = Random();
+    int id = 0;
+
+    for (int i = 0; i < 9; i++) {
+      id *= 10;
+      id += random.nextInt(10);
+    }
+
+    return id;
   }
 
-  return id;
-}
+  double calculateTotalDiscount() {
+    double totalDiscount = 0.0;
+    for (var cartItem in cartProductList) {
+      totalDiscount += cartItem.discountAmount ?? 0.0;
+    }
+    return totalDiscount;
+  }
+
+  void calculateDiscountedPrices() {
+    for (var cartItem in cartProductList) {
+      if (cartItem.isDiscountInPercent == 1) {
+        cartItem.discountPrice = cartItem.totalAmount! * (cartItem.discountAmount! / 100);
+      } else {
+        cartItem.discountPrice = cartItem.discountAmount;
+      }
+    }
+    update();
+  }
 
   changeonlinePaid() {
     paidOnline = !paidOnline;

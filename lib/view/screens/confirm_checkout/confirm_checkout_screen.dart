@@ -32,251 +32,254 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<ConfirmCheakoutController>(builder: (controller) {
       return Scaffold(
-        backgroundColor: MyColor.colorWhite,
+       // backgroundColor: MyColor.colorWhite,
         appBar: const CustomAppBar(title: MyStrings.checkout),
-        body: FittedBox(
-        fit: BoxFit.cover,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height*.45,
-            child: SingleChildScrollView(
-              child: Padding(
-               padding: const EdgeInsets.all(Dimensions.space10),
-                child: 
-                Table(
-                  border: TableBorder.all(),
-                  columnWidths: const {
-                    0: IntrinsicColumnWidth(),
-                    1: IntrinsicColumnWidth(),
-                    2: IntrinsicColumnWidth(),
-                    3: IntrinsicColumnWidth(),
-                    4: IntrinsicColumnWidth(),
-                  },
+        body: Column(
+          children: [
+            CustomCard(
+                width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * .45,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(Dimensions.space10),
+                      child: Table(
+                        border: TableBorder.all(),
+                        columnWidths: const {
+                          0: IntrinsicColumnWidth(),
+                          1: IntrinsicColumnWidth(),
+                          2: IntrinsicColumnWidth(),
+                          3: IntrinsicColumnWidth(),
+                          4: IntrinsicColumnWidth(),
+                        },
+                        children: [
+                          const TableRow(
+                            decoration: BoxDecoration(),
+                            children: [
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                            ],
+                          ),
+                          ...controller.cartProductList.map((CartProductModel product) {
+                            double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
+                            return TableRow(
+                              children: [
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${product.discountAmount}${product.isDiscountInPercent ==1? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
+                              ],
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+          ],
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
+              child: CustomCard(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TableRow(
-                      decoration: BoxDecoration(),
+                    const Text(MyStrings.billAndPayment, style: semiBoldMediumLarge),
+                    const SizedBox(height: Dimensions.space10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
-                        TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                        Text(
+                          MyStrings.total,
+                          style: regularDefault.copyWith(color: MyColor.getGreyText()),
+                        ),
+                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
                       ],
                     ),
-                    ...controller.cartProductList.map((CartProductModel product) {
-                      double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
-                      return TableRow(
-                        children: [
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')))),
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.discountAmount}')))),
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
-                          TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
-                        ],
-                      );
-                    }).toList(),
+                    const SizedBox(height: Dimensions.space10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(MyStrings.vat, style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${MyUtils.getCurrency()} ${controller.isVatEnable ? controller.vatAmount : MyStrings.zero}',
+                            style: regularDefault.copyWith(color: MyColor.getGreyText()),
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const CustomDivider(space: Dimensions.space5),
+                    const SizedBox(height: Dimensions.space10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          MyStrings.grandTotal,
+                          style: regularDefault,
+                        ),
+                        Text(
+                          '${MyUtils.getCurrency()}${controller.isVatEnable ? controller.grandTotalPrice : controller.totalPrice}',
+                          style: regularLarge,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             ),
-          ),
-        ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.space25, vertical: Dimensions.space20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-        
-              Container(
-                decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-                child: CustomCard(
-                  
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(MyStrings.billAndPayment,style: semiBoldMediumLarge),
-                       const SizedBox(height: Dimensions.space10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            MyStrings.total,
-                            style: regularDefault.copyWith(color: MyColor.getGreyText()),
-                          ),
-                          Text(
-                            '${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}',
-                              style: regularDefault.copyWith(color: MyColor.getGreyText())
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: Dimensions.space10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                           Text(
-                            MyStrings.vat,
-                             style: regularDefault.copyWith(color: MyColor.getGreyText())
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '${MyUtils.getCurrency()} ${controller.isVatEnable ? controller.vatAmount : MyStrings.zero}',
-                               style: regularDefault.copyWith(color: MyColor.getGreyText()),
-                              textAlign: TextAlign.end,
+            const SizedBox(height: Dimensions.space10),
+            const Align(alignment: Alignment.centerLeft, child: Padding(
+              padding: EdgeInsets.only(left:Dimensions.space8),
+              child: Text(MyStrings.selectPaymentType, style: semiBoldMediumLarge),
+            )),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: CustomCard(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
+                        child: Container(
+                          decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
+                          child: CustomCard(
+                            radius: Dimensions.space5,
+                            isPress: true,
+                            onPressed: () {
+                              controller.paidOnline = true;
+                              controller.paidinCash = false;
+                              controller.update();
+                            },
+                            width: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: Dimensions.space10,
+                                    child: Radio(
+                                      value: true,
+                                      groupValue: controller.paidOnline,
+                                      onChanged: (bool? value) {
+                                        controller.changeonlinePaid();
+                                        controller.paidinCash = false;
+                                        controller.update();
+                                      },
+                                    ),
+                                  ),
+                                  const Text(
+                                    MyStrings.paidOnline,
+                                    style: regularMediumLarge,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                      const CustomDivider(space: Dimensions.space5),
-                       const SizedBox(height: Dimensions.space10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            MyStrings.grandTotal,
-                            style: regularDefault,
-                          ),
-                          Text(
-                            '${MyUtils.getCurrency()}${controller.isVatEnable ? controller.grandTotalPrice : controller.totalPrice}',
-                            style: regularLarge,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: Dimensions.space10),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(MyStrings.selectPaymentType,style: semiBoldMediumLarge)),
-            Row(
-          children: [
-            Expanded(
-              child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
-        child: Container( decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-          child: CustomCard(
-            radius: Dimensions.space5,
-            isPress: true,
-            onPressed: () {
-              controller.paidOnline = true;
-              controller.paidinCash = false;
-              controller.update();
-            },
-            
-            width: double.infinity,
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height:Dimensions.space10,
-                    child: Radio(
-                      
-                      value: true,
-                      groupValue: controller.paidOnline,
-                      onChanged: (bool? value) {
-              controller.changeonlinePaid();
-              controller.paidinCash = false;
-              controller.update();
-                      },
                     ),
-                  ),
-                  const Text(
-                    MyStrings.paidOnline,
-                    style: regularMediumLarge,
-                  ),
-                ],
-              ),
-            ),
-          
-          ),
-        ),
-        ),
-       ),
-            const SizedBox(width: Dimensions.space10),
-            Expanded(
-              child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
-        child: Container( decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-          child: CustomCard(
-            radius: Dimensions.space5,
-            isPress: true,
-            onPressed: () {
-              controller.paidinCash = true;
-              controller.paidOnline = false;
-              controller.update();
-            },
-            width: double.infinity,
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: Row(
-                children: [
-                   SizedBox(
-                  height:Dimensions.space10,
-                  child: Radio(
-                      
-                      value: true,
-                      groupValue: controller.paidinCash,
-                      onChanged: (bool? value) {
-              controller.changeCashPaid();
-             
-              controller.update();
-                      },
-                  ),
+                    const SizedBox(width: Dimensions.space10),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
+                        child: Container(
+                          decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
+                          child: CustomCard(
+                            radius: Dimensions.space5,
+                            isPress: true,
+                            onPressed: () {
+                              controller.paidinCash = true;
+                              controller.paidOnline = false;
+                              controller.update();
+                            },
+                            width: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: Dimensions.space10,
+                                    child: Radio(
+                                      value: true,
+                                      groupValue: controller.paidinCash,
+                                      onChanged: (bool? value) {
+                                        controller.changeCashPaid();
+                        
+                                        controller.update();
+                                      },
+                                    ),
+                                  ),
+                                  const Text(
+                                    MyStrings.paidByCash,
+                                    style: regularMediumLarge,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const  Text(
-                    MyStrings.paidByCash,
-                    style: regularMediumLarge,
-                  ),
-                ],
               ),
             ),
-          ),
-        ),
+            InkWell(
+              onTap: () {
+                if (controller.paidOnline || controller.paidinCash) {
+                  if (controller.paidOnline) {
+                    controller.completeCheckout(MyStrings.paidOnline);
+                    
+                  }
+                  if (controller.paidinCash) {
+                    controller.completeCheckout(MyStrings.paidByCash);
+                  
+                  }
+                } else {
+                  CustomSnackBar.error(errorList: [MyStrings.selectPaymentGatewat]);
+                }
+              },
+              child: Container(
+                margin:const EdgeInsets.symmetric(horizontal: Dimensions.space15,vertical: Dimensions.space10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Dimensions.space10),
+                  color: (controller.paidOnline || controller.paidinCash) ? MyColor.primaryColor : MyColor.getGreyText(),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: Dimensions.space15),
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(MyImages.pos, color: MyColor.colorWhite, height: Dimensions.space20),
+                    const SizedBox(width: Dimensions.space5),
+                    Text(
+                      MyStrings.printAndClear,
+                      style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
-        ),
-        
-              InkWell(
-                onTap: () {
-                  if (controller.paidOnline || controller.paidinCash) {
-                    if (controller.paidOnline) {
-                      controller.completeCheckout(MyStrings.paidOnline);
-                    }
-                    if (controller.paidinCash) {
-                      controller.completeCheckout(MyStrings.paidByCash);
-                    }
-                  } else {
-                    CustomSnackBar.error(errorList: [MyStrings.selectPaymentGatewat]);
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.space10),
-                    color: (controller.paidOnline || controller.paidinCash) ? MyColor.primaryColor : MyColor.getGreyText(),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: Dimensions.space15),
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(MyImages.pos, color: MyColor.colorWhite, height: Dimensions.space20),
-                      const SizedBox(width: Dimensions.space5),
-                      Text(
-                        MyStrings.printAndClear,
-                        style: semiBoldExtraLarge.copyWith(color: MyColor.colorWhite),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       );

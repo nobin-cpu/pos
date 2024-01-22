@@ -15,7 +15,7 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SettingsController>(builder: (con) {
+    return GetBuilder<SettingsController>(builder: (controller) {
       return Container(
         padding: const EdgeInsets.all(Dimensions.space10),
         decoration: const BoxDecoration(color: MyColor.colorWhite),
@@ -38,7 +38,7 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
             const Text(MyStrings.enterVat, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
-              controller: con.vatController,
+              controller: controller.vatController,
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
@@ -52,12 +52,12 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.defaultRadius)),
                     activeColor: MyColor.primaryColor,
                     checkColor: MyColor.colorWhite,
-                    value: con.percentDiscount,
+                    value: controller.percentDiscount,
                     side: MaterialStateBorderSide.resolveWith(
-                      (states) => BorderSide(width: 1.0, color: con.percentDiscount ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
+                      (states) => BorderSide(width: 1.0, color: controller.percentDiscount ? MyColor.getTextFieldEnableBorder() : MyColor.getTextFieldDisableBorder()),
                     ),
                     onChanged: (value) {
-                      con.changediscountCheckBox();
+                      controller.changediscountCheckBox();
                     }),
               ],
             ),
@@ -77,7 +77,8 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
                     child: RoundedButton(
                         text: MyStrings.save,
                         press: () {
-                          con.saveUidToSharedPreference().then((value) => Get.back());
+                          controller.saveUidToSharedPreference().then((value) => Get.back());
+                          controller.getVatActivationValue();
                         },
                         verticalPadding: Dimensions.space10)),
               ],

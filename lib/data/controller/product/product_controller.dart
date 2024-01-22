@@ -110,10 +110,11 @@ class ProductController extends GetxController {
     newPickedImage = File(productModel.imagePath ?? "");
     newCategory = productModel.category ?? "";
     newUom = productModel.uom ?? "";
+
     print(newNameController.text);
     print(newPickedImage);
     print(newCategory);
-    print(newUom);
+    print("newUom=============================================>>>>>>>>>>>>>>>>>${newUom}");
     CustomBottomSheet(
       child: EditOrDeleteProductBottomSheet(
         id: productModel.id??0,
@@ -158,20 +159,22 @@ class ProductController extends GetxController {
     getProductList();
     claerField();
     update();
-    Get.back();
+     Get.back();
+    
   }
 
   claerField() {
+     
     productNameController.clear();
     priceController.clear();
     categoryController.clear();
     uomController.clear();
     stocksController.clear();
     wholesaleController.clear();
-    mrpController.clear();
     purchasePriceController.clear();
     pickedImage = null;
     newPickedImage = null;
+   
     update();
   }
 }

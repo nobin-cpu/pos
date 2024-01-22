@@ -145,7 +145,11 @@ class _VoidItemsScreenState extends State<VoidItemsScreen> {
           :const SizedBox(),
            const SizedBox(height:Dimensions.space20),
            
-            Expanded(
+          controller.invoiceProductsList.isEmpty?Center(
+                    child: Image.asset(
+                    MyImages.noDataFound,
+                    height: Dimensions.space200,
+                  )):  Expanded(
               child: ListView.builder(
                 itemCount: controller.invoiceProductsList.length,
                 itemBuilder: (context, index) {

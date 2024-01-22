@@ -50,14 +50,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: Scaffold(
             backgroundColor: MyColor.getScreenBgColor(),
             appBar: const CustomAppBar(title: MyStrings.signUp, fromAuth: true),
-            body:
-                // controller.noInternet ? NoDataOrInternetScreen(
-                //   isNoInternet: true,
-                //   onChanged: (value){
-                //     controller.changeInternet(value);
-                //   },
-                // ) : controller.isLoading ? const CustomLoader() :
-                SingleChildScrollView(
+            body: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: Dimensions.space30, horizontal: Dimensions.space15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +113,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(MyStrings.alreadyAccount.tr, style: regularLarge.copyWith(color: MyColor.getTextColor(), fontWeight: FontWeight.w500)),
+                      Text(MyStrings.alreadyAccount.tr, style: regularLarge.copyWith(color: MyColor.getTextColor(), )),
                       const SizedBox(width: Dimensions.space5),
                       TextButton(
                         onPressed: () {
@@ -128,7 +121,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           controller.clearAllData();
                           Get.offAndToNamed(RouteHelper.loginScreen);
                         },
-                        child: Text(MyStrings.signIn.tr, style: regularLarge.copyWith(color: MyColor.getPrimaryColor())),
+                        child: Text(MyStrings.signIn.tr, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(),fontWeight: FontWeight.w500)),
                       )
                     ],
                   )
