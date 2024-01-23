@@ -6,6 +6,7 @@ import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/core/utils/util.dart';
+import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
 import 'package:flutter_prime/view/components/divider/custom_divider.dart';
@@ -27,7 +28,7 @@ class _ReportScreenState extends State<ReportScreen> {
   void initState() {
     super.initState();
     controller.fetchAllInvoiceDetails();
-    controller.fetchFilteredInvoiceDetails(controller.startDate);
+    //  controller.fetchFilteredInvoiceDetails(controller.startDate);
     controller.calculateGrandTotal();
     controller.calculateTotal();
   }
@@ -54,9 +55,10 @@ class _ReportScreenState extends State<ReportScreen> {
                           onPressed: () {
                             controller.isFilteringByMonth = !controller.isFilteringByMonth;
                             controller.update();
+                            print("this is vatAmount(((((((((((((((((((((())))))))))))))))))))))${controller.isVatInPercent}");
                           },
                           width: 100,
-                          child: Text(controller.isFilteringByMonth?"Day":"Month"),
+                          child: Text(controller.isFilteringByMonth ? "Day" : "Month"),
                         ),
                       ),
                       Expanded(
@@ -89,10 +91,8 @@ class _ReportScreenState extends State<ReportScreen> {
                         child: InkWell(
                           onTap: () async {
                             if (controller.isFilteringByMonth) {
-                              // If filtering by month, move to the next month
                               controller.moveFilterMonthForward();
                             } else {
-                              // If not filtering by month, move to the next day
                               controller.moveFilterDateForward();
                             }
                           },
@@ -122,6 +122,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               2: IntrinsicColumnWidth(),
                               3: IntrinsicColumnWidth(),
                               4: IntrinsicColumnWidth(),
+                              5: IntrinsicColumnWidth(),
                             },
                             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                             children: [
@@ -157,50 +158,96 @@ class _ReportScreenState extends State<ReportScreen> {
                                   TableCell(
                                     child: Padding(
                                       padding: EdgeInsets.all(Dimensions.space8),
+                                      child: Center(child: Text(MyStrings.subTotal)),
+                                    ),
+                                  ),
+                                 
+                                  TableCell(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(Dimensions.space8),
                                       child: Center(child: Text(MyStrings.total)),
                                     ),
                                   ),
                                 ],
                               ),
-                              ...controller.filteredInvoiceDetails.map((invoice) {
-                                controller.productVat = int.tryParse(invoice.vatAmount.toString());
+                              ...controller.groupNames.map((invoice) {
+                                  List<InvoiceDetailsModel> products = controller.getProductsByName(invoice);
+                               // controller.productVat = int.tryParse(invoice.vatAmount.toString());
                                 print("this is product vat from report screen ${controller.productVat}");
-                                print("this is cheak out time from report screen ${invoice.checkoutTime}");
+                              //  print("this is cheak out time from report screen ${invoice.checkoutTime}");
                                 controller.update();
-                                return TableRow(
-                                  children: [
-                                    TableCell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Dimensions.space8),
-                                        child: Center(child: Text(invoice.name.toString())),
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Dimensions.space8),
-                                        child: Center(child: Text(invoice.price.toString() + MyUtils.getCurrency())),
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Dimensions.space8),
-                                        child: Center(child: Text('${invoice.discountAmount.toString()}${invoice.isDiscountInPercent == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')),
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Dimensions.space8),
-                                        child: Center(child: Text('${invoice.quantity}${invoice.uom}')),
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Dimensions.space8),
-                                        child: Center(child: Text('${invoice.vatAmount}${MyUtils.getCurrency()}')),
-                                      ),
-                                    ),
-                                  ],
-                                );
+// double subtotal = invoice.totalAmount ?? 0.0;
+// double vat = 0.0;
+
+// if (invoice.vatAmount != null) {
+//   if (controller.isVatInPercent) {
+    
+//     vat = (subtotal * (double.parse(invoice.vatAmount!) / 100.0));
+//   } else {
+    
+//     vat = double.parse(invoice.vatAmount!);
+
+    
+
+   
+//     subtotal += vat;
+//   }
+// }
+
+// subtotal += controller.productVat ?? 0.0;
+
+
+                               return TableRow(
+  children: [
+    TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Dimensions.space8),
+        child: Center(child: Text(invoice.toString())),
+      ),
+    ),
+   TableCell(
+  child: Padding(
+    padding: const EdgeInsets.all(Dimensions.space8),
+    child: Center(
+      child: Text(
+        '${controller.groupperProductSum[invoice]?.toString() ?? '0.0'}${MyUtils.getCurrency()}',
+      ),
+    ),
+  ),
+),
+
+    TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Dimensions.space8),
+        child: Center(child: Text('${controller.groupDiscountSum[invoice]?.toString() ?? '0.0'}${MyUtils.getCurrency()}')),
+      ),
+    ),
+    TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Dimensions.space8),
+        child: Center(child: Center(child: Text('${controller.groupQuantitySum[invoice]?.toString() ?? '0.0'} ${controller.groupperProductUom[invoice]?.toString()}')),
+),
+      ),
+    ),
+    TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Dimensions.space8),
+        child: Center(child: Text('${controller.groupSubtotalSum[invoice]?.toString() ?? '0.0'}${MyUtils.getCurrency()}')),
+      ),
+    ),
+    TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Dimensions.space8),
+        child: Center(
+          child: Text(
+            '${(controller.groupGrandtotalSum[invoice]?.toString()  ?? 0)}${MyUtils.getCurrency()}',
+          ),
+        ),
+      ),
+    ),
+  ],
+);
+
                               }),
                             ],
                           ),
@@ -233,7 +280,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         MyStrings.total,
                         style: regularDefault.copyWith(color: MyColor.getGreyText()),
                       ),
-                      Text('${MyUtils.getCurrency()}${controller.grandTotal}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                      Text('${MyUtils.getCurrency()}${controller.totalPrice}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
                     ],
                   ),
                   const SizedBox(height: Dimensions.space10),
@@ -262,7 +309,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         style: regularDefault,
                       ),
                       Text(
-                        '${MyUtils.getCurrency()}${controller.grandTotal.toString()}',
+                        '${MyUtils.getCurrency()}${controller.isVatEnable ? controller.grandTotalPrice : controller.totalPrice}',
                         style: regularLarge,
                       ),
                     ],

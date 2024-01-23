@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/view/screens/auth/login/widgets/google_login_section.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_prime/view/components/buttons/rounded_loading_button.dar
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:flutter_prime/view/components/text/default_text.dart';
 import 'package:flutter_prime/view/components/will_pop_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -136,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller.clearTextField();
                                 Get.toNamed(RouteHelper.forgotPasswordScreen);
                               },
-                              child: Text( MyStrings.forgotPassword.tr,  maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(),fontWeight: FontWeight.w500)),
+                              child: Text(MyStrings.forgotPassword.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w500)),
                             )
                           ],
                         ),
@@ -154,13 +156,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(MyStrings.doNotHaveAccount.tr, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getTextColor(), )),
-                            
+                            Text(MyStrings.doNotHaveAccount.tr,
+                                overflow: TextOverflow.ellipsis,
+                                style: regularLarge.copyWith(
+                                  color: MyColor.getTextColor(),
+                                )),
                             TextButton(
-                              onPressed: () {
-                                Get.offAndToNamed(RouteHelper.registrationScreen);
+                              onPressed: () async {
+                                SharedPreferences preferences = await SharedPreferences.getInstance();
+                                bool? remm = await preferences.getBool(
+                                  SharedPreferenceHelper.rememberMeKey,
+                                );
+
+                                print("this is uid+++++++++++++++++++++++${remm}");
+
+                                // Get.offAndToNamed(RouteHelper.registrationScreen);
                               },
-                              child: Text(MyStrings.signUp.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(),fontWeight: FontWeight.w500)),
+                              child: Text(MyStrings.signUp.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w500)),
                             )
                           ],
                         ),

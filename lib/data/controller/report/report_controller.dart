@@ -12,8 +12,8 @@ class ReportController extends GetxController {
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
 
-  late DateTime _startDate ;
-  late DateTime _endDate ;
+  late DateTime _startDate;
+  late DateTime _endDate;
 
   String? vatAmount = "";
   bool isVatEnable = false;
@@ -21,6 +21,7 @@ class ReportController extends GetxController {
   bool isFilteringByMonth = false;
   double vat = 0.0;
   int? productVat = 0;
+
 
   DateTime get startDate => _startDate;
 
@@ -47,8 +48,6 @@ class ReportController extends GetxController {
   List<InvoiceDetailsModel> allInvoiceDetails = [];
   List<InvoiceDetailsModel> filteredInvoiceDetails = [];
 
-
-
   Future<void> fetchAllInvoiceDetails() async {
     await _databaseHelper.initializeDatabase();
     try {
@@ -62,19 +61,85 @@ class ReportController extends GetxController {
     }
   }
 
+  Map<String, List<InvoiceDetailsModel>> groupedProducts = {};
+  Map<String, double> groupSum = {};
+
+  Map<String, double> groupSubtotalSum = {};
+  Map<String, double> groupDiscountSum = {};
+  Map<String, double> groupQuantitySum = {};
+  Map<String, double> groupGrandtotalSum = {};
+  Map<String, double> groupperProductSum = {};
+  Map<String, String> groupperProductUom = {};
+
+  void calculateGroupSum() {
+    groupSubtotalSum.clear();
+    groupDiscountSum.clear();
+    groupQuantitySum.clear();
+    groupGrandtotalSum.clear();
+
+    for (var productName in groupNames) {
+      List<InvoiceDetailsModel> products = getProductsByName(productName);
+
+      double subtotalSum = 0.0;
+      double discountSum = 0.0;
+      double quantitySum = 0.0;
+      double perProductgrandTotal = 0.0;
+      
+       double perProductPrice = 0.0;
+       String perProductUom ="";
+
+      for (var product in products) {
+        subtotalSum += product.totalAmount ?? 0.0;
+        discountSum += product.discountAmount ?? 0.0;
+        quantitySum += product.quantity ?? 0.0;
+        perProductgrandTotal += product.grandTotal ?? 0.0;
+         perProductPrice = double.tryParse(product.price.toString()) ?? 0.0;
+         perProductUom = product.uom??"";
+   
+      }
+
+      groupSubtotalSum[productName] = subtotalSum;
+      groupDiscountSum[productName] = discountSum;
+      groupQuantitySum[productName] = quantitySum;
+      groupGrandtotalSum[productName] = perProductgrandTotal;
+      groupperProductSum[productName] = perProductPrice;
+      groupperProductUom[productName] = perProductUom;
+
+    }
+    update();
+  }
+
   Future<void> fetchFilteredInvoiceDetails(DateTime date) async {
     try {
       isLoading = true;
-
+      groupedProducts.clear();
       filteredInvoiceDetails = await _databaseHelper.getFilteredInvoiceDetails(
         date,
       );
+      for (var invoice in filteredInvoiceDetails) {
+        String productName = invoice.name ?? "";
+
+        if (!groupedProducts.containsKey(productName)) {
+          groupedProducts[productName] = [];
+        }
+
+        groupedProducts[productName]!.add(invoice);
+      }
+      calculateGroupSum();
     } catch (e) {
       print("Error during fetchFilteredInvoiceDetails: $e");
     } finally {
       isLoading = false;
       update();
     }
+  }
+
+  List<String> get groupNames {
+    return groupedProducts.keys.toList();
+  }
+
+  List<InvoiceDetailsModel> getProductsByName(String name) {
+    return groupedProducts[name] ?? [];
   }
 
   double grandTotal = 0.0;
@@ -124,7 +189,8 @@ class ReportController extends GetxController {
       isStartDate ? setStartDate(picked) : setEndDate(picked);
     }
   }
- Future<void> fetchMonthWiseInvoiceDetails(DateTime date) async {
+
+  Future<void> fetchMonthWiseInvoiceDetails(DateTime date) async {
     try {
       isLoading = true;
 
@@ -139,41 +205,77 @@ class ReportController extends GetxController {
       update();
     }
   }
- void moveFilterMonth() {
-    setStartDate(DateTime(_startDate.year, _startDate.month, 1)); 
-    setEndDate(DateTime(_startDate.year, _startDate.month + 1, 0)); 
+
+  void moveFilterMonth() {
+    setStartDate(DateTime(_startDate.year, _startDate.month, 1));
+    setEndDate(DateTime(_startDate.year, _startDate.month + 1, 0));
 
     fetchFilteredInvoiceDetails(startDate);
   }
 
+  void moveFilterDateForward() {
+    setStartDate(startDate.add(Duration(days: 1)));
+    setEndDate(endDate.add(Duration(days: 1)));
 
-void moveFilterDateForward() {
-  setStartDate(startDate.add(Duration(days: 1)));
-  setEndDate(endDate.add(Duration(days: 1)));
+    fetchFilteredInvoiceDetails(startDate);
+  }
 
- 
- fetchFilteredInvoiceDetails(startDate);
-}
+  void moveFilterDateBackward() {
+    setStartDate(startDate.subtract(Duration(days: 1)));
+    setEndDate(endDate.subtract(Duration(days: 1)));
 
-void moveFilterDateBackward() {
-  setStartDate(startDate.subtract(Duration(days: 1)));
-  setEndDate(endDate.subtract(Duration(days: 1)));
+    fetchFilteredInvoiceDetails(startDate);
+  }
 
-  
- fetchFilteredInvoiceDetails(startDate);
-}
- void moveFilterMonthForward() {
-    setStartDate(_startDate.add(Duration(days: 30))); 
+  void moveFilterMonthForward() {
+    setStartDate(_startDate.add(Duration(days: 30)));
     setEndDate(_endDate.add(Duration(days: 30)));
 
     fetchFilteredInvoiceDetails(startDate);
   }
 
   void moveFilterMonthBackward() {
-    setStartDate(_startDate.subtract(Duration(days: 30))); 
+    setStartDate(_startDate.subtract(Duration(days: 30)));
     setEndDate(_endDate.subtract(Duration(days: 30)));
 
     fetchFilteredInvoiceDetails(startDate);
   }
-  
+
+  double get totalPrice {
+    return filteredInvoiceDetails.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
+  }
+
+  double get grandTotalPrice {
+    double totalPriceWithoutVat = totalPrice;
+    double vatAmount = (totalPriceWithoutVat * (vat / 100.0));
+
+    return totalPriceWithoutVat + vatAmount;
+  }
+
+  //  Map<String, ProductSummary> productSummaries = {};
+
+  // void groupAndSummarizeInvoiceDetails() {
+  //   productSummaries.clear();
+
+  //   for (var invoice in filteredInvoiceDetails) {
+  //     String productName = invoice.name ?? "";
+
+  //     if (!productSummaries.containsKey(productName)) {
+  //       productSummaries[productName] = ProductSummary();
+  //     }
+
+  //     ProductSummary summary = productSummaries[productName]!;
+  //     summary.discountAmount += double.parse(invoice.discountAmount.toString() ?? "0.0");
+  //     summary.quantity += double.parse(invoice.quantity.toString() ?? "0.0");
+  //     summary.subtotal += double.parse(invoice.totalAmount.toString() ?? "0.0");
+  //     summary.total += double.parse(invoice.grandTotal.toString() ?? "0.0");
+  //   }
+  //   update();
+  // }
 }
+// class ProductSummary {
+//   double discountAmount = 0.0;
+//   double quantity = 0.0;
+//   double subtotal = 0.0;
+//   double total = 0.0;
+// }

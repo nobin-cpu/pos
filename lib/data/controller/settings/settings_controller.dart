@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsController extends GetxController {
   final TextEditingController vatController = TextEditingController();
   bool percentDiscount = false;
-  bool vatCheckBox = false;
+  bool vatSwitch = false;
 
   String cheakAmount = "";
   bool? bools;
@@ -23,7 +23,7 @@ class SettingsController extends GetxController {
   }
 
   void changevatCheckBox() {
-    vatCheckBox = !vatCheckBox;
+    vatSwitch = !vatSwitch;
     update();
   }
 
@@ -34,19 +34,21 @@ class SettingsController extends GetxController {
     update();
   }
 
-  getVatActivationValue() async {
+ getVatActivationValue() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     percentDiscount = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
     String? vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
-    vatCheckBox = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
-    print('saved vat amount ${vatamount}');
+    vatSwitch = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
+    print('saved vat amount $vatSwitch');
+    print('saved vat amount $percentDiscount');
     update();
   }
 
-  Future<void> saveUidToSharedPreference() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
-    await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
-    await preferences.setBool(SharedPreferenceHelper.isVatactiveOrNot, vatCheckBox);
-  }
+ Future<void> saveVatDataToSharedPreference() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
+  await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
+  await preferences.setBool(SharedPreferenceHelper.isVatactiveOrNot, vatSwitch);
+}
+
 }

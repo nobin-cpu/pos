@@ -57,7 +57,6 @@ class _MyAppState extends State<MyApp> {
         title: MyStrings.appName,
          theme: ThemeData(
           scaffoldBackgroundColor: MyColor.getScreenBgColor(),
-        
         ),
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.noTransition,

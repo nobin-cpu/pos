@@ -13,8 +13,9 @@ class InvoiceDetailsModel {
   double? grandTotal;
   String? vatAmount;
   String? checkoutTime;
+  bool? isvatInpercentOrNot;
 
-  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime});
+  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime,this.isvatInpercentOrNot});
 
   Map<String, dynamic> toMap() {
     return {
@@ -32,6 +33,7 @@ class InvoiceDetailsModel {
       'grandTotal': grandTotal,
       'vatAmount': vatAmount,
       'checkoutTime': checkoutTime,
+      'isVatInPercentOrNot': isvatInpercentOrNot,
     };
   }
 
@@ -51,6 +53,7 @@ class InvoiceDetailsModel {
       grandTotal: map['grandTotal'],
       vatAmount: map['vatAmount'],
       checkoutTime: map['checkoutTime'],
+      isvatInpercentOrNot: map['isVatInPercentOrNot'],
     );
   }
 }

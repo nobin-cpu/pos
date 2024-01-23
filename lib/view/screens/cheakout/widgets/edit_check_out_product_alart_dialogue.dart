@@ -62,6 +62,7 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                         onTap: () {
                           controller.increaseCartItem();
                           controller.updateTotalAmount();
+                           controller.handleDiscountChange(controller.discountController.text);
                         },
                         child: Image.asset(
                           MyImages.increase,
@@ -76,6 +77,7 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                             double enteredQuantity = double.tryParse(value.toString()) ?? 0;
                             controller.quantity = enteredQuantity.toInt();
                             controller.updateTotalAmount();
+                             controller.handleDiscountChange(controller.discountController.text);
                           },
                           controller: controller.productQuantityController,
                           disableBorder: true,
@@ -88,6 +90,7 @@ class _EditCheakoutProductAlartDialogueState extends State<EditCheakoutProductAl
                           if (controller.quantity > 1) {
                             controller.decreaseCartItem();
                             controller.updateTotalAmount();
+                             controller.handleDiscountChange(controller.discountController.text);
                           }
                         },
                         child: Image.asset(

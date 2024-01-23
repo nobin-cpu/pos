@@ -13,13 +13,13 @@ class SplashController extends GetxController {
   SplashController({required this.repo, required this.localizationController});
 
   bool isLoading = true;
-  bool ?rememberMe = false;
+ 
   String? userID = "";
   gotoNextPage() async {
     
     final sharedPreferences = await SharedPreferences.getInstance();
     userID = await sharedPreferences.getString( SharedPreferenceHelper.userIdKey);
-    rememberMe = await sharedPreferences.getBool( SharedPreferenceHelper.rememberMeKey);
+   bool? rememberMe = await sharedPreferences.getBool( SharedPreferenceHelper.rememberMeKey);
    
     noInternet = false;
     update();

@@ -28,7 +28,6 @@ class DatabaseHelper {
         );
         db.execute(
           'CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, discountAmount REAL, isDiscountInPercent INTEGER)',
-           
         );
         db.execute('''
         CREATE TABLE invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT,totalDiscountAmount TEXT, checkoutTime TEXT,  paymentMethod TEXT, productDetails TEXT,status TEXT,vatAmount INTEGER)''');
@@ -41,13 +40,13 @@ class DatabaseHelper {
             'quantity INTEGER, '
             'totalAmount TEXT, '
             'productPrice TEXT, '
-            'discountAmount TEXT,grandTotal DOUBLE,uom TEXT,isDiscountInPercent INTEGER,vatAmount INTEGER)');
+            'discountAmount TEXT,grandTotal DOUBLE,uom TEXT,isDiscountInPercent INTEGER,vatAmount INTEGER,vatInpercentOrNot INTEGER)');
 
         db.execute(
           'CREATE TABLE voidItems(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
         );
       },
-      version: 25,
+      version: 26,
     );
   }
 
@@ -86,7 +85,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId, bool isVoid, int vatAmount) async {
+  Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId, bool isVoid, int vatAmount, bool isVatInPercent) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -99,7 +98,7 @@ class DatabaseHelper {
       totalDiscountAmount += cartItem.discountAmount ?? 0.0;
     }
 
-    print("this is vat from database helper $vatAmount");
+    print("VAT from database helper: $vatAmount");
 
     try {
       int invoiceId = await _database.insert('invoice_history', {
@@ -112,10 +111,39 @@ class DatabaseHelper {
         'vatAmount': vatAmount,
       });
 
+      print("Invoice ID: $invoiceId");
+
       for (var cartItem in cartProductList) {
-        print("this is vat from database helper 2 == $vatAmount");
-        print("this is date from database helper 2 ==${DateTime.now().toUtc().toString()}");
-        String productVat = vatAmount.toString();
+        double productVatAmount = 0.0;
+        double grandTotalForProduct = cartItem.totalAmount!;
+        double discountedAmount = 0.0;
+
+        if (cartItem.isDiscountInPercent ==1) {
+          double productPrice = double.parse(cartItem.price.toString());
+          double quantity = double.parse(cartItem.quantity.toString());
+          double productTotalPrice = productPrice * quantity;
+          double discountPercentage = cartItem.discountAmount ?? 0.0;
+
+        
+          discountedAmount = (productTotalPrice * discountPercentage) / 100;
+
+        
+
+          print("Discounted amount: $discountedAmount");
+        } else {
+          discountedAmount = cartItem.discountAmount ?? 0.0;
+        }
+
+
+        if (isVatInPercent) {
+          productVatAmount = grandTotalForProduct * (vatAmount / 100);
+        } else {
+          productVatAmount = vatAmount.toDouble();
+        }
+
+        double grandTotalWithVat = grandTotalForProduct + productVatAmount;
+
+        print("this is discounted amount from database  insert cheakout  ${discountedAmount}");
         await _database.insert('product_details', {
           'invoiceId': invoiceId,
           'checkoutTime': DateTime.now().toUtc().toString(),
@@ -124,57 +152,55 @@ class DatabaseHelper {
           'quantity': cartItem.quantity,
           'totalAmount': cartItem.totalAmount.toString(),
           'productPrice': cartItem.price.toString(),
-          'discountAmount': cartItem.discountAmount.toString(),
-          'grandTotal': cartItem.grandTotal,
+          'discountAmount': discountedAmount.toString(),
+          'grandTotal': grandTotalWithVat.toString(),
           'uom': cartItem.uom,
           'isDiscountInPercent': cartItem.isDiscountInPercent,
-          'vatAmount': productVat.toString(),
+          'vatAmount': productVatAmount.toString(),
+          'vatInPercentOrNot': isVatInPercent ? 1 : 0,
         });
       }
-
-      print("Invoice ID: $invoiceId");
     } catch (e) {
       print("Error during insertCheckoutHistory: $e");
     }
   }
 
   Future<List<InvoiceDetailsModel>> getMonthWiseInvoiceDetails(int year, int month) async {
-  if (!isDatabaseInitialized()) {
-    throw Exception("Database not initialized");
-  }
-
-  try {
-    final DateTime startDate = DateTime(year, month, 1);
-    final DateTime endDate = startDate.add(Duration(days: 31)); // Assuming a month has a maximum of 31 days
-
-    final List<Map<String, dynamic>> productData = await _database.query(
-      'product_details',
-      where: 'checkoutTime >= ? AND checkoutTime < ?',
-      whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
-    );
-
-    List<InvoiceDetailsModel> products = [];
-
-    for (var productMap in productData) {
-      products.add(InvoiceDetailsModel(
-        name: productMap['productName'],
-        price: productMap['productPrice'],
-        totalAmount: double.parse(productMap['totalAmount']),
-        quantity: productMap['quantity'],
-        uom: productMap['uom'],
-        discountAmount: double.tryParse(productMap['discountAmount']),
-        grandTotal: productMap['grandTotal'],
-        isDiscountInPercent: productMap['isDiscountInPercent'],
-      ));
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
     }
 
-    return products;
-  } catch (e) {
-    print("Error during getMonthWiseInvoiceDetails: $e");
-    return [];
-  }
-}
+    try {
+      final DateTime startDate = DateTime(year, month, 1);
+      final DateTime endDate = startDate.add(Duration(days: 31));
 
+      final List<Map<String, dynamic>> productData = await _database.query(
+        'product_details',
+        where: 'checkoutTime >= ? AND checkoutTime < ?',
+        whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
+      );
+
+      List<InvoiceDetailsModel> products = [];
+
+      for (var productMap in productData) {
+        products.add(InvoiceDetailsModel(
+          name: productMap['productName'],
+          price: productMap['productPrice'],
+          totalAmount: double.parse(productMap['totalAmount']),
+          quantity: productMap['quantity'],
+          uom: productMap['uom'],
+          discountAmount: double.tryParse(productMap['discountAmount']),
+          grandTotal: productMap['grandTotal'],
+          isDiscountInPercent: productMap['isDiscountInPercent'],
+        ));
+      }
+
+      return products;
+    } catch (e) {
+      print("Error during getMonthWiseInvoiceDetails: $e");
+      return [];
+    }
+  }
 
   Future<List<InvoiceDetailsModel>> getFilteredInvoiceDetailsByDateRange(
     DateTime startDate,
@@ -203,6 +229,7 @@ class DatabaseHelper {
           discountAmount: double.tryParse(productMap['discountAmount']),
           grandTotal: productMap['grandTotal'],
           isDiscountInPercent: productMap['isDiscountInPercent'],
+          isvatInpercentOrNot: productMap['isVatInPercent'] == 1 ? true : false,
         ));
       }
       print("working from here 3 ");
@@ -232,16 +259,16 @@ class DatabaseHelper {
 
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
-          name: productMap['productName'],
-          price: productMap['productPrice'],
-          totalAmount: double.parse(productMap['totalAmount']),
-          quantity: productMap['quantity'],
-          uom: productMap['uom'],
-          discountAmount: double.tryParse(productMap['discountAmount']),
-          grandTotal: productMap['grandTotal'],
-          isDiscountInPercent: productMap['isDiscountInPercent'],
-          vatAmount: productMap['vatAmount'].toString()
-        ));
+            name: productMap['productName'],
+            price: productMap['productPrice'],
+            totalAmount: double.parse(productMap['totalAmount']),
+            quantity: productMap['quantity'],
+            uom: productMap['uom'],
+            discountAmount: double.tryParse(productMap['discountAmount']),
+            grandTotal: productMap['grandTotal'],
+            isDiscountInPercent: productMap['isDiscountInPercent'],
+            vatAmount: productMap['vatAmount'].toString(),
+            isvatInpercentOrNot: productMap['vatInpercentOrNot'] == 1 ? true : false));
       }
 
       return products;
@@ -356,19 +383,18 @@ class DatabaseHelper {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
-
-   await _database.update(
-  'cart',
-  {
-    'quantity': cartItem.quantity,
-    'totalAmount': cartItem.totalAmount,
-    'discountAmount': cartItem.discountAmount,
-    'isDiscountInPercent': cartItem.isDiscountInPercent,
-  },
-  where: 'id = ?',
-  whereArgs: [cartItem.id],
-);
-
+    print("i am discount amount from database cart ${cartItem.discountAmount}");
+    await _database.update(
+      'cart',
+      {
+        'quantity': cartItem.quantity,
+        'totalAmount': cartItem.totalAmount,
+        'discountAmount': cartItem.discountAmount,
+        'isDiscountInPercent': cartItem.isDiscountInPercent,
+      },
+      where: 'id = ?',
+      whereArgs: [cartItem.id],
+    );
   }
 
   Future<void> deleteCartItem(int? id) async {

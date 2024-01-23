@@ -209,6 +209,12 @@ class ConfirmCheakoutController extends GetxController {
 
     return totalPriceWithoutVat + vatAmount;
   }
+double subTotalForProduct(CartProductModel product) {
+  double totalPriceWithoutVat = (double.parse(product.price ?? "0.0") * product.quantity!) - (product.discountPrice ?? 0.0);
+  return totalPriceWithoutVat;
+}
+
+
 
   // void showConfirmPopUp(
   //   BuildContext context,
@@ -220,9 +226,9 @@ class ConfirmCheakoutController extends GetxController {
     int? currentVat = int.tryParse(vatAmount.toString());
     print("this is current vat ${currentVat}");
     update();
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat??0);
+    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent);
     await databaseHelper.clearCart();
-
+    print("vat in percent or not${isVatInPercent}");
     CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
 
     cartProductList.clear();

@@ -37,6 +37,18 @@ class LoginController extends GetxController {
     Get.toNamed(RouteHelper.forgotPasswordScreen);
   }
 
+
+
+    Future<void> _saveUidToSharedPreference(String uid, bool rememberMe,String userName,String email) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString(SharedPreferenceHelper.userIdKey, uid);
+    await preferences.setString(SharedPreferenceHelper.userNameKey, userName);
+    await preferences.setString(SharedPreferenceHelper.userNameKey, email);
+    await preferences.setBool(SharedPreferenceHelper.rememberMeKey, rememberMe);
+    print("my name is " + rememberMe.toString());
+    print("this is uid " + uid.toString());
+  }
+
   void checkAndGotoNextStep() async {
      
    
@@ -139,11 +151,17 @@ class LoginController extends GetxController {
         bool isRegisteredUser = await isUserRegistered(user.email!);
    
         if (isRegisteredUser) {
+          
+            await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
+            SharedPreferences preferences = await SharedPreferences.getInstance();
+       bool ?remem= await preferences.getBool(SharedPreferenceHelper.rememberMeKey);
+              print("Google Sign-In Successful from 1: ${remem}");
           bool isDeletedUser = await isUserDeleted(user.email!);
-                await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
+              
           if (!isDeletedUser) {
             await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
             checkAndGotoNextStep();
+              print("Google Sign-In Successful from 2: ${remem}");
             CustomSnackBar.success(successList: [MyStrings.success]);
           } else {
             print('User has deleted their account, skip adding coins.');
@@ -168,9 +186,9 @@ class LoginController extends GetxController {
 
   Future<bool> isUserRegistered(String email) async {
     try {
-      // Query Firestore to check if a user with the given email exists
+    
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection('users') // Change 'users' to your collection name
+          .collection('users') 
           .where('email', isEqualTo: email)
           .get();
 
@@ -194,14 +212,7 @@ class LoginController extends GetxController {
     uniqueID = uis.toString();
   }
 
-    Future<void> _saveUidToSharedPreference(String uid, bool rememberMe,String userName,String email) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(SharedPreferenceHelper.userIdKey, uid);
-    await preferences.setString(SharedPreferenceHelper.userNameKey, userName);
-    await preferences.setString(SharedPreferenceHelper.userNameKey, email);
-    await preferences.setBool(SharedPreferenceHelper.rememberMeKey, rememberMe);
-    print("my name i s " + rememberMe.toString());
-  }
+
 
   Future<bool> isUserDeleted(String email) async {
     try {

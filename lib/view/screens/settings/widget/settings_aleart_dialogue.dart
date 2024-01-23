@@ -77,8 +77,9 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
                     child: RoundedButton(
                         text: MyStrings.save,
                         press: () {
-                          controller.saveUidToSharedPreference().then((value) => Get.back());
-                          controller.getVatActivationValue();
+                          controller.saveVatDataToSharedPreference();
+                         // controller.getVatActivationValue();
+                          Get.back();
                         },
                         verticalPadding: Dimensions.space10)),
               ],

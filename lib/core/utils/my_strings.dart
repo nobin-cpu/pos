@@ -296,6 +296,7 @@ class MyStrings{
   static const String image                                  = 'Image';
   static const String products                               = 'Product';
   static const String total                                  = 'Total';
+  static const String subTotal                                  = 'Sub Total';
   static const String vat                                    = 'VAT';
   static const String grandTotal                             = 'Grand Total:';
   static const String actions                                = 'Actions';

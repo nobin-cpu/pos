@@ -80,6 +80,8 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         onTap: () {
                           controller.increaseInputFieldProductQuantity();
                           controller.updateTotalAmount(index, controller.quantity);
+                           controller.handleDiscountChange(controller.discountController.text, index);
+
                         },
                         child: Image.asset(
                           MyImages.increase,
@@ -94,6 +96,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                             double enteredQuantity = double.tryParse(value.toString()) ?? 0;
                             controller.quantity = enteredQuantity.toInt();
                             controller.updateTotalAmount(index, enteredQuantity);
+                             controller.handleDiscountChange(controller.discountController.text, index);
                           },
                           controller: controller.productQuantityController,
                           disableBorder: true,
@@ -106,6 +109,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                           if (controller.quantity > 1) {
                             controller.decreaseInputFieldProductQuantity();
                             controller.updateTotalAmount(index, controller.quantity);
+                             controller.handleDiscountChange(controller.discountController.text, index);
                           }
                         },
                         child: Image.asset(

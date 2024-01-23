@@ -83,25 +83,32 @@ class CheakoutController extends GetxController {
       print('Error loading dropdown data: $e');
     }
   }
+Future<void> editCartItem(int? id) async {
+  CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
+  print("i am discount amount from cheakout controller1---- ${cartItem.discountAmount}");
+  print("i am discount amount from cheakout controller2---- ${discountController.text}");
 
-  Future<void> editCartItem(int? id) async {
-    CartProductModel cartItem = cartProductList.firstWhere((item) => item.id == id);
+  cartItem.name = productName;
+  cartItem.totalAmount = totalProductPrice;
+  cartItem.uom = uom;
+  cartItem.quantity = quantity;
+  
+  // Assign discountAmount once and update it with double.tryParse(discountController.text)
+  cartItem.discountAmount = double.tryParse(discountController.text) ?? 0.0;
+  
+  // Update isDiscountInPercent
+  cartItem.isDiscountInPercent = isDiscountInpercent ? 1 : 0;
 
-    cartItem.name = productName;
-    cartItem.totalAmount = totalProductPrice;
-    cartItem.uom = uom;
-    cartItem.quantity = quantity;
-    cartItem.discountAmount = double.tryParse(discountController.text);
-    cartItem.isDiscountInPercent = isDiscountInpercent ? 1 : 0;
-    cartItem.discountAmount = discount;
-    print("this is discount amount ${discount}");
-    print("this is discount amount.text ${discountController.text}");
+  print("this is discount amount ${discount}");
+  print("this is discount amount.text ${discountController.text}");
+  print("i am discount amount from cheakout controller3---- ${cartItem.discountAmount}");
+  print("i am discount amount from cheakout controller4---- ${discountController.text}");
 
-    await databaseHelper.updateCartItem(cartItem);
-    print("cart updated succesfully" + cartItem.totalAmount.toString());
-    await getCartList();
-    update();
-  }
+  await databaseHelper.updateCartItem(cartItem);
+  print("cart updated successfully" + cartItem.totalAmount.toString());
+  await getCartList();
+  update();
+}
 
   Future<void> deleteCartItem(int? id) async {
     await databaseHelper.deleteCartItem(id);
@@ -132,7 +139,6 @@ class CheakoutController extends GetxController {
     print("this is discount amount ${discount}");
     print("this is ------------ ${cartProductModel.isDiscountInPercent}");
     print("this is discount  ${isDiscountInpercent}");
-    
 
     update();
     print(quantity);

@@ -31,13 +31,16 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ConfirmCheakoutController>(builder: (controller) {
+      print("this is vat status${controller.isVatInPercent}");
+      print("this is vat status${controller.isVatEnable}");
+      
       return Scaffold(
-       // backgroundColor: MyColor.colorWhite,
+        // backgroundColor: MyColor.colorWhite,
         appBar: const CustomAppBar(title: MyStrings.checkout),
         body: Column(
           children: [
             CustomCard(
-                width: double.infinity,
+              width: double.infinity,
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: SizedBox(
@@ -53,6 +56,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                           2: IntrinsicColumnWidth(),
                           3: IntrinsicColumnWidth(),
                           4: IntrinsicColumnWidth(),
+                       //   5: IntrinsicColumnWidth(),
                         },
                         children: [
                           const TableRow(
@@ -62,7 +66,8 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
-                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.subTotal)))),
+                           // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
                             ],
                           ),
                           ...controller.cartProductList.map((CartProductModel product) {
@@ -71,9 +76,10 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                               children: [
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')))),
-                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${product.discountAmount}${product.isDiscountInPercent ==1? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${product.discountAmount}${product.isDiscountInPercent == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')))),
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
+                              //  TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${controller.subTotalForProduct(product).toStringAsFixed(2)} ')))),
                               ],
                             );
                           }).toList(),
@@ -84,7 +90,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                 ),
               ),
             ),
-            
           ],
         ),
         floatingActionButton: Column(
@@ -118,7 +123,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            '${MyUtils.getCurrency()} ${controller.isVatEnable ? controller.vatAmount : MyStrings.zero}',
+                            '${controller.isVatInPercent ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()} ${controller.isVatEnable ? controller.vatAmount : MyStrings.zero}',
                             style: regularDefault.copyWith(color: MyColor.getGreyText()),
                             textAlign: TextAlign.end,
                           ),
@@ -145,10 +150,12 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               ),
             ),
             const SizedBox(height: Dimensions.space10),
-            const Align(alignment: Alignment.centerLeft, child: Padding(
-              padding: EdgeInsets.only(left:Dimensions.space8),
-              child: Text(MyStrings.selectPaymentType, style: semiBoldMediumLarge),
-            )),
+            const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: Dimensions.space8),
+                  child: Text(MyStrings.selectPaymentType, style: semiBoldMediumLarge),
+                )),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15),
               child: CustomCard(
@@ -223,7 +230,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                                       groupValue: controller.paidinCash,
                                       onChanged: (bool? value) {
                                         controller.changeCashPaid();
-                        
+
                                         controller.update();
                                       },
                                     ),
@@ -248,18 +255,16 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                 if (controller.paidOnline || controller.paidinCash) {
                   if (controller.paidOnline) {
                     controller.completeCheckout(MyStrings.paidOnline);
-                    
                   }
                   if (controller.paidinCash) {
                     controller.completeCheckout(MyStrings.paidByCash);
-                  
                   }
                 } else {
                   CustomSnackBar.error(errorList: [MyStrings.selectPaymentGatewat]);
                 }
               },
               child: Container(
-                margin:const EdgeInsets.symmetric(horizontal: Dimensions.space15,vertical: Dimensions.space10),
+                margin: const EdgeInsets.symmetric(horizontal: Dimensions.space15, vertical: Dimensions.space10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.space10),
                   color: (controller.paidOnline || controller.paidinCash) ? MyColor.primaryColor : MyColor.getGreyText(),

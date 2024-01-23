@@ -54,13 +54,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           children: [
                             Text(MyStrings.vat + controller.cheakAmount),
                             Switch(
-                              value: controller.vatCheckBox,
+                              value: controller.vatSwitch,
                               onChanged: (value) {
                                 controller.changevatCheckBox();
                                 if (value) {
                                   controller.showVatCustomizeAleartDialogue(context);
                                 }
-                                controller.saveUidToSharedPreference();
+                               // controller.saveVatDataToSharedPreference();
                               },
                             ),
                           ],
