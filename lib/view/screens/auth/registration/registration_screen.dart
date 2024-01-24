@@ -61,7 +61,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       MyImages.appLogo,
                       height: 50,
                       width: 225,
-                      color: MyColor.primaryColor,
                     ),
                   ),
                   Align(

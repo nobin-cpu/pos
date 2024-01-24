@@ -18,20 +18,20 @@ class DatabaseHelper {
       join(await getDatabasesPath(), 'product_database.db'),
       onCreate: (db, version) {
         db.execute(
-          'CREATE TABLE uom(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
+          'CREATE TABLE IF NOT EXISTS uom(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
         );
         db.execute(
-          'CREATE TABLE category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
+          'CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
         );
         db.execute(
-          'CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,price TEXT, category TEXT, uom TEXT, imagePath TEXT,stock TEXT,wholesalePrice TEXT,mrp TEXT,purchasePrice TEXT)',
+          'CREATE TABLE IF NOT EXISTS product(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,price TEXT, category TEXT, uom TEXT, imagePath TEXT,stock TEXT,wholesalePrice TEXT,mrp TEXT,purchasePrice TEXT)',
         );
         db.execute(
-          'CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, discountAmount REAL, isDiscountInPercent INTEGER)',
+          'CREATE TABLE IF NOT EXISTS cart(id INTEGER PRIMARY KEY AUTOINCREMENT, productId INTEGER, name TEXT, price TEXT, category TEXT, uom TEXT, imagePath TEXT, quantity INTEGER, totalAmount REAL, discountAmount REAL, isDiscountInPercent INTEGER)',
         );
         db.execute('''
-        CREATE TABLE invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT,totalDiscountAmount TEXT, checkoutTime TEXT,  paymentMethod TEXT, productDetails TEXT,status TEXT,vatAmount INTEGER)''');
-        db.execute('CREATE TABLE product_details('
+        CREATE TABLE IF NOT EXISTS invoice_history(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT,totalDiscountAmount TEXT, checkoutTime TEXT,  paymentMethod TEXT, productDetails TEXT,status TEXT,vatAmount INTEGER)''');
+        db.execute('CREATE TABLE IF NOT EXISTS product_details('
             'id INTEGER PRIMARY KEY AUTOINCREMENT, '
             'invoiceId INTEGER, '
             'checkoutTime TEXT, '
@@ -43,10 +43,10 @@ class DatabaseHelper {
             'discountAmount TEXT,grandTotal DOUBLE,uom TEXT,isDiscountInPercent INTEGER,vatAmount INTEGER,vatInpercentOrNot INTEGER)');
 
         db.execute(
-          'CREATE TABLE voidItems(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
+          'CREATE TABLE IF NOT EXISTS voidItems(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
         );
       },
-      version: 26,
+      version: 27,
     );
   }
 
