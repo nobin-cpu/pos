@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
-import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/core/utils/util.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:flutter_prime/view/components/divider/custom_divider.dart';
-import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:get/get.dart';
 
 class InvoiceDetailsScreen extends StatefulWidget {
@@ -38,7 +36,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     controller.getVatActivationValue();
     print(invoiceId);
     print(controller.transectionId);
-    print("..................invoice and transection id...................");
+    print("..................invoice and transection id...................${invoiceId}");
   }
 
   @override
@@ -77,7 +75,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                             // 5: IntrinsicColumnWidth(),
                           },
                           children: [
-                            TableRow(
+                            const TableRow(
                               decoration: BoxDecoration(),
                               children: [
                                 TableCell(
@@ -133,25 +131,25 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text('${MyUtils.getCurrency()}${product.price}')),
+                                      child: Center(child: Text('${MyUtils.getCurrency()}${product.price ?? 0}')),
                                     ),
                                   ),
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text('${product.discountAmount}${product.isDiscountInPercent == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')),
+                                      child: Center(child: Text('${product.discountAmount ?? 0}${MyUtils.getCurrency()}')),
                                     ),
                                   ),
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text(product.quantity.toString() + product.uom.toString())),
+                                      child: Center(child: Text("${product.quantity.toString() }${product.uom}")),
                                     ),
                                   ),
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')),
+                                      child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount ?? 0} ')),
                                     ),
                                   ),
                                   // TableCell(
@@ -205,7 +203,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                           MyStrings.total,
                           style: regularDefault.copyWith(color: MyColor.getGreyText()),
                         ),
-                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2) }', style: regularDefault.copyWith(color: MyColor.getGreyText())),
                       ],
                     ),
                     const SizedBox(height: Dimensions.space10),
@@ -217,7 +215,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            '+ ${controller.vatamount ?? "0"}${controller.isVatActivateOrNot ?MyUtils.getPercentSymbol():MyUtils.getCurrency()}',
+                            '+ ${controller.vatamount ?? "0"}${controller.isVatActivateOrNot ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}',
                             style: regularDefault.copyWith(color: MyColor.getGreyText()),
                             textAlign: TextAlign.end,
                           ),

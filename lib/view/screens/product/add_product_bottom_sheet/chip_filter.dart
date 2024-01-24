@@ -22,7 +22,10 @@ class ChipFilter extends StatelessWidget {
             child: FilterChip(
               backgroundColor: MyColor.greyColor,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(color: MyColor.colorWhite, style: BorderStyle.none,),
+                side: const BorderSide(
+                  color: MyColor.colorWhite,
+                  style: BorderStyle.none,
+                ),
                 borderRadius: BorderRadius.circular(Dimensions.space30),
               ),
               label: Text(category.title!),

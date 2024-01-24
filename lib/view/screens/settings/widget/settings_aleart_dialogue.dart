@@ -22,19 +22,6 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // CustomDropDownTextField2(
-            //       labelText: MyStrings.vat,
-            //       needLabel: false,
-            //       selectedValue: con.vatController.text.isEmpty ? null : con.vatController.text,
-            //       onChanged: (newValue) {
-            //         con.vatController.text = newValue!;
-            //       },
-            //       items: con.categoryList.map((newValue) {
-            //         return DropdownMenuItem<String>(
-            //           value: newValue.title,
-            //           child: Text(newValue.title!),
-            //         );
-            //       }).toList())
             const Text(MyStrings.enterVat, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
@@ -78,7 +65,6 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
                         text: MyStrings.save,
                         press: () {
                           controller.saveVatDataToSharedPreference();
-                         // controller.getVatActivationValue();
                           Get.back();
                         },
                         verticalPadding: Dimensions.space10)),

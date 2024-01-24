@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/controller/settings/settings_controller.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
@@ -52,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(MyStrings.vat + controller.cheakAmount),
+                            Text("${MyStrings.vat} : ${controller.vatamount??0}${controller.percentDiscount?MyUtils.getPercentSymbol():MyUtils.getCurrency()}"  ),
                             Switch(
                               value: controller.vatSwitch,
                               onChanged: (value) {
@@ -60,7 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 if (value) {
                                   controller.showVatCustomizeAleartDialogue(context);
                                 }
-                               // controller.saveVatDataToSharedPreference();
+                               
                               },
                             ),
                           ],

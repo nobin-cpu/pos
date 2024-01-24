@@ -27,6 +27,8 @@ class MyStrings{
   static const String please        = "Please";
   static const String selectRemarks = "Select Remarks";
   static const String selectTrxType = "Select Trx Type";
+  static const String day = "Day";
+  static const String month = "Month";
 
   static const String beforeCharge     = "Before Charge";
   static const String remainingBalance = "Remaining Balance";

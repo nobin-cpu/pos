@@ -80,8 +80,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         onTap: () {
                           controller.increaseInputFieldProductQuantity();
                           controller.updateTotalAmount(index, controller.quantity);
-                           controller.handleDiscountChange(controller.discountController.text, index);
-
+                          controller.handleDiscountChange(controller.discountController.text, index);
                         },
                         child: Image.asset(
                           MyImages.increase,
@@ -96,7 +95,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                             double enteredQuantity = double.tryParse(value.toString()) ?? 0;
                             controller.quantity = enteredQuantity.toInt();
                             controller.updateTotalAmount(index, enteredQuantity);
-                             controller.handleDiscountChange(controller.discountController.text, index);
+                            controller.handleDiscountChange(controller.discountController.text, index);
                           },
                           controller: controller.productQuantityController,
                           disableBorder: true,
@@ -109,7 +108,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                           if (controller.quantity > 1) {
                             controller.decreaseInputFieldProductQuantity();
                             controller.updateTotalAmount(index, controller.quantity);
-                             controller.handleDiscountChange(controller.discountController.text, index);
+                            controller.handleDiscountChange(controller.discountController.text, index);
                           }
                         },
                         child: Image.asset(
@@ -145,7 +144,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.space2, vertical: Dimensions.space10),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height*.055,
+                        height: MediaQuery.of(context).size.height * .055,
                         child: CustomTextField(
                           fillColor: MyColor.colorInputField,
                           onChanged: (value) {
@@ -202,9 +201,11 @@ class AddToCartAlertDialogue extends StatelessWidget {
                       text: MyStrings.addTOCart,
                       press: () {
                         controller.addToCart(controller.productList[index], controller.quantity);
-                        print("from screen" + controller.productList[index].uom.toString());
                         controller.loadCartData();
                         Get.back();
+
+                        print("from screen" + controller.productList[index].uom.toString());
+                        controller.loadCartData();
                       }),
                 )),
               ],

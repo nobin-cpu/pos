@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_prime/data/repo/home/home_repo.dart';
 import 'package:flutter_prime/data/services/api_service.dart';
 import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
 import 'package:flutter_prime/view/components/will_pop_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -61,12 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * .1),
                     ),
                     onTap: () async {
-                      // controller.logout();
-                   
-
-                         SharedPreferences preferences = await SharedPreferences.getInstance();
-       bool ?remem= await preferences.getBool(SharedPreferenceHelper.rememberMeKey);
-              print("Google Sign-In Successful from 1: ${remem}");
+                      controller.logout();
                     },
                     hoverColor: Colors.transparent,
                     child: Ink(

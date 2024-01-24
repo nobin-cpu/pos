@@ -37,9 +37,7 @@ class LoginController extends GetxController {
     Get.toNamed(RouteHelper.forgotPasswordScreen);
   }
 
-
-
-    Future<void> _saveUidToSharedPreference(String uid, bool rememberMe,String userName,String email) async {
+  Future<void> _saveUidToSharedPreference(String uid, bool rememberMe, String userName, String email) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(SharedPreferenceHelper.userIdKey, uid);
     await preferences.setString(SharedPreferenceHelper.userNameKey, userName);
@@ -50,14 +48,10 @@ class LoginController extends GetxController {
   }
 
   void checkAndGotoNextStep() async {
-     
-   
-
     if (remember) {
-    
       Get.offAllNamed(RouteHelper.bottomNavBar);
     } else {
-      await loginRepo.apiClient.sharedPreferences.setBool(SharedPreferenceHelper.rememberMeKey, false);
+      // await loginRepo.apiClient.sharedPreferences.setBool(SharedPreferenceHelper.rememberMeKey, false);
       Get.offAllNamed(RouteHelper.bottomNavBar);
     }
 
@@ -77,20 +71,21 @@ class LoginController extends GetxController {
         password: passwordController.text,
       );
 
-   
-
       prefix.User? user = userCredential.user;
       if (user != null) {
-         
-          print("Login successful, but email is not verified.");
+        print("Login successful, but email is not verified.");
 
-          if (remember) {
-            await _saveUidToSharedPreference(user.uid,remember, user.displayName.toString(), user.email.toString(),);
-          }
-            
-          CustomSnackBar.success(successList: [MyStrings.success]);
-          checkAndGotoNextStep();
-        
+        if (remember) {
+          await _saveUidToSharedPreference(
+            user.uid,
+            remember,
+            user.displayName.toString(),
+            user.email.toString(),
+          );
+        }
+
+        CustomSnackBar.success(successList: [MyStrings.success]);
+        checkAndGotoNextStep();
       } else {
         print("Login failed. User is null.");
         CustomSnackBar.error(errorList: [MyStrings.loginFailedTryAgain]);
@@ -145,23 +140,31 @@ class LoginController extends GetxController {
       final prefix.User? user = authResult.user;
 
       if (user != null) {
-        
         print("Google Sign-In Successful: ${user.displayName}");
-          
+
         bool isRegisteredUser = await isUserRegistered(user.email!);
-   
+
         if (isRegisteredUser) {
-          
-            await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
-            SharedPreferences preferences = await SharedPreferences.getInstance();
-       bool ?remem= await preferences.getBool(SharedPreferenceHelper.rememberMeKey);
-              print("Google Sign-In Successful from 1: ${remem}");
+          await _saveUidToSharedPreference(
+            user.uid,
+            true,
+            user.displayName.toString(),
+            user.email.toString(),
+          );
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          bool? remem = await preferences.getBool(SharedPreferenceHelper.rememberMeKey);
+          print("Google Sign-In Successful from 1: ${remem}");
           bool isDeletedUser = await isUserDeleted(user.email!);
-              
+
           if (!isDeletedUser) {
-            await _saveUidToSharedPreference(user.uid,true, user.displayName.toString(), user.email.toString(),);
+            await _saveUidToSharedPreference(
+              user.uid,
+              true,
+              user.displayName.toString(),
+              user.email.toString(),
+            );
             checkAndGotoNextStep();
-              print("Google Sign-In Successful from 2: ${remem}");
+            print("Google Sign-In Successful from 2: ${remem}");
             CustomSnackBar.success(successList: [MyStrings.success]);
           } else {
             print('User has deleted their account, skip adding coins.');
@@ -186,11 +189,7 @@ class LoginController extends GetxController {
 
   Future<bool> isUserRegistered(String email) async {
     try {
-    
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection('users') 
-          .where('email', isEqualTo: email)
-          .get();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection('users').where('email', isEqualTo: email).get();
 
       return querySnapshot.docs.isNotEmpty;
     } catch (error) {
@@ -211,8 +210,6 @@ class LoginController extends GetxController {
     print("send $uid=====================================================get the uid: " + uis.toString());
     uniqueID = uis.toString();
   }
-
-
 
   Future<bool> isUserDeleted(String email) async {
     try {

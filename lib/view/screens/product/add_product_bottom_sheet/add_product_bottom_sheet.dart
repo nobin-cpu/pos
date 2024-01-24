@@ -136,21 +136,23 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
               ),
             ],
           ),
-        controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
-        controller.categoryList.length > 1?  Row(
-            children: [
-              const Text(
-                MyStrings.category,
-                style: mediumLarge,
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Text(
-                MyStrings.required,
-                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-              ),
-            ],
-          ): const SizedBox(),
-         controller.categoryList.length > 1?  const SizedBox(height: Dimensions.space5) :const SizedBox(),
+          controller.categoryList.length > 1 ? const SizedBox(height: Dimensions.space10) : const SizedBox(),
+          controller.categoryList.length > 1
+              ? Row(
+                  children: [
+                    const Text(
+                      MyStrings.category,
+                      style: mediumLarge,
+                    ),
+                    const SizedBox(width: Dimensions.space10),
+                    Text(
+                      MyStrings.required,
+                      style: mediumDefault.copyWith(color: MyColor.getGreyText()),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
+          controller.categoryList.length > 1 ? const SizedBox(height: Dimensions.space5) : const SizedBox(),
           controller.categoryList.isNotEmpty && controller.categoryList.length > 1
               ? CustomDropDownTextField2(
                   labelText: MyStrings.category,
@@ -166,20 +168,22 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                     );
                   }).toList())
               : const SizedBox(),
-         controller.uomList.length > 1?  const SizedBox(height: Dimensions.space10) :const SizedBox(),
-        controller.uomList.length > 1?  Row(
-            children: [
-              const Text(
-                MyStrings.uom,
-                style: mediumLarge,
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Text(
-                MyStrings.required,
-                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-              ),
-            ],
-          ):const SizedBox(),
+          controller.uomList.length > 1 ? const SizedBox(height: Dimensions.space10) : const SizedBox(),
+          controller.uomList.length > 1
+              ? Row(
+                  children: [
+                    const Text(
+                      MyStrings.uom,
+                      style: mediumLarge,
+                    ),
+                    const SizedBox(width: Dimensions.space10),
+                    Text(
+                      MyStrings.required,
+                      style: mediumDefault.copyWith(color: MyColor.getGreyText()),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
           const SizedBox(height: Dimensions.space5),
           controller.uomList.isNotEmpty && controller.uomList.length > 1
               ? CustomDropDownTextField2(
@@ -226,28 +230,25 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
           ),
           const SizedBox(height: Dimensions.contentToButtonSpace),
           RoundedButton(
-  press: () {
-    if (controller.productNameController.text.isEmpty) {
-      CustomSnackBar.error(errorList: [MyStrings.enterProductName]);
-    } else if (controller.priceController.text.isEmpty) {
-      CustomSnackBar.error(errorList: [MyStrings.enterPrice]);
-    } else if (controller.stocksController.text.isEmpty) {
-      CustomSnackBar.error(errorList: [MyStrings.enterStocks]);
-    } else if (controller.categoryController.text.isEmpty || controller.categoryController.text == "Select One") {
-      CustomSnackBar.error(errorList: [MyStrings.selectACatagory]);
-    } else if (controller.uomController.text.isEmpty || controller.uomController.text == "Select One") {
-      CustomSnackBar.error(errorList: [MyStrings.selectAUnit]);
-    }
-    else if (controller.pickedImage ==null ) {
-      CustomSnackBar.error(errorList: [MyStrings.pickAnImage]);
-    }
-     else {
-      controller.addProducts();
-    }
-  },
-  text: MyStrings.save,
-),
-
+            press: () {
+              if (controller.productNameController.text.isEmpty) {
+                CustomSnackBar.error(errorList: [MyStrings.enterProductName]);
+              } else if (controller.priceController.text.isEmpty) {
+                CustomSnackBar.error(errorList: [MyStrings.enterPrice]);
+              } else if (controller.stocksController.text.isEmpty) {
+                CustomSnackBar.error(errorList: [MyStrings.enterStocks]);
+              } else if (controller.categoryController.text.isEmpty || controller.categoryController.text == "Select One") {
+                CustomSnackBar.error(errorList: [MyStrings.selectACatagory]);
+              } else if (controller.uomController.text.isEmpty || controller.uomController.text == "Select One") {
+                CustomSnackBar.error(errorList: [MyStrings.selectAUnit]);
+              } else if (controller.pickedImage == null) {
+                CustomSnackBar.error(errorList: [MyStrings.pickAnImage]);
+              } else {
+                controller.addProducts();
+              }
+            },
+            text: MyStrings.save,
+          ),
         ],
       ),
     );

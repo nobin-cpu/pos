@@ -114,13 +114,14 @@ class CategoryProductListController extends GetxController {
         existingCartItem.discountAmount = discount;
 
         await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
+        // Get.back();
         CustomSnackBar.success(successList: [MyStrings.productUpdatededSuccessfully]);
-        Get.back();
+        update();
       } else {
         print("discount type.............." + isDiscountInpercent.toString());
         await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
+        // Get.back();
         CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
-         Get.back();
         update();
       }
 

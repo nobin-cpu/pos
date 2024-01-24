@@ -99,13 +99,14 @@ class DatabaseHelper {
     }
 
     print("VAT from database helper: $vatAmount");
+    print("date database helper: ${DateTime.now()}");
 
     try {
       int invoiceId = await _database.insert('invoice_history', {
         'invoiceId': transactionId,
         'totalAmount': grandTotal.toString(),
         'totalDiscountAmount': totalDiscountAmount.toString(),
-        'checkoutTime': DateTime.now().toUtc().toString(),
+        'checkoutTime': DateTime.now().toString(),
         'paymentMethod': paymentMethod,
         'status': isVoid ? 'VOID' : 'NOT VOID',
         'vatAmount': vatAmount,
@@ -311,14 +312,14 @@ class DatabaseHelper {
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
           name: productMap['productName'],
-          price: productMap['productPrice'],
-          totalAmount: double.parse(productMap['totalAmount']),
+          price: productMap['productPrice'].toString(),
+         totalAmount: double.parse(productMap['totalAmount']),
           quantity: productMap['quantity'],
           uom: productMap['uom'],
-          discountAmount: double.tryParse(productMap['discountAmount']),
+         discountAmount: double.tryParse(productMap['discountAmount']),
           grandTotal: productMap['grandTotal'],
           isDiscountInPercent: productMap['isDiscountInPercent'],
-          vatAmount: productMap['vatAmount'],
+          vatAmount: productMap['vatAmount'].toString(),
         ));
       }
 

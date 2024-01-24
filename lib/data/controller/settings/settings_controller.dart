@@ -13,7 +13,11 @@ class SettingsController extends GetxController {
   String cheakAmount = "";
   bool? bools;
 
+  String? vatamount = "";
+
   void showVatCustomizeAleartDialogue(BuildContext context) {
+    vatController.text = vatamount.toString();
+    update();
     CustomAlertDialog(child: const VatCustomizeAlartDialogue(), actions: []).customAlertDialog(context);
   }
 
@@ -34,21 +38,20 @@ class SettingsController extends GetxController {
     update();
   }
 
- getVatActivationValue() async {
+  getVatActivationValue() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     percentDiscount = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
-    String? vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
+    vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
     vatSwitch = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
     print('saved vat amount $vatSwitch');
     print('saved vat amount $percentDiscount');
     update();
   }
 
- Future<void> saveVatDataToSharedPreference() async {
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
-  await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
-  await preferences.setBool(SharedPreferenceHelper.isVatactiveOrNot, vatSwitch);
-}
-
+  Future<void> saveVatDataToSharedPreference() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
+    await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
+    await preferences.setBool(SharedPreferenceHelper.isVatactiveOrNot, vatSwitch);
+  }
 }

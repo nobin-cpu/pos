@@ -1,7 +1,7 @@
 class MyImages{
 
   static const String appLogoCircle     = "assets/images/app_logo_circle.png";
-  static const String appLogo           = "assets/images/app_logo.png";
+  static const String appLogo           = "assets/images/appLogo.png";
 
   static const String placeHolderImage  = "assets/images/place_holder.png";
 

@@ -26,6 +26,9 @@ class MyUtils {
  static String getPercentSymbol() {
   return " % ";
 }
+ static String getHashSymbol() {
+  return "#";
+}
  static String getDot() {
   return " . ";
 }

@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height * .06),
                   Center(
-                    child: Image.asset(MyImages.appLogo, height: 50, width: 225),
+                    child: Image.asset(MyImages.appLogo, height: 100, width: 225),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * .08),
                   Form(
@@ -163,14 +163,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )),
                             TextButton(
                               onPressed: () async {
-                                SharedPreferences preferences = await SharedPreferences.getInstance();
-                                bool? remm = await preferences.getBool(
-                                  SharedPreferenceHelper.rememberMeKey,
-                                );
+                               
 
-                                print("this is uid+++++++++++++++++++++++${remm}");
 
-                                // Get.offAndToNamed(RouteHelper.registrationScreen);
+                               Get.offAndToNamed(RouteHelper.registrationScreen);
                               },
                               child: Text(MyStrings.signUp.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w500)),
                             )

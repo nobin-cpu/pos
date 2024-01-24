@@ -202,13 +202,19 @@ class ConfirmCheakoutController extends GetxController {
   double get totalPrice {
     return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
   }
+  
 
-  double get grandTotalPrice {
-    double totalPriceWithoutVat = totalPrice;
-    double vatAmount = (totalPriceWithoutVat * (vat / 100.0));
 
-    return totalPriceWithoutVat + vatAmount;
-  }
+  
+double get grandTotalPrice {
+  double totalPriceWithoutVat = totalPrice;
+  double vatAmount = isVatInPercent
+      ? (totalPriceWithoutVat * (vat / 100.0))
+      : vat.toDouble(); 
+
+  return totalPriceWithoutVat + vatAmount;
+}
+
 double subTotalForProduct(CartProductModel product) {
   double totalPriceWithoutVat = (double.parse(product.price ?? "0.0") * product.quantity!) - (product.discountPrice ?? 0.0);
   return totalPriceWithoutVat;

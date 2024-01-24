@@ -26,9 +26,8 @@ class _PosCategorySectionState extends State<PosCategorySection> {
             crossAxisSpacing: 10,
           ),
           itemBuilder: (context, index) => Container(
-            decoration: BoxDecoration(border: Border.all(),borderRadius: BorderRadius.circular(Dimensions.cardRadius)),
+            decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(Dimensions.cardRadius)),
             child: CustomCard(
-              
               isPress: true,
               onPressed: () {
                 Get.toNamed(RouteHelper.categoryProductListScreen, arguments: [controller.categoryList[index].title]);

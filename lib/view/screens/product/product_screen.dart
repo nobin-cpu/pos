@@ -1,4 +1,4 @@
-// ProductScreen.dart
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
@@ -63,69 +63,74 @@ class _ProductScreenState extends State<ProductScreen> {
                 )
               ],
             ),
-            body: controller.loading?const CustomLoader():
-             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                controller.productList.isEmpty
-                    ? const SizedBox()
-                    : Align(
-                        alignment: Alignment.centerLeft,
-                        child: ChipFilter(
-                          
-                          categories: controller.categoryList,
-                          onChipSelected: (category) {
-                            controller.selectedCategory = category.title!;
-                            controller.update();
-                          },
-                          selectedCategory:controller.selectedCategory,
-                        ),
-                      ),
-                      controller.productList.isEmpty ?Center(child: Image.asset(MyImages.noDataFound,height: Dimensions.space200,)):
-                Expanded(
-                  child: GetBuilder<ProductController>(
-                      builder: (controller) => controller.productList.isEmpty
-                          ? Center(child: Image.asset(MyImages.noDataFound, height: Dimensions.space300))
-                          : ListView.builder(
-                              itemCount: controller.productList.length,
-                              itemBuilder: (context, index) {
-                                if (controller.selectedCategory.isEmpty || controller.productList[index].category == controller.selectedCategory) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(Dimensions.space5),
-                                    child: CustomCard(
-                                      radius: Dimensions.space8,
-                                      width: double.infinity,
-                                      child: Row(
-                                        children: [
-                                          Image.file(File(controller.productList[index].imagePath ?? ""), height: Dimensions.space50, width: Dimensions.space50),
-                                          const SizedBox(
-                                            width: Dimensions.space10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(controller.productList[index].name ?? 'N/A', style: regularMediumLarge),
-                                              Text("${MyStrings.price}: ${controller.productList[index].price}${MyUtils.getCurrency()} /${controller.productList[index].uom}" ?? 'N/A ', style: regularMediumLarge),
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          InkWell(
-                                            onTap: () {
-                                              controller.showEditOrDeleteBottomSheet(context, controller.productList[index]);
-                                            },
-                                            child: Image.asset(MyImages.edit, height: Dimensions.space15, color: MyColor.colorBlack),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return Container(); // Empty container for products not matching the selected category
-                                }
-                              },
-                            )),
-                ),
-              ],
-            )));
+            body: controller.loading
+                ? const CustomLoader()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      controller.productList.isEmpty
+                          ? const SizedBox()
+                          : Align(
+                              alignment: Alignment.centerLeft,
+                              child: ChipFilter(
+                                categories: controller.categoryList,
+                                onChipSelected: (category) {
+                                  controller.selectedCategory = category.title!;
+                                  controller.update();
+                                },
+                                selectedCategory: controller.selectedCategory,
+                              ),
+                            ),
+                      controller.productList.isEmpty
+                          ? Center(
+                              child: Image.asset(
+                              MyImages.noDataFound,
+                              height: Dimensions.space200,
+                            ))
+                          : Expanded(
+                              child: GetBuilder<ProductController>(
+                                  builder: (controller) => controller.productList.isEmpty
+                                      ? Center(child: Image.asset(MyImages.noDataFound, height: Dimensions.space300))
+                                      : ListView.builder(
+                                          itemCount: controller.productList.length,
+                                          itemBuilder: (context, index) {
+                                            if (controller.selectedCategory.isEmpty || controller.productList[index].category == controller.selectedCategory) {
+                                              return Padding(
+                                                padding: const EdgeInsets.all(Dimensions.space5),
+                                                child: CustomCard(
+                                                  radius: Dimensions.space8,
+                                                  width: double.infinity,
+                                                  child: Row(
+                                                    children: [
+                                                      Image.file(File(controller.productList[index].imagePath ?? ""), height: Dimensions.space50, width: Dimensions.space50),
+                                                      const SizedBox(
+                                                        width: Dimensions.space10,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(controller.productList[index].name ?? 'N/A', style: regularMediumLarge),
+                                                          Text("${MyStrings.price}: ${controller.productList[index].price}${MyUtils.getCurrency()} /${controller.productList[index].uom}" ?? 'N/A ', style: regularMediumLarge),
+                                                        ],
+                                                      ),
+                                                      const Spacer(),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          controller.showEditOrDeleteBottomSheet(context, controller.productList[index]);
+                                                        },
+                                                        child: Image.asset(MyImages.edit, height: Dimensions.space15, color: MyColor.colorBlack),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return Container(); 
+                                            }
+                                          },
+                                        )),
+                            ),
+                    ],
+                  )));
   }
 }

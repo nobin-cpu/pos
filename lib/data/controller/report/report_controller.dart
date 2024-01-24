@@ -22,7 +22,6 @@ class ReportController extends GetxController {
   double vat = 0.0;
   int? productVat = 0;
 
-
   DateTime get startDate => _startDate;
 
   void setStartDate(DateTime date) {
@@ -84,18 +83,17 @@ class ReportController extends GetxController {
       double discountSum = 0.0;
       double quantitySum = 0.0;
       double perProductgrandTotal = 0.0;
-      
-       double perProductPrice = 0.0;
-       String perProductUom ="";
+
+      double perProductPrice = 0.0;
+      String perProductUom = "";
 
       for (var product in products) {
         subtotalSum += product.totalAmount ?? 0.0;
         discountSum += product.discountAmount ?? 0.0;
         quantitySum += product.quantity ?? 0.0;
         perProductgrandTotal += product.grandTotal ?? 0.0;
-         perProductPrice = double.tryParse(product.price.toString()) ?? 0.0;
-         perProductUom = product.uom??"";
-   
+        perProductPrice = double.tryParse(product.price.toString()) ?? 0.0;
+        perProductUom = product.uom ?? "";
       }
 
       groupSubtotalSum[productName] = subtotalSum;
@@ -104,9 +102,18 @@ class ReportController extends GetxController {
       groupGrandtotalSum[productName] = perProductgrandTotal;
       groupperProductSum[productName] = perProductPrice;
       groupperProductUom[productName] = perProductUom;
-
     }
     update();
+  }
+
+  double calculateTotalGrandtotalSum() {
+    double totalGrandtotalSum = 0.0;
+
+    for (var grandtotal in groupGrandtotalSum.values) {
+      totalGrandtotalSum += grandtotal;
+    }
+    update();
+    return totalGrandtotalSum;
   }
 
   Future<void> fetchFilteredInvoiceDetails(DateTime date) async {

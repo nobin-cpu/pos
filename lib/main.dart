@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,8 @@ Future<void> _messageHandler(RemoteMessage message) async {
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
+   final databaseHelper = DatabaseHelper();
+  await databaseHelper.initializeDatabase();
   Map<String, Map<String, String>> languages = await di_service.init();
 
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
