@@ -2,6 +2,7 @@ import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
+import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,12 +45,41 @@ class InvoiceDetailsController extends GetxController {
   Future<void> updateVoidStatus() async {
     try {
       await databaseHelper.updateInvoiceItemStatus(invoiceId, 'VOID');
+      try {
+    for (var voidProduct in products) {
+      String productId = voidProduct.productId.toString();
+      String stock = await databaseHelper.getProductStock(productId);
+      
+      int newStock = int.parse(stock) + voidProduct.quantity!;
+      await updateProductStock(int.parse(productId), newStock.toString());
+      
+      print("Updated stock for product $productId: $newStock");
+    }
+
+
+
+    update();
+
+    Get.back();
+    Get.offAllNamed(RouteHelper.bottomNavBar);
+  } catch (e) {
+    print('Error completing checkout: $e');
+    CustomSnackBar.error(errorList: ["Void stock update failed"]);
+  }
       Get.offAllNamed(RouteHelper.bottomNavBar);
     } catch (e) {
       print("Error during updateVoidStatus: $e");
     }
   }
 
+
+ Future<void> updateProductStock(int productId, String newStock) async {
+    try {
+      await databaseHelper.updateProductStock(productId, newStock);
+    } catch (e) {
+      print('Error updating product stock: $e');
+    }
+  }
 
 
   getVatActivationValue() async {

@@ -22,6 +22,9 @@ class HomeMainSection extends StatelessWidget {
             if (index == 0) {
               Get.toNamed(RouteHelper.inventoryScreen);
             }
+            if (index == 1) {
+              Get.toNamed(RouteHelper.stockScreen);
+            }
             if (index == 2) {
               Get.toNamed(RouteHelper.posScreen);
             }

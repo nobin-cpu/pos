@@ -27,8 +27,8 @@ class MyStrings{
   static const String please        = "Please";
   static const String selectRemarks = "Select Remarks";
   static const String selectTrxType = "Select Trx Type";
-  static const String day = "Day";
-  static const String month = "Month";
+  static const String day           = "Day";
+  static const String month         = "Month";
 
   static const String beforeCharge     = "Before Charge";
   static const String remainingBalance = "Remaining Balance";
@@ -57,6 +57,7 @@ class MyStrings{
   static const String kycAlreadyVerifiedMsg = 'You are already verified';
 
   static const String verify          = "Verify";
+  static const String checkoutFailed          = "Checkout Failed";
   static const String withdraw        = "Withdrawals";
   static const String seeAll          = "See All";
   static const String home            = "Home";
@@ -167,6 +168,7 @@ class MyStrings{
   static const String time                   = "Time";
   static const String bankName               = "Bank Name";
   static const String accountName            = "Account Name";
+  static const String notEnoughStock            = "Not Enough Stock";
   static const String accountNumber          = "Account Number";
   static const String routingNumber          = "Routing Number";
   static const String payNow                 = "PAY NOW";
@@ -238,6 +240,7 @@ class MyStrings{
   static const String rejected                               = "Rejected";
   static const String inventory                              = "Inventory";
   static const String stock                                  = "Stock";
+  static const String inStock                                  = "In stock:";
   static const String setting                                  = "Setting";
   static const String pos                                    = "POS";
   static const String report                                 = "Report";
@@ -280,7 +283,7 @@ class MyStrings{
   static const String enterPrice                             = "Enter price";
   static const String enterProductName                       = "Enter product name";
   static const String price                                  = "Price:";
-  static const String onlyPrice                                  = "Price";
+  static const String onlyPrice                              = "Price";
   static const String amt                                    = "Amt:";
   static const String addTOCart                              = "Add TO Cart";
   static const String unitPrice                              = "Unite price:";
@@ -289,7 +292,7 @@ class MyStrings{
   static const String cart                                   = "Cart";
   static const String edit                                   = 'Edit';
   static const String editProduct                            = 'Edit product';
-  static const String updateProduct                            = 'Update product';
+  static const String updateProduct                          = 'Update product';
   static const String editItem                               = 'Edit item';
   static const String editCategory                           = 'Edit Category';
   static const String checkout                               = 'Checkout';
@@ -298,7 +301,7 @@ class MyStrings{
   static const String image                                  = 'Image';
   static const String products                               = 'Product';
   static const String total                                  = 'Total';
-  static const String subTotal                                  = 'Sub Total';
+  static const String subTotal                               = 'Sub Total';
   static const String vat                                    = 'VAT';
   static const String grandTotal                             = 'Grand Total:';
   static const String actions                                = 'Actions';
@@ -311,28 +314,30 @@ class MyStrings{
   static const String purchasePrice                          = "Purchase Price" ;
   static const String discount                               = "Discount" ;
   static const String succesfullyProductAddedToCart          = "Product succesfully added to cart";
-  static const String productCheckoutSuccessfully          = "Product checkout successfully";
+  static const String productCheckoutSuccessfully            = "Product checkout successfully";
   static const String failedToAddToCart                      = "Failed To Add To Cart";
-  static const String addProduct                             = "Add Product";
-  static const String required                               = "(Required)";
-  static const String enterVat                               = "Enter vat";
-  static const String enterVatMsg                               = "If you want to put vat in percentage than fill the cheakbox";
-  static const String selectPaymentGatewat                               = "Select payment gatewat";
-  static const String billAndPayment                               = "Bill and Payment";
-  static const String selectPaymentType                               = "Select Payment Type";
-  static const String invoice                               = "Invoice";
-  static const String invoiceDetails                               = "Invoice Details";
-  static const String voids                               = "Void";
-  static const String print                               = "Print";
-  static const String from                               = "From";
-  static const String to                               = "To";
-  static const String voidDetails                               = "Void Details";
-  static const String pickAnImage                               = "Pick an image";
-  static const String userIsNotRegistered                               = "User is not registered.";
-  static const String fromDateCannotBeAfterDate                               = 'From date cannot be after To date';
-  static const String fromDateCannotBeBeforeDate                               = 'To date cannot be before From date';
-  static const String productAddedSuccessfully                               = "Product added successfully";
-  static const String productUpdatededSuccessfully                               = "Product updated successfully";
+  static const String addProduct                   = "Add Product";
+  static const String updateStockItems             = "Update Stock Items";
+  static const String required                     = "(Required)";
+  static const String enterVat                     = "Enter vat";
+  static const String enterVatMsg                  = "If you want to put vat in percentage than fill the cheakbox";
+  static const String selectPaymentGatewat         = "Select payment gatewat";
+  static const String billAndPayment               = "Bill and Payment";
+  static const String selectPaymentType            = "Select Payment Type";
+  static const String invoice                      = "Invoice";
+  static const String invoiceDetails               = "Invoice Details";
+  static const String voids                        = "Void";
+  static const String print                        = "Print";
+  static const String from                         = "From";
+  static const String to                           = "To";
+  static const String voidDetails                  = "Void Details";
+  static const String pickAnImage                  = "Pick an image";
+  static const String userIsNotRegistered          = "User is not registered.";
+  static const String fromDateCannotBeAfterDate    = 'From date cannot be after To date';
+  static const String fromDateCannotBeBeforeDate   = 'To date cannot be before From date';
+  static const String productAddedSuccessfully     = "Product added successfully";
+  static const String productUpdatededSuccessfully = "Product updated successfully";
+  static const String stockUpgrationFailed         = "Stock upgration failed";
 
 
 

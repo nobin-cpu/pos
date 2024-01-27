@@ -12,7 +12,6 @@ import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
-import 'package:flutter_prime/view/screens/cheakout/widgets/confirm_checkout_pop_up.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_alart_dialogue.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,6 +47,17 @@ class ConfirmCheakoutController extends GetxController {
   List<CartProductModel> cartProductList = [];
   double vat = 0.0;
   double? discountPrice;
+   List<ProductModel> products = [];
+
+    Future<void> loadProducts() async {
+    await databaseHelper.initializeDatabase();
+    try {
+      products = await databaseHelper.getProductList();
+      update();
+    } catch (e) {
+      print('Error loading product data: $e');
+    }
+  }
 
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
@@ -58,6 +68,7 @@ class ConfirmCheakoutController extends GetxController {
   void initData() async {
     getCartList();
     await getVatData();
+    await loadProducts();
     loadDropdownData();
   }
 
@@ -202,25 +213,18 @@ class ConfirmCheakoutController extends GetxController {
   double get totalPrice {
     return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
   }
-  
 
+  double get grandTotalPrice {
+    double totalPriceWithoutVat = totalPrice;
+    double vatAmount = isVatInPercent ? (totalPriceWithoutVat * (vat / 100.0)) : vat.toDouble();
 
-  
-double get grandTotalPrice {
-  double totalPriceWithoutVat = totalPrice;
-  double vatAmount = isVatInPercent
-      ? (totalPriceWithoutVat * (vat / 100.0))
-      : vat.toDouble(); 
+    return totalPriceWithoutVat + vatAmount;
+  }
 
-  return totalPriceWithoutVat + vatAmount;
-}
-
-double subTotalForProduct(CartProductModel product) {
-  double totalPriceWithoutVat = (double.parse(product.price ?? "0.0") * product.quantity!) - (product.discountPrice ?? 0.0);
-  return totalPriceWithoutVat;
-}
-
-
+  double subTotalForProduct(CartProductModel product) {
+    double totalPriceWithoutVat = (double.parse(product.price ?? "0.0") * product.quantity!) - (product.discountPrice ?? 0.0);
+    return totalPriceWithoutVat;
+  }
 
   // void showConfirmPopUp(
   //   BuildContext context,
@@ -229,12 +233,24 @@ double subTotalForProduct(CartProductModel product) {
   // }
 
   Future<void> completeCheckout(String paymentMethod) async {
-    int? currentVat = int.tryParse(vatAmount.toString());
-    print("this is current vat ${currentVat}");
-    update();
+  int? currentVat = int.tryParse(vatAmount.toString());
+  print("this is current vat ${currentVat}");
+  update();
+
+  try {
+    for (var cartProduct in cartProductList) {
+      String productId = cartProduct.productId.toString();
+      String stock = await databaseHelper.getProductStock(productId);
+      
+      int newStock = int.parse(stock) - cartProduct.quantity!;
+      await updateProductStock(int.parse(productId), newStock.toString());
+      
+      print("Updated stock for product $productId: $newStock");
+    }
+
     await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent);
     await databaseHelper.clearCart();
-    print("vat in percent or not${isVatInPercent}");
+
     CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
 
     cartProductList.clear();
@@ -242,7 +258,12 @@ double subTotalForProduct(CartProductModel product) {
 
     Get.back();
     Get.offAllNamed(RouteHelper.bottomNavBar);
+  } catch (e) {
+    print('Error completing checkout: $e');
+    CustomSnackBar.error(errorList: [MyStrings.checkoutFailed]);
   }
+}
+
 
   int generateUniqueId() {
     Random random = Random();
@@ -285,5 +306,13 @@ double subTotalForProduct(CartProductModel product) {
     paidinCash = !paidinCash;
     paidOnline = false;
     update();
+  }
+
+  Future<void> updateProductStock(int productId, String newStock) async {
+    try {
+      await databaseHelper.updateProductStock(productId, newStock);
+    } catch (e) {
+      print('Error updating product stock: $e');
+    }
   }
 }

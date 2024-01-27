@@ -125,7 +125,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text(product.name ?? "")),
+                                      child: Center(child: Text(product.productId.toString() ?? "")),
                                     ),
                                   ),
                                   TableCell(

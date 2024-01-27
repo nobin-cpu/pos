@@ -21,14 +21,17 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  final ReportController controller = Get.put(ReportController());
+  final  controller = Get.put(ReportController());
 
   @override
   void initState() {
     super.initState();
+
     controller.fetchAllInvoiceDetails();
+    controller.fetchFilteredInvoiceDetails(controller.startDate);
     controller.calculateGrandTotal();
     controller.calculateTotal();
+    print("this is satart datae${controller.startDate}");
   }
 
   @override
@@ -55,7 +58,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             controller.update();
                           },
                           width: Dimensions.space100,
-                          child: Center(child: Text(controller.isFilteringByMonth ? MyStrings.day : MyStrings.month)),
+                          child: Center(child: Text(controller.isFilteringByMonth ? MyStrings.month : MyStrings.day)),
                         ),
                       ),
                       InkWell(
@@ -92,7 +95,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             controller.moveFilterDateForward();
                           }
                           controller.groupNames.isNotEmpty ? controller.calculateTotalGrandtotalSum().toStringAsFixed(2) : 0;
-                             controller.update();
+                          controller.update();
                         },
                         child: Image.asset(
                           MyImages.next,

@@ -28,15 +28,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      // ClipRRect(
-                      //   borderRadius: BorderRadius.circular(Dimensions.space3),
-                      //   child: Image.file(
-                      //     File(con.productList[index].imagePath ?? ""),
-                      //     height: Dimensions.space50,
-                      //     width: Dimensions.space50,
-                      //     fit: BoxFit.cover,
-                      //   ),
-                      // ),
+                   
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -204,7 +196,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         controller.loadCartData();
                         Get.back();
 
-                        print("from screen" + controller.productList[index].uom.toString());
+                       
                         controller.loadCartData();
                       }),
                 )),

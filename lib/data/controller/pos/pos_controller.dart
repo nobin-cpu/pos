@@ -13,6 +13,7 @@ class PosController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+     initData();
     // loadDropdownData();
   }
 
@@ -21,11 +22,11 @@ class PosController extends GetxController {
     update();
     try {
       await databaseHelper.initializeDatabase();
-
+      print("database has initilized here in loadCategoryData");
       List<CategoryModel> categoryData = await databaseHelper.getCategoryList();
       categoryList = categoryData;
 
-      // Load products when loading category data
+     
       await loadProductData();
 
       update();
@@ -38,6 +39,9 @@ class PosController extends GetxController {
 
   Future<void> loadProductData() async {
     try {
+      if (!databaseHelper.isDatabaseInitialized()) {
+        await databaseHelper.initializeDatabase();
+      }
       List<ProductModel> productsData = await databaseHelper.getProductList();
       productList = productsData;
     } catch (e) {
@@ -45,8 +49,9 @@ class PosController extends GetxController {
     }
   }
 
+
   Future<void> initData() async {
-    await loadProductData();
+  //  await loadProductData();
     await loadCategoryData();
   }
 }

@@ -40,7 +40,8 @@ class ReportController extends GetxController {
   void onInit() {
     _startDate = DateTime.now();
     _endDate = DateTime.now();
-
+      fetchAllInvoiceDetails();
+     fetchFilteredInvoiceDetails(startDate);
     super.onInit();
   }
 
@@ -62,7 +63,6 @@ class ReportController extends GetxController {
 
   Map<String, List<InvoiceDetailsModel>> groupedProducts = {};
   Map<String, double> groupSum = {};
-
   Map<String, double> groupSubtotalSum = {};
   Map<String, double> groupDiscountSum = {};
   Map<String, double> groupQuantitySum = {};

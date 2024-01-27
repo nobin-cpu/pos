@@ -253,7 +253,7 @@ class DatabaseHelper {
       final List<Map<String, dynamic>> productData = await _database.query(
         'product_details',
         where: 'checkoutTime >= ? AND checkoutTime < ?',
-        whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
+        whereArgs: [startDate.toIso8601String().substring(0, 10), endDate.toIso8601String().substring(0, 10)],
       );
 
       List<InvoiceDetailsModel> products = [];
@@ -320,6 +320,7 @@ class DatabaseHelper {
           grandTotal: productMap['grandTotal'],
           isDiscountInPercent: productMap['isDiscountInPercent'],
           vatAmount: productMap['vatAmount'].toString(),
+          productId: int.tryParse(productMap['productId'].toString()),
         ));
       }
 
@@ -346,6 +347,26 @@ class DatabaseHelper {
       print("Invoice item status updated successfully.");
     } catch (e) {
       print("Error during updateInvoiceItemStatus: $e");
+    }
+  }
+
+
+
+   Future<void> updateProductStock(int productId, String newStock) async {
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
+    }
+
+    try {
+      await _database.update(
+        'product',
+        {'stock': newStock},
+        where: 'id = ?',
+        whereArgs: [productId],
+      );
+      print('Stock updated successfully');
+    } catch (e) {
+      print('Error updating stock: $e');
     }
   }
 
@@ -627,7 +648,27 @@ class DatabaseHelper {
     });
   }
 
-  bool isDatabaseInitialized() {
+
+
+ Future<String> getProductStock(String productId) async {
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
+    }
+
+    List<Map<String, dynamic>> result = await _database.query(
+      'product',
+      where: 'id = ?',
+      whereArgs: [productId],
+      columns: ['stock'], 
+    );
+
+    if (result.isNotEmpty) {
+      return result.first['stock'].toString();
+    } else {
+      return '0';
+    }
+  }
+    bool isDatabaseInitialized() {
     return _database.isOpen;
   }
 
