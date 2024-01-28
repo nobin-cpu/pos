@@ -142,17 +142,6 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
               Expanded(
                 child: RoundedButton(
                   verticalPadding: Dimensions.space10,
-                  press: () async {
-                    controller.editProduct(widget.id, controller.newNameController.text, controller.pickedImage);
-                    Get.back();
-                  },
-                  text: MyStrings.update,
-                ),
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Expanded(
-                child: RoundedButton(
-                  verticalPadding: Dimensions.space10,
                   color: MyColor.colorRed,
                   press: () async {
                     await controller.deleteProduct(widget.id);
@@ -161,7 +150,18 @@ class _EditOrDeleteProductBottomSheetState extends State<EditOrDeleteProductBott
                   text: MyStrings.delete,
                 ),
               ),
-            ],
+                const SizedBox(width: Dimensions.space10),
+              Expanded(
+                child: RoundedButton(
+                  verticalPadding: Dimensions.space10,
+                  press: () async {
+                    controller.editProduct(widget.id, controller.newNameController.text, controller.pickedImage);
+                    Get.back();
+                  },
+                  text: MyStrings.update,
+                ),
+              ),
+             ],
           )
         ],
       );

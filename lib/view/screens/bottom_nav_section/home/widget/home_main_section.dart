@@ -31,6 +31,9 @@ class HomeMainSection extends StatelessWidget {
             if (index == 3) {
               Get.toNamed(RouteHelper.reportScreen);
             }
+            if (index == 4) {
+              Get.toNamed(RouteHelper.issueScreen);
+            }
             print(index);
           },
         ),

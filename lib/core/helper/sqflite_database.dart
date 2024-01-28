@@ -1,14 +1,14 @@
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
+import 'package:flutter_prime/data/model/damage_history/damage_history_model.dart';
+import 'package:flutter_prime/data/model/damage_history_details/damage_history_details_model.dart';
 import 'package:flutter_prime/data/model/invoice/invoice_model.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/data/model/void_items/void_items_model.dart';
-import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 class DatabaseHelper {
   late Database _database;
@@ -21,7 +21,7 @@ class DatabaseHelper {
           'CREATE TABLE IF NOT EXISTS uom(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
         );
         db.execute(
-          'CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)',
+          'CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,imagePath TEXT,)',
         );
         db.execute(
           'CREATE TABLE IF NOT EXISTS product(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,price TEXT, category TEXT, uom TEXT, imagePath TEXT,stock TEXT,wholesalePrice TEXT,mrp TEXT,purchasePrice TEXT)',
@@ -45,8 +45,19 @@ class DatabaseHelper {
         db.execute(
           'CREATE TABLE IF NOT EXISTS voidItems(id INTEGER PRIMARY KEY AUTOINCREMENT, invoiceId INTEGER, totalAmount TEXT, checkoutTime TEXT, paymentMethod TEXT, productDetails TEXT)',
         );
+
+        db.execute('''
+        CREATE TABLE IF NOT EXISTS damage_history(id INTEGER PRIMARY KEY AUTOINCREMENT, damageID INTEGER,  creationTime TEXT,  )''');
+        db.execute('CREATE TABLE IF NOT EXISTS damage_details('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            'damageID INTEGER, '
+            'creationTime TEXT, '
+            'productName TEXT, '
+            'quantity INTEGER,');
+       
+        print('Table damage_details created successfully.');
       },
-      version: 27,
+      version: 33,
     );
   }
 
@@ -57,11 +68,139 @@ class DatabaseHelper {
     await _database.insert('uom', uom.toMap());
   }
 
-  Future<void> insertCategory(String categoryTitle) async {
+ Future<void> insertDamageDetails(int damageId, String productName, String checkoutTime, int quantity) async {
+  print("this is ");
+  print(damageId);
+  print(productName);
+  print(checkoutTime);
+  print(quantity);
+  print("this is ----------------------------------------------");
+
+  try {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
-    await _database.insert('category', {'title': categoryTitle});
+
+     await _createDamageDetailsTableIfNotExists();
+     await _createDamageHiostoryTableIfNotExists();
+
+   await _database.insert('damage_history' ,{
+'damageID':damageId,
+'creationTime':checkoutTime,
+    
+   });
+   await _database.insert('damage_details' ,{
+'damageID':damageId,
+'creationTime':checkoutTime,
+'productName':productName,
+'quantity':quantity,
+    
+   });
+
+    print("Damage item added successfully");
+  } catch (e) {
+    print('Error inserting damage details: $e');
+    throw e; 
+  }
+}
+
+
+// Future<void> insertDamageDetails(int damageId, int productId, String productName, int quantity) async {
+//   if (!isDatabaseInitialized()) {
+//     throw Exception("Database not initialized");
+//   }
+
+//   try {
+//     await _database.insert('damage_details', {
+//       'damageId': damageId,
+//       'productId': productId,
+//       'productName': productName,
+//       'quantity': quantity,
+//     });
+
+//     print("Damage details added successfully");
+//   } catch (e) {
+//     print("Error during insertDamageDetails: $e");
+//   }
+// }
+
+  Future<void> _createDamageDetailsTableIfNotExists() async {
+    await _database.execute(
+      'CREATE TABLE IF NOT EXISTS damage_details('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'damageID INTEGER, '
+      'creationTime TEXT, '
+      'productName TEXT, '
+      'quantity INTEGER'
+      ')',
+    );
+    
+  }
+  Future<void> _createDamageHiostoryTableIfNotExists() async {
+   await _database.execute(
+      'CREATE TABLE IF NOT EXISTS damage_history(id INTEGER PRIMARY KEY AUTOINCREMENT, damageID INTEGER,  creationTime TEXT)',
+    );
+    
+  }
+
+ Future<List<DamageHistoryItem>> getDamageHistory() async {
+  if (!isDatabaseInitialized()) {
+    throw Exception("Database not initialized");
+  }
+
+  final List<Map<String, dynamic>> maps =
+      await _database.query('damage_history');
+
+  return List.generate(maps.length, (index) {
+    return DamageHistoryItem(
+      id: maps[index]['id'],
+      damageID: maps[index]['damageID'],
+      creationTime: maps[index]['creationTime'],
+    );
+  });
+}
+
+ Future<List<DamageDetailItem>> getDamageDetails(int damageID) async {
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
+    }
+
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'damage_details',
+      where: 'damageID = ?',
+      whereArgs: [damageID],
+    );
+
+    return List.generate(maps.length, (index) {
+      return DamageDetailItem(
+        id: maps[index]['id'],
+        damageID: maps[index]['damageID'],
+        creationTime: maps[index]['creationTime'],
+        productName: maps[index]['productName'],
+        quantity: maps[index]['quantity'],
+      );
+    });
+  }
+
+
+
+  Future<void> insertCategory(String categoryTitle, String imagePath) async {
+    if (!isDatabaseInitialized()) {
+      throw Exception("Database not initialized");
+    }
+
+    await _createCategoryTableIfNotExists();
+
+    print("this is title and image path ${categoryTitle} and ${imagePath}");
+
+    await _database.insert('category', {'title': categoryTitle, 'imagePath': imagePath});
+  }
+
+  Future<void> _createCategoryTableIfNotExists() async {
+    // Execute the table creation statement if the table doesn't exist
+    await _database.execute(
+      'CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, imagePath TEXT)',
+    );
   }
 
   Future<void> insertCartItem(ProductModel product, int quantity, String totalAmount, double discountAmount, bool isDiscountInPercentOrNot) async {
@@ -119,22 +258,18 @@ class DatabaseHelper {
         double grandTotalForProduct = cartItem.totalAmount!;
         double discountedAmount = 0.0;
 
-        if (cartItem.isDiscountInPercent ==1) {
+        if (cartItem.isDiscountInPercent == 1) {
           double productPrice = double.parse(cartItem.price.toString());
           double quantity = double.parse(cartItem.quantity.toString());
           double productTotalPrice = productPrice * quantity;
           double discountPercentage = cartItem.discountAmount ?? 0.0;
 
-        
           discountedAmount = (productTotalPrice * discountPercentage) / 100;
-
-        
 
           print("Discounted amount: $discountedAmount");
         } else {
           discountedAmount = cartItem.discountAmount ?? 0.0;
         }
-
 
         if (isVatInPercent) {
           productVatAmount = grandTotalForProduct * (vatAmount / 100);
@@ -313,10 +448,10 @@ class DatabaseHelper {
         products.add(InvoiceDetailsModel(
           name: productMap['productName'],
           price: productMap['productPrice'].toString(),
-         totalAmount: double.parse(productMap['totalAmount']),
+          totalAmount: double.parse(productMap['totalAmount']),
           quantity: productMap['quantity'],
           uom: productMap['uom'],
-         discountAmount: double.tryParse(productMap['discountAmount']),
+          discountAmount: double.tryParse(productMap['discountAmount']),
           grandTotal: productMap['grandTotal'],
           isDiscountInPercent: productMap['isDiscountInPercent'],
           vatAmount: productMap['vatAmount'].toString(),
@@ -350,9 +485,7 @@ class DatabaseHelper {
     }
   }
 
-
-
-   Future<void> updateProductStock(int productId, String newStock) async {
+  Future<void> updateProductStock(int productId, String newStock) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -611,6 +744,7 @@ class DatabaseHelper {
 
     print(categoryModel.title);
     print(categoryModel.id);
+    print("this is image for update ${categoryModel.image}");
   }
 
   Future<void> deleteUom(int id) async {
@@ -648,9 +782,7 @@ class DatabaseHelper {
     });
   }
 
-
-
- Future<String> getProductStock(String productId) async {
+  Future<String> getProductStock(String productId) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -659,7 +791,7 @@ class DatabaseHelper {
       'product',
       where: 'id = ?',
       whereArgs: [productId],
-      columns: ['stock'], 
+      columns: ['stock'],
     );
 
     if (result.isNotEmpty) {
@@ -668,7 +800,8 @@ class DatabaseHelper {
       return '0';
     }
   }
-    bool isDatabaseInitialized() {
+
+  bool isDatabaseInitialized() {
     return _database.isOpen;
   }
 

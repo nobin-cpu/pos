@@ -98,7 +98,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                       const Spacer(),
                                       InkWell(
                                         onTap: () {
-                                          controller.editCategoryDetails(controller.catagoryData[index], context);
+                                          controller.editCategoryDetailsBottomSheet(controller.catagoryData[index], context);
                                         },
                                         child: Image.asset(
                                           MyImages.edit,

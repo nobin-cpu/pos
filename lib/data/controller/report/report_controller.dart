@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper();

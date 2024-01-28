@@ -6,10 +6,14 @@ import 'package:flutter_prime/view/screens/cart/cart_screen.dart';
 import 'package:flutter_prime/view/screens/category/category_screen.dart';
 import 'package:flutter_prime/view/screens/category_product_list_screen/category_product_list_screen.dart';
 import 'package:flutter_prime/view/screens/cheakout/cheakout_screen.dart';
+import 'package:flutter_prime/view/screens/damage/damage_screen.dart';
+import 'package:flutter_prime/view/screens/damage_history/damage_history_screen.dart';
+import 'package:flutter_prime/view/screens/damage_history_details/damage_history_details_screen.dart';
 import 'package:flutter_prime/view/screens/inventory/inventory_screen.dart';
 import 'package:flutter_prime/view/screens/confirm_checkout/confirm_checkout_screen.dart';
 import 'package:flutter_prime/view/screens/invoice/invoice_screen.dart';
 import 'package:flutter_prime/view/screens/invoice_details/invoice_details_screen.dart';
+import 'package:flutter_prime/view/screens/issue/issue_screen.dart';
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
@@ -19,7 +23,6 @@ import 'package:flutter_prime/view/screens/splash/splash_screen.dart';
 import 'package:flutter_prime/view/screens/stock/stock_screen.dart';
 import 'package:flutter_prime/view/screens/uom/uom_screen.dart';
 import 'package:get/get.dart';
-
 import '../../view/screens/void_items/void_items_screen.dart';
 
 class RouteHelper{
@@ -48,6 +51,10 @@ static const String invoiceDetailsScreen      = '/invoice_details_Screen';
 static const String voidItemsScreen           = '/void_items_Screen';
 static const String reportScreen              = '/report_Screen';
 static const String stockScreen               = '/stock_Screen';
+static const String issueScreen               = '/issue_Screen';
+static const String damageScreen               = '/damage_Screen';
+static const String damageHistoryScreen               = '/damage_history_Screen';
+static const String damageHistoryDetailsScreen               = '/damage_history_details_Screen';
 
 
   List<GetPage> routes = [
@@ -73,5 +80,9 @@ static const String stockScreen               = '/stock_Screen';
     GetPage(name: invoiceDetailsScreen, page: () => const InvoiceDetailsScreen()),
     GetPage(name: reportScreen, page: () => const ReportScreen()),
     GetPage(name: stockScreen, page: () => const StockScreen()),
+    GetPage(name: issueScreen, page: () => const IssueScreen()),
+    GetPage(name: damageScreen, page: () => const DamageScreen()),
+    GetPage(name: damageHistoryScreen, page: () => const DamageHistoryScreen()),
+    GetPage(name: damageHistoryDetailsScreen, page: () => const DamageHistoryDetailsScreen()),
   ];
 }

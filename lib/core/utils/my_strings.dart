@@ -12,8 +12,16 @@ class MyStrings{
   static const String downloading           = "Downloading";
   static const String fileDownloadedSuccess = "File downloaded successfully";
   static const String selectPaymentMethod   = "Select PaymentMethod";
+  static const String errorAddingCategory   = "Error Adding Category";
+  static const String categoryUpdatedSuccessfully   = "Category Updated Successfully";
+  static const String categoryAddedSuccessfully   = "Category Added Successfully";
 
-  static const String appName       = "Flutter Prime";
+  static const String appName       = "POS";
+  static const String damageHistory       = "Damage History";
+  static const String damageQuantity       = "Damage Quantity";
+  static const String issueHistory       = "Issue History";
+  static const String categoryImage       = "Category Image";
+  static const String categoryName       = "Category Name";
   static const String remark        = "Remark";
   static const String any           = "Any";
   static const String signUp        = "SignUp";
@@ -245,6 +253,7 @@ class MyStrings{
   static const String pos                                    = "POS";
   static const String report                                 = "Report";
   static const String issue                                  = "Issue";
+  static const String damage                                  = "Damage";
   static const String contact                                = "Contact";
   static const String loginwithGoogle                        = "Login with Google";
   static const String signUpwithGoogle                       = "SignUp with Google";
