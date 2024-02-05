@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
-import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/data/controller/pos/pos_controller.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
@@ -24,7 +22,7 @@ class _PosCategorySectionState extends State<PosCategorySection> {
         return GridView.builder(
             itemCount: controller.categoryList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 1.5,
+              childAspectRatio: 1.3,
               crossAxisCount: 2,
               mainAxisSpacing: 10,
               crossAxisSpacing: 12,

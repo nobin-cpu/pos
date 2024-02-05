@@ -1,7 +1,18 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:flutter_prime/core/route/route.dart';
+import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/util.dart';
+import 'package:flutter_prime/data/controller/invoice_print/invoice_print_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ReportController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
@@ -38,8 +49,8 @@ class ReportController extends GetxController {
   void onInit() {
     _startDate = DateTime.now();
     _endDate = DateTime.now();
-      fetchAllInvoiceDetails();
-     fetchFilteredInvoiceDetails(startDate);
+    fetchAllInvoiceDetails();
+    fetchFilteredInvoiceDetails(startDate);
     super.onInit();
   }
 
@@ -131,6 +142,7 @@ class ReportController extends GetxController {
         groupedProducts[productName]!.add(invoice);
       }
       calculateGroupSum();
+      update();
     } catch (e) {
       print("Error during fetchFilteredInvoiceDetails: $e");
     } finally {
@@ -194,6 +206,75 @@ class ReportController extends GetxController {
       isStartDate ? setStartDate(picked) : setEndDate(picked);
     }
   }
+
+
+ 
+void generatePdf(ReportController controller) async {
+  await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
+  Get.offAllNamed(RouteHelper.bottomNavBar);
+}
+
+
+Future<Uint8List> _generatePdf(PdfPageFormat format, ReportController controller) async {
+  final pdf = pw.Document();
+  final font = await PdfGoogleFonts.robotoRegular();
+
+  pdf.addPage(
+    pw.Page(
+       margin: pw.EdgeInsets.all(Dimensions.space15),
+      pageFormat: format,
+      build: (context) {
+        return pw.Column(children: [
+          pw.Table(
+            
+            border: pw.TableBorder.all(),
+            children: [
+              _buildTableRow([
+                MyStrings.products,
+                MyStrings.price,
+                MyStrings.discount,
+                MyStrings.quantity,
+                MyStrings.subTotal,
+                MyStrings.total,
+              ]),
+              ...controller.groupNames.map((invoice) {
+                return _buildTableRow([
+                  invoice.toString() ?? "",
+                  '${MyUtils.getCurrency()}${groupperProductSum[invoice]?.toString() ?? 0}',
+                  '${controller.groupDiscountSum[invoice]?.toString() ?? 0}${MyUtils.getCurrency()}',
+                  '${controller.groupQuantitySum[invoice]?.toString()}${controller.groupperProductUom[invoice]?.toString()}',
+                  '${MyUtils.getCurrency()}${controller.groupSubtotalSum[invoice]?.toString() ?? 0}',
+                 '${(controller.groupGrandtotalSum[invoice]?.toString() ?? 0)}${MyUtils.getCurrency()}'
+                ]);
+              }).toList(),
+            ],
+          )
+        ]);
+      },
+    ),
+  );
+  return pdf.save();
+}
+
+
+pw.TableRow _buildTableRow(List<String> rowData) {
+  final font = PdfGoogleFonts.robotoRegular();
+  return pw.TableRow(
+    children: rowData.map((data) {
+      return pw.Container(
+        alignment: pw.Alignment.center,
+        padding: pw.EdgeInsets.all(Dimensions.space8),
+        child: pw.Text(
+          data,
+        ),
+      );
+    }).toList(),
+  );
+}
+
+
+
+
 
   Future<void> fetchMonthWiseInvoiceDetails(DateTime date) async {
     try {

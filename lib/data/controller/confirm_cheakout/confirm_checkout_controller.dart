@@ -7,12 +7,14 @@ import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
+import 'package:flutter_prime/data/model/customers/customer_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/cheakout/widgets/edit_check_out_product_alart_dialogue.dart';
+import 'package:flutter_prime/view/screens/confirm_checkout/widgets/add_customer_bottomSheet.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +28,12 @@ class ConfirmCheakoutController extends GetxController {
   TextEditingController newNameController = TextEditingController();
   TextEditingController newPriceController = TextEditingController();
   final TextEditingController productQuantityController = TextEditingController();
+    final TextEditingController nameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController phController = TextEditingController();
+  final TextEditingController poController = TextEditingController();
+
+  List<CustomerModel> customers = [];
   List<CategoryModel> categoryList = [];
   List<UomModel> uomList = [];
   List<ProductModel> productList = [];
@@ -47,9 +55,17 @@ class ConfirmCheakoutController extends GetxController {
   List<CartProductModel> cartProductList = [];
   double vat = 0.0;
   double? discountPrice;
-   List<ProductModel> products = [];
+  List<ProductModel> products = [];
 
-    Future<void> loadProducts() async {
+  List<CustomerModel> customerList = [];
+CustomerModel? selectedCustomer;
+ fetchCustomers() async {
+    await databaseHelper.initializeDatabase();
+    customerList = await databaseHelper.getCustomers();
+    update();
+  }
+
+  Future<void> loadProducts() async {
     await databaseHelper.initializeDatabase();
     try {
       products = await databaseHelper.getProductList();
@@ -69,6 +85,7 @@ class ConfirmCheakoutController extends GetxController {
     getCartList();
     await getVatData();
     await loadProducts();
+    fetchCustomers();
     loadDropdownData();
   }
 
@@ -233,37 +250,35 @@ class ConfirmCheakoutController extends GetxController {
   // }
 
   Future<void> completeCheckout(String paymentMethod) async {
-  int? currentVat = int.tryParse(vatAmount.toString());
-  print("this is current vat ${currentVat}");
-  update();
-
-  try {
-    for (var cartProduct in cartProductList) {
-      String productId = cartProduct.productId.toString();
-      String stock = await databaseHelper.getProductStock(productId);
-      
-      int newStock = int.parse(stock) - cartProduct.quantity!;
-      await updateProductStock(int.parse(productId), newStock.toString());
-      
-      print("Updated stock for product $productId: $newStock");
-    }
-
-    await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent);
-    await databaseHelper.clearCart();
-
-    CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
-
-    cartProductList.clear();
+    int? currentVat = int.tryParse(vatAmount.toString());
+    print("this is current vat ${currentVat}");
     update();
 
-    Get.back();
-    Get.offAllNamed(RouteHelper.bottomNavBar);
-  } catch (e) {
-    print('Error completing checkout: $e');
-    CustomSnackBar.error(errorList: [MyStrings.checkoutFailed]);
-  }
-}
+    try {
+      for (var cartProduct in cartProductList) {
+        String productId = cartProduct.productId.toString();
+        String stock = await databaseHelper.getProductStock(productId);
 
+        int newStock = int.parse(stock) - cartProduct.quantity!;
+        await updateProductStock(int.parse(productId), newStock.toString(),);
+        await CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
+        print("Updated stock for product $productId: $newStock");
+      }
+      print("this is settled vat from controller${vatAmount}");
+      await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent, vatAmount??"0", isVatInPercent,selectedCustomer!.id.toString());
+      await CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
+      await databaseHelper.clearCart();
+
+      cartProductList.clear();
+      update();
+
+      Get.back();
+      Get.offAllNamed(RouteHelper.bottomNavBar);
+    } catch (e) {
+      print('Error completing checkout: $e');
+      CustomSnackBar.error(errorList: [MyStrings.checkoutFailed]);
+    }
+  }
 
   int generateUniqueId() {
     Random random = Random();
@@ -314,5 +329,28 @@ class ConfirmCheakoutController extends GetxController {
     } catch (e) {
       print('Error updating product stock: $e');
     }
+  }
+
+ void showAddCustomersBottomSheet(
+    BuildContext context,
+  ) {
+    CustomBottomSheet(
+      child: const AddCustomersBottomSheetSection(  ),
+    ).customBottomSheet(context);
+  }
+
+ addCustomers() async {
+    await databaseHelper.initializeDatabase();
+    if (nameController.text.isNotEmpty && addressController.text.isNotEmpty && phController.text.isNotEmpty) {
+      await databaseHelper.insertCustomers(nameController.text, addressController.text, phController.text, poController.text);
+      fetchCustomers();
+      Get.back();
+      await CustomSnackBar.success(successList: ["CustomerAddedSuccessfully"]);
+    } else {
+     await CustomSnackBar.error(errorList: ["Failed to add customer"]);
+    }
+
+    update();
+    Get.back();
   }
 }

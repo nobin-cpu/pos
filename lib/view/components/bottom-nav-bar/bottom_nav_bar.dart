@@ -8,7 +8,6 @@ import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
 import 'package:flutter_prime/view/screens/void_or_invoice_choice_screen/void_or_invoice_choice_screen.dart';
 import 'package:get/get.dart';
-
 import 'nav_bar_item_widget.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -19,7 +18,7 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  List<Widget> screens = [const HomeScreen(), const PosScreen(),const SettingsScreen(),const VoidOrInvoiceScreen()];
+  List<Widget> screens = [const HomeScreen(), const PosScreen(),const VoidOrInvoiceScreen(),const SettingsScreen(),];
 
   int currentIndex = 0;
 
@@ -58,9 +57,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         currentIndex = 1;
                       });
                     }),
-                NavBarItem(
-                    label: MyStrings.setting,
-                    imagePath: MyImages.settings,
+                    NavBarItem(
+                    label: MyStrings.invoice.tr,
+                    imagePath: MyImages.report,
                     index: 2,
                     isSelected: currentIndex == 2,
                     press: () {
@@ -69,8 +68,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       });
                     }),
                 NavBarItem(
-                    label: MyStrings.invoice.tr,
-                    imagePath: MyImages.report,
+                    label: MyStrings.setting,
+                    imagePath: MyImages.settings,
                     index: 3,
                     isSelected: currentIndex == 3,
                     press: () {
@@ -78,6 +77,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         currentIndex = 3;
                       });
                     }),
+                
               ],
             ),
           ),

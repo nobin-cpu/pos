@@ -7,7 +7,7 @@ class DamageHistoryDetailsController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   bool isLoading = false;
   // int damageID = 0;
-  List<DamageHistoryItem> damageHistory = [];
+
   List<DamageDetailItem> damageDetails = [];
 
   @override

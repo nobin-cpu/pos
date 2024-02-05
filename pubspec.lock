@@ -73,6 +73,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  barcode:
+    dependency: transitive
+    description:
+      name: barcode
+      sha256: "91b143666f7bb13636f716b6d4e412e372ab15ff7969799af8c9e30a382e9385"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.6"
+  bidi:
+    dependency: transitive
+    description:
+      name: bidi
+      sha256: "1a7d0c696324b2089f72e7671fd1f1f64fef44c980f3cebc84e803967c597b63"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.10"
   boolean_selector:
     dependency: transitive
     description:
@@ -478,6 +494,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_blue_plus:
+    dependency: "direct main"
+    description:
+      name: flutter_blue_plus
+      sha256: "976d8cfd4068c392a9c2236bb1952b2bbc3905747f4177c5baa95aaa1f054f75"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.31.13"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -776,6 +800,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      sha256: "49a0d4b0c12402853d3f227fe7c315601b238d126aa4caa5dbb2dcf99421aa4a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.6"
   image_gallery_saver:
     dependency: "direct main"
     description:
@@ -1056,6 +1088,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  pdf:
+    dependency: "direct main"
+    description:
+      name: pdf
+      sha256: "93cbb2c06de9bab91844550f19896b2373e7a5ce25173995e7e5ec5e1741429d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.7"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1136,6 +1176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.7.3"
+  printing:
+    dependency: "direct main"
+    description:
+      name: printing
+      sha256: ad39a42a5f83125952457dfd94f395c8cf0eb1f7759583dadb769be5c7f99d24
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.11.1"
   process:
     dependency: transitive
     description:
@@ -1196,10 +1244,10 @@ packages:
     dependency: transitive
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "2ef8b4e91cb3b55d155e0e34eeae0ac7107974e451495c955ac04ddee8cc21fd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.7"
+    version: "0.26.0"
   share_plus:
     dependency: "direct main"
     description:

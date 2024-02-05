@@ -30,6 +30,15 @@ class _DamageStockUpdateBottomSheetState extends State<DamageStockUpdateBottomSh
             needOutlineBorder: true,
             controller: controller.damageAmountController,
           ),
+            const SizedBox(height: Dimensions.space5),
+          const Text(MyStrings.damageReason),
+          const SizedBox(height: Dimensions.space5),
+          CustomTextField (
+            onChanged: () {},
+            needOutlineBorder: true,
+            controller: controller.damageReasonController,
+            maxLines: 6,
+            ),
           const SizedBox(height: Dimensions.space20),
           RoundedButton(
               text: MyStrings.update,

@@ -70,6 +70,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
+                 Padding(
+                  padding: const EdgeInsets.all(Dimensions.space5),
+                  child: CustomCard(
+                    width: double.infinity,
+                    onPressed: () {
+                     
+                        controller.showShopDetailsAddBottomSheet(context);
+                     
+                    },
+                    isPress: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                       
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(MyStrings.shopName  ),
+                            
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

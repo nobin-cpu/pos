@@ -1,11 +1,19 @@
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:flutter_prime/core/route/route.dart';
+import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/stock/widgets/update_stock_bottom_sheet.dart';
 import 'package:get/get.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class StockController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -69,4 +77,60 @@ class StockController extends GetxController {
     productNamecontroller.clear();
     CustomBottomSheet(child: const UpdateStockBottomSheet()).customBottomSheet(context);
   }
+
+  
+ 
+void generatePdf(StockController controller) async {
+  await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
+  Get.offAllNamed(RouteHelper.bottomNavBar);
+}
+
+
+Future<Uint8List> _generatePdf(PdfPageFormat format, StockController controller) async {
+  final pdf = pw.Document();
+  final font = await PdfGoogleFonts.robotoRegular();
+
+  pdf.addPage(
+    pw.Page(
+      margin: pw.EdgeInsets.all(Dimensions.space15),
+      pageFormat: format,
+      build: (context) {
+        return pw.Column(children: [
+          pw.Table(
+            border: pw.TableBorder.all(),
+            children: [
+              _buildTableRow([
+                MyStrings.products,
+                MyStrings.quantity,
+              ]),
+              ...controller.products.map((stock) {
+                return _buildTableRow([
+                  '${stock.name.toString() ?? 0}',
+                  '${stock.stock?.toString() ?? 0} ${stock.uom}',
+                ]);
+              }).toList(),
+            ],
+          )
+        ]);
+      },
+    ),
+  );
+  return pdf.save();
+}
+
+
+pw.TableRow _buildTableRow(List<String> rowData) {
+  final font = PdfGoogleFonts.robotoRegular();
+  return pw.TableRow(
+    children: rowData.map((data) {
+      return pw.Container(
+        alignment: pw.Alignment.center,
+        padding: pw.EdgeInsets.all(Dimensions.space8),
+        child: pw.Text(
+          data,
+        ),
+      );
+    }).toList(),
+  );
+}
 }

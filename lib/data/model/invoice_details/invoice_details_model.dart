@@ -14,8 +14,11 @@ class InvoiceDetailsModel {
   String? vatAmount;
   String? checkoutTime;
   bool? isvatInpercentOrNot;
+   String? settledVat;
+   int? settledVatFormat;
+   String? selectedCustomerId;
 
-  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime,this.isvatInpercentOrNot});
+  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime,this.isvatInpercentOrNot,this.settledVat,this.settledVatFormat,this.selectedCustomerId});
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,6 +37,9 @@ class InvoiceDetailsModel {
       'vatAmount': vatAmount,
       'checkoutTime': checkoutTime,
       'isVatInPercentOrNot': isvatInpercentOrNot,
+      'settledVat': settledVat,
+      'settledVatFormat': settledVatFormat,
+      'selectedCustomerId': selectedCustomerId,
     };
   }
 
@@ -54,6 +60,9 @@ class InvoiceDetailsModel {
       vatAmount: map['vatAmount'],
       checkoutTime: map['checkoutTime'],
       isvatInpercentOrNot: map['isVatInPercentOrNot'],
+      settledVat: map['settledVat'],
+      settledVatFormat: map['settledVatFormat'],
+      selectedCustomerId: map['selectedCustomerId'],
     );
   }
 }

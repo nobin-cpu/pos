@@ -31,7 +31,7 @@ class ProductModel {
       totalPrice: map['totalPrice'],
       name: map['name'],
       category: map['category'],
-      uom: map['uom'],
+      uom: map['uom'].toString(),
       imagePath: map['imagePath'],
        stock: map['stock'],
       wholesalePrice: map['wholesalePrice'],

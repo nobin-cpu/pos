@@ -26,6 +26,8 @@ class LoginController extends GetxController {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+
+  
   String? email;
   String? password;
   String? uniqueID = "";
@@ -220,4 +222,6 @@ class LoginController extends GetxController {
       return false;
     }
   }
+
+//
 }

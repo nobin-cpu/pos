@@ -26,7 +26,16 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: MyStrings.stock),
+      appBar:  CustomAppBar(title: MyStrings.stock, action: [
+          GetBuilder<StockController>(
+            builder: (controller) => InkWell(
+              onTap: () {
+                controller.generatePdf(controller);
+              },
+              child: Image.asset(MyImages.print, color: MyColor.colorWhite, height: Dimensions.space25),
+            ),
+          )
+        ],),
       body: GetBuilder<StockController>(
         builder: (controller) {
           return Column(
@@ -47,7 +56,7 @@ class _StockScreenState extends State<StockScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(product.name ?? MyStrings.noData),
-                            Text('${MyStrings.inStock} ${product.stock ?? '0'}'),
+                            Text('${MyStrings.inStock} ${product.stock ?? '0'} ${product.uom ?? '0'}'),
                           ],
                         ),
                       ),

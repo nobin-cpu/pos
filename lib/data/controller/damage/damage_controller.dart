@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
@@ -11,6 +13,7 @@ class DamageController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
   TextEditingController productNamecontroller = TextEditingController();
   TextEditingController damageAmountController = TextEditingController();
+  TextEditingController damageReasonController = TextEditingController();
   List<ProductModel> products = [];
   List<ProductModel> productList = [];
   String selectedProductId = "";
@@ -26,6 +29,7 @@ class DamageController extends GetxController {
     productName = damagedProductName;
     damageAmountController.clear();
     productNamecontroller.clear();
+    damageReasonController.clear();
     update();
     CustomBottomSheet(child: const DamageStockUpdateBottomSheet()).customBottomSheet(context);
   }
@@ -53,9 +57,9 @@ class DamageController extends GetxController {
       int damagedProductId = int.parse(selectedProductId);
       int damagedProductAmount = int.parse(damageAmountController.text);
       String stock = await databaseHelper.getProductStock(selectedProductId);
-      
+      int damageId = Random().nextInt(90000000) + 10000000;
       update();
-      databaseHelper.insertDamageDetails(damagedProductId,productName,DateTime.now().toString(),damagedProductAmount);
+      databaseHelper.insertDamageDetails(damageId,productName,DateTime.now().toString(),damagedProductAmount,damagedProductId,damageReasonController.text);
       int newStock = int.parse(stock) - int.parse(damageAmountController.text);
       await updateProductStock(int.parse(productId), newStock.toString());
 

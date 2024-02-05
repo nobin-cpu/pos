@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
+import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
@@ -28,15 +29,15 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     super.initState();
     final controller = Get.put(InvoiceDetailsController());
 
-    int invoiceId = Get.arguments[0];
+    controller.invoiceId = Get.arguments[0];
     controller.dateTime = Get.arguments[1];
     controller.transectionId = Get.arguments[2];
     controller.isFromVoidScreen = Get.arguments[3];
-    controller.fetchProducts(invoiceId);
+    controller.fetchProducts(controller.invoiceId);
     controller.getVatActivationValue();
-    print(invoiceId);
+
     print(controller.transectionId);
-    print("..................invoice and transection id...................${invoiceId}");
+    print("..................invoice and transection id...................${controller.invoiceId}");
   }
 
   @override
@@ -143,7 +144,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(Dimensions.space8),
-                                      child: Center(child: Text("${product.quantity.toString() }${product.uom}")),
+                                      child: Center(child: Text("${product.quantity.toString()}${product.uom}")),
                                     ),
                                   ),
                                   TableCell(
@@ -203,25 +204,29 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                           MyStrings.total,
                           style: regularDefault.copyWith(color: MyColor.getGreyText()),
                         ),
-                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2) }', style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
                       ],
                     ),
                     const SizedBox(height: Dimensions.space10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(MyStrings.vat, style: regularDefault.copyWith(color: MyColor.getGreyText())),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '+ ${controller.vatamount ?? "0"}${controller.isVatActivateOrNot ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}',
-                            style: regularDefault.copyWith(color: MyColor.getGreyText()),
-                            textAlign: TextAlign.end,
+                    ...controller.products.map((InvoiceDetailsModel product) {
+                      controller.customerId = int.tryParse(product.selectedCustomerId.toString());
+                      print("this is settled vat from screen---${product.settledVat}");
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(MyStrings.vat, style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              '+ ${product.settledVat ?? "0"}${product.settledVatFormat == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}',
+                              style: regularDefault.copyWith(color: MyColor.getGreyText()),
+                              textAlign: TextAlign.end,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
                     const CustomDivider(space: Dimensions.space5),
                     const SizedBox(height: Dimensions.space10),
                     Row(
@@ -263,7 +268,13 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(Dimensions.space10),
-                    child: RoundedButton(verticalPadding: Dimensions.space5, press: () {}, text: MyStrings.print),
+                    child: RoundedButton(
+                        verticalPadding: Dimensions.space5,
+                        press: () {
+                          
+                          Get.toNamed(RouteHelper.invoicePrintScreen, arguments: [controller.invoiceId, controller.dateTime, controller.transectionId, true, controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice,controller.customerId]);
+                        },
+                        text: MyStrings.print),
                   ),
                 ),
               ],

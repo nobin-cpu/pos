@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:get/get.dart';
@@ -29,7 +31,7 @@ Future<void> main() async{
 
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
   await PushNotificationService().setupInteractedMessage();
-
+  FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
   HttpOverrides.global = MyHttpOverrides();
   runApp(MyApp(languages: languages));
 
@@ -53,10 +55,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+   
+
+      @override
+  void initState() {
+    super.initState();
+   
+  }
+
+ 
+
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<LocalizationController>(
       builder: (localizeController) => GetMaterialApp(
+         
         title: MyStrings.appName,
          theme: ThemeData(
           scaffoldBackgroundColor: MyColor.getScreenBgColor(),

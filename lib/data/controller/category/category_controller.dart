@@ -94,7 +94,7 @@ class CategoryController extends GetxController {
         await databaseHelper.insertCategory(categoryController.text, pickedImage!.path);
         categoryController.clear();
         Get.back();
-        CustomSnackBar.success(successList: [MyStrings.categoryAddedSuccessfully]);
+         CustomSnackBar.success(successList: [MyStrings.categoryAddedSuccessfully]);
         await getCategoryList();
       } catch (e) {
         print('Error adding category: $e');

@@ -6,6 +6,7 @@ import 'package:flutter_prime/data/model/category/category_model.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
+import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/add_product_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/edit_or_delete_product_bottom_sheet.dart';
 import 'package:get/get.dart';
@@ -156,10 +157,13 @@ class ProductController extends GetxController {
     }
 
     await databaseHelper.insertProduct(productNameController.text, priceController.text, categoryController.text, uomController.text, pickedImage!.path, stocksController.text, wholesaleController.text, mrpController.text, purchasePriceController.text);
+   
+    
     getProductList();
     claerField();
     update();
      Get.back();
+      await  CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
     
   }
 

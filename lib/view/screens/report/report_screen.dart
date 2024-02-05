@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
+import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
@@ -21,7 +22,7 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  final  controller = Get.put(ReportController());
+  final controller = Get.put(ReportController());
 
   @override
   void initState() {
@@ -38,7 +39,19 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColor.colorWhite,
-      appBar: const CustomAppBar(title: MyStrings.report),
+      appBar: CustomAppBar(
+        title: MyStrings.report,
+        action: [
+          GetBuilder<ReportController>(
+            builder: (controller) => InkWell(
+              onTap: () {
+                controller.generatePdf(controller);
+              },
+              child: Image.asset(MyImages.print, color: MyColor.colorWhite, height: Dimensions.space25),
+            ),
+          )
+        ],
+      ),
       body: GetBuilder<ReportController>(
         builder: (controller) {
           if (controller.isLoading) {
@@ -55,7 +68,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           isPress: true,
                           onPressed: () {
                             controller.isFilteringByMonth = !controller.isFilteringByMonth;
-                            controller.update();
+                            // No need to call update() here
                           },
                           width: Dimensions.space100,
                           child: Center(child: Text(controller.isFilteringByMonth ? MyStrings.month : MyStrings.day)),
@@ -68,8 +81,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           } else {
                             controller.moveFilterDateBackward();
                           }
-                          controller.groupNames.isNotEmpty ? controller.calculateTotalGrandtotalSum().toStringAsFixed(2) : 0;
-                          controller.update();
+                          // No need to call update() here
                         },
                         child: Image.asset(
                           MyImages.back,
@@ -94,8 +106,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           } else {
                             controller.moveFilterDateForward();
                           }
-                          controller.groupNames.isNotEmpty ? controller.calculateTotalGrandtotalSum().toStringAsFixed(2) : 0;
-                          controller.update();
+                          // No need to call update() here
                         },
                         child: Image.asset(
                           MyImages.next,
@@ -170,12 +181,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                 ],
                               ),
                               ...controller.groupNames.map((invoice) {
-                                List<InvoiceDetailsModel> products = controller.getProductsByName(invoice);
-                                // controller.productVat = int.tryParse(invoice.vatAmount.toString());
-                                print("this is product vat from report screen ${controller.productVat}");
-                                //  print("this is cheak out time from report screen ${invoice.checkoutTime}");
-                                controller.update();
-
                                 return TableRow(
                                   children: [
                                     TableCell(

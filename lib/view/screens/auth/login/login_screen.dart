@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/view/screens/auth/login/widgets/google_login_section.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
@@ -16,7 +16,7 @@ import 'package:flutter_prime/view/components/buttons/rounded_loading_button.dar
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:flutter_prime/view/components/text/default_text.dart';
 import 'package:flutter_prime/view/components/will_pop_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -27,6 +27,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
+
+  bool _connected = false;
 
   @override
   void initState() {
@@ -163,10 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )),
                             TextButton(
                               onPressed: () async {
-                               
-
-
-                               Get.offAndToNamed(RouteHelper.registrationScreen);
+                                Get.offAndToNamed(RouteHelper.registrationScreen);
                               },
                               child: Text(MyStrings.signUp.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w500)),
                             )
@@ -208,9 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               const SizedBox(height: Dimensions.space30),
                               InkWell(
-                                onTap: () {
-                                  //
-                                },
+                                onTap: () {},
                                 child: const GoogleLoginSection(),
                               ),
                               // const Padding(

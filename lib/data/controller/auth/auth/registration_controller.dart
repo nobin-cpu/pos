@@ -342,7 +342,7 @@ void handleGoogleSignIn() async {
   await preferences.setString(SharedPreferenceHelper.userNameKey, userName);
   await preferences.setString(SharedPreferenceHelper.userEmailKey, email); 
   await preferences.setBool(SharedPreferenceHelper.rememberMeKey, rememberMe);
-  print("my name is " + userName);
+
 }
 
 
@@ -359,16 +359,7 @@ Future<bool> isUserRegistered(String email) async {
 
   String? uis = "";
 
-  // Future<void> _saveUidAndUserDataToSecureStorage(String uid, username, email, photo) async {
-  //   final storage = new FlutterSecureStorage();
-  //   await storage.write(key: SecuredStorageHelper.uniqueID, value: uid);
-  //   await storage.write(key: SecuredStorageHelper.userName, value: username);
-  //   await storage.write(key: SecuredStorageHelper.email, value: email);
-  //   await storage.write(key: SecuredStorageHelper.photo, value: photo);
-  //   uis = await storage.read(key: SecuredStorageHelper.uniqueID);
-  //   print("succesfully saved everything=====================================================" + uis.toString());
-  //   print("send $uid=====================================================get the uid: " + uis.toString());
-  // }
+
 
   Future<bool> isUserDeleted(String email) async {
     try {

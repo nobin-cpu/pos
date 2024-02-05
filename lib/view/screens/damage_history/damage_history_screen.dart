@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
@@ -47,7 +48,7 @@ class _DamageHistoryScreenState extends State<DamageHistoryScreen> {
                             width: double.infinity,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(damageItem.id.toString()), Text("${MyStrings.quantity}: ${damageItem.creationTime.toString()}")],
+                              children: [Text(damageItem.id.toString()), Text("${MyStrings.date} ${DateConverter.formatValidityDate(damageItem.creationTime.toString())}")],
                             )),
                       );
                     },

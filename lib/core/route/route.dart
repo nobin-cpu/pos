@@ -6,6 +6,7 @@ import 'package:flutter_prime/view/screens/cart/cart_screen.dart';
 import 'package:flutter_prime/view/screens/category/category_screen.dart';
 import 'package:flutter_prime/view/screens/category_product_list_screen/category_product_list_screen.dart';
 import 'package:flutter_prime/view/screens/cheakout/cheakout_screen.dart';
+import 'package:flutter_prime/view/screens/customers/customers_screeen.dart';
 import 'package:flutter_prime/view/screens/damage/damage_screen.dart';
 import 'package:flutter_prime/view/screens/damage_history/damage_history_screen.dart';
 import 'package:flutter_prime/view/screens/damage_history_details/damage_history_details_screen.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_prime/view/screens/invoice_details/invoice_details_scree
 import 'package:flutter_prime/view/screens/issue/issue_screen.dart';
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
 import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart';
+import 'package:flutter_prime/view/screens/invoice_print/invoice_print_screen.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
 import 'package:flutter_prime/view/screens/report/report_screen.dart';
 import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
@@ -55,6 +57,8 @@ static const String issueScreen               = '/issue_Screen';
 static const String damageScreen               = '/damage_Screen';
 static const String damageHistoryScreen               = '/damage_history_Screen';
 static const String damageHistoryDetailsScreen               = '/damage_history_details_Screen';
+static const String invoicePrintScreen               = '/print_Screen';
+static const String customersScreen               = '/customers_Screen';
 
 
   List<GetPage> routes = [
@@ -84,5 +88,7 @@ static const String damageHistoryDetailsScreen               = '/damage_history_
     GetPage(name: damageScreen, page: () => const DamageScreen()),
     GetPage(name: damageHistoryScreen, page: () => const DamageHistoryScreen()),
     GetPage(name: damageHistoryDetailsScreen, page: () => const DamageHistoryDetailsScreen()),
+    GetPage(name: invoicePrintScreen, page: () => const InvoicePrintScreen()),
+    GetPage(name: customersScreen, page: () => const CustomersScreen()),
   ];
 }

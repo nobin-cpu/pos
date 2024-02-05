@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
+import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/screens/uom/widgets/add_uom_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/uom/widgets/edit_uom_details_sheet.dart';
 import 'package:get/get.dart';
@@ -65,6 +67,7 @@ class UomController extends GetxController {
 
     uomController.clear();
     Get.back();
+      await  CustomSnackBar.success(successList: [MyStrings.uomAddedSuccessfully]);
   }
   editUomData(int id)async{
     UomModel newUom = UomModel( title: editController.text , id:id ); 

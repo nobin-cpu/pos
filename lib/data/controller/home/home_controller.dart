@@ -78,7 +78,7 @@ class HomeController extends GetxController {
     },
     {
       "image": MyImages.contact,
-      "title": MyStrings.contact,
+      "title": MyStrings.customers,
       "color": MyColor.contactBtnColor,
     },
   ];

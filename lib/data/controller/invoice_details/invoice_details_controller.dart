@@ -1,6 +1,7 @@
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:get/get.dart';
@@ -13,11 +14,12 @@ class InvoiceDetailsController extends GetxController {
   int transectionId = 0;
   String dateTime = "";
   bool isFromVoidScreen = false;
-  
+
   bool isVatEnable = false;
   bool isVatInPercent = false;
   bool isVatActivateOrNot = false;
-  
+   int? customerId = 0;
+
   String? vatamount = "";
 
   Future<void> fetchProducts(int invoiceId) async {
@@ -42,38 +44,35 @@ class InvoiceDetailsController extends GetxController {
 //     print("Error during deleteInvoiceItems: $e");
 //   }
 // }
+
   Future<void> updateVoidStatus() async {
     try {
       await databaseHelper.updateInvoiceItemStatus(invoiceId, 'VOID');
       try {
-    for (var voidProduct in products) {
-      String productId = voidProduct.productId.toString();
-      String stock = await databaseHelper.getProductStock(productId);
-      
-      int newStock = int.parse(stock) + voidProduct.quantity!;
-      await updateProductStock(int.parse(productId), newStock.toString());
-      
-      print("Updated stock for product $productId: $newStock");
-    }
+        for (var voidProduct in products) {
+          String productId = voidProduct.productId.toString();
+          String stock = await databaseHelper.getProductStock(productId);
+          // vatamount = products[0].vatAmount;
+          int newStock = int.parse(stock) + voidProduct.quantity!;
+          await updateProductStock(int.parse(productId), newStock.toString());
+          CustomSnackBar.success(successList: [MyStrings.listedAsVoidItem]);
+        }
 
+        update();
 
-
-    update();
-
-    Get.back();
-    Get.offAllNamed(RouteHelper.bottomNavBar);
-  } catch (e) {
-    print('Error completing checkout: $e');
-    CustomSnackBar.error(errorList: ["Void stock update failed"]);
-  }
+        Get.back();
+        Get.offAllNamed(RouteHelper.bottomNavBar);
+      } catch (e) {
+        print('Error completing checkout: $e');
+        CustomSnackBar.error(errorList: [MyStrings.voidStockUpdateFailed]);
+      }
       Get.offAllNamed(RouteHelper.bottomNavBar);
     } catch (e) {
       print("Error during updateVoidStatus: $e");
     }
   }
 
-
- Future<void> updateProductStock(int productId, String newStock) async {
+  Future<void> updateProductStock(int productId, String newStock) async {
     try {
       await databaseHelper.updateProductStock(productId, newStock);
     } catch (e) {
@@ -81,13 +80,12 @@ class InvoiceDetailsController extends GetxController {
     }
   }
 
-
   getVatActivationValue() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     isVatInPercent = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
-     vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
+      vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
     isVatActivateOrNot = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
-    print('saved vat amount ${vatamount}');
+    // print('saved vat amount ${vatamount}');
     update();
   }
 
@@ -99,12 +97,10 @@ class InvoiceDetailsController extends GetxController {
     return total;
   }
 
- double get grandTotalPrice {
+  double get grandTotalPrice {
     double totalPriceWithoutVat = totalPrice;
     double vatAmount = (totalPriceWithoutVat * (double.tryParse(vatamount.toString())! / 100.0));
 
     return totalPriceWithoutVat + vatAmount;
   }
-
-
 }

@@ -51,5 +51,6 @@ class MyImages{
   static const String noData      = "assets/images/noData.png";
   static const String back      = "assets/images/back.png";
   static const String next      = "assets/images/next.png";
+  static const String print      = "assets/images/printer.png";
 
 }

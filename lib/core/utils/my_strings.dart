@@ -15,6 +15,16 @@ class MyStrings{
   static const String errorAddingCategory   = "Error Adding Category";
   static const String categoryUpdatedSuccessfully   = "Category Updated Successfully";
   static const String categoryAddedSuccessfully   = "Category Added Successfully";
+  static const String damageReason   = "Damage Reason";
+  static const String damageDetails   = "Damage Details";
+  static const String listedAsVoidItem   = "Listed as void item";
+  static const String voidStockUpdateFailed   = "Void stock update failed";
+  static const String uomAddedSuccessfully   = "Uom added successfully";
+  static const String shopName   = "Shop Name";
+  static const String shopkeeperName   = "Shop keeper Name";
+  static const String shopAddress   = "Shop Address";
+  static const String addshopdetails   = "Add shop details";
+  static const String customers   = "Customers";
 
   static const String appName       = "POS";
   static const String damageHistory       = "Damage History";
