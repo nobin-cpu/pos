@@ -211,6 +211,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                     ...controller.products.map((InvoiceDetailsModel product) {
                       controller.customerId = int.tryParse(product.selectedCustomerId.toString());
                       print("this is settled vat from screen---${product.settledVat}");
+                      controller.settledVatForCurrentTrx = double.tryParse(product.settledVat.toString());
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -271,8 +272,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                     child: RoundedButton(
                         verticalPadding: Dimensions.space5,
                         press: () {
-                          
-                          Get.toNamed(RouteHelper.invoicePrintScreen, arguments: [controller.invoiceId, controller.dateTime, controller.transectionId, true, controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice,controller.customerId]);
+                          Get.toNamed(RouteHelper.invoicePrintScreen, arguments: [controller.invoiceId, controller.dateTime, controller.transectionId, true, controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice, controller.customerId, controller.totalPrice, controller.settledVatForCurrentTrx]);
                         },
                         text: MyStrings.print),
                   ),

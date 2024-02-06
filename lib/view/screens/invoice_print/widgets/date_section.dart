@@ -1,12 +1,15 @@
+import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart'as pw;
 
 class DateSection {
   final pw.Font font;
   final pw.Font boldFont;
+    final String dateTime; 
 
-  DateSection({required this.font, required this.boldFont});
+  DateSection({required this.font, required this.boldFont,required this.dateTime, });
 
   pw.Widget build() {
     return pw.Row(
@@ -15,22 +18,15 @@ class DateSection {
         crossAxisAlignment: pw.CrossAxisAlignment.end,
           children: [
             pw.Text(
-              "Receipt Date",
+              MyStrings.recieptDate,
               style: pw.TextStyle(
                 font: font,
                 color: PdfColors.orange400,
                 fontSize: 12,
               ),
             ),
-            pw.SizedBox(height: Dimensions.space10),
-            pw.Text(
-              "P.O.#",
-              style: pw.TextStyle(
-                font: font,
-                color: PdfColors.orange400,
-                fontSize: 12,
-              ),
-            ),
+          
+           
           ],
         ),
         pw.SizedBox(width: Dimensions.space20),
@@ -38,20 +34,15 @@ class DateSection {
          crossAxisAlignment: pw.CrossAxisAlignment.end,
           children: [
             pw.Text(
-              "11/12/2025",
+              DateConverter.formatValidityDate(dateTime),
               style: pw.TextStyle(
                 font: font,
                 fontSize: 12,
               ),
             ),
-             pw.SizedBox(height: Dimensions.space10),
-            pw.Text(
-              "1112/2021",
-              style: pw.TextStyle(
-                font: font,
-                fontSize: 12,
-              ),
-            ),
+            
+            
+           
           ],
         ),
         pw.SizedBox(height: Dimensions.space18),

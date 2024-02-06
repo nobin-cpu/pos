@@ -2,20 +2,30 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/controller/invoice_print/invoice_print_controller.dart';
+import 'package:flutter_prime/data/model/customers/customer_model.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/bill_to_section.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/date_section.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/shop_keeper_info_srction.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/total_section.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ReportController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
+  late Database _database;
+
   bool isLoading = true;
 
   final TextEditingController startDateController = TextEditingController();
@@ -30,6 +40,13 @@ class ReportController extends GetxController {
   bool isFilteringByMonth = false;
   double vat = 0.0;
   int? productVat = 0;
+
+  String shopkeeperName = "";
+  String shopAddress = "";
+  String phoneNumber = "";
+  double? totalVat = 0.0;
+   double totalSubtotalSum = 0.0;
+    double totalGrandtotalSum = 0.0;
 
   DateTime get startDate => _startDate;
 
@@ -70,6 +87,10 @@ class ReportController extends GetxController {
     }
   }
 
+  Future<void> _initDatabase() async {
+    _database = await _databaseHelper.database;
+  }
+
   Map<String, List<InvoiceDetailsModel>> groupedProducts = {};
   Map<String, double> groupSum = {};
   Map<String, double> groupSubtotalSum = {};
@@ -84,35 +105,59 @@ class ReportController extends GetxController {
     groupDiscountSum.clear();
     groupQuantitySum.clear();
     groupGrandtotalSum.clear();
+    groupperProductSum.clear();
+    groupperProductUom.clear();
 
-    for (var productName in groupNames) {
-      List<InvoiceDetailsModel> products = getProductsByName(productName);
+   
 
+    groupedProducts.forEach((productName, products) {
       double subtotalSum = 0.0;
       double discountSum = 0.0;
       double quantitySum = 0.0;
-      double perProductgrandTotal = 0.0;
+      double grandTotalSum = 0.0;
+      double productPrice = 0.0;
+      String productUom = "";
 
-      double perProductPrice = 0.0;
-      String perProductUom = "";
-
-      for (var product in products) {
+      products.forEach((product) {
         subtotalSum += product.totalAmount ?? 0.0;
         discountSum += product.discountAmount ?? 0.0;
         quantitySum += product.quantity ?? 0.0;
-        perProductgrandTotal += product.grandTotal ?? 0.0;
-        perProductPrice = double.tryParse(product.price.toString()) ?? 0.0;
-        perProductUom = product.uom ?? "";
-      }
+        grandTotalSum += product.grandTotal ?? 0.0;
+        productPrice = double.tryParse(product.price.toString()) ?? 0.0;
+        productUom = product.uom ?? "";
+      });
 
-      groupSubtotalSum[productName] = subtotalSum;
-      groupDiscountSum[productName] = discountSum;
-      groupQuantitySum[productName] = quantitySum;
-      groupGrandtotalSum[productName] = perProductgrandTotal;
-      groupperProductSum[productName] = perProductPrice;
-      groupperProductUom[productName] = perProductUom;
-    }
+      groupSubtotalSum[productName] = subtotalSum / products.length;
+      groupDiscountSum[productName] = discountSum / products.length;
+      groupQuantitySum[productName] = quantitySum / products.length;
+      groupGrandtotalSum[productName] = grandTotalSum / products.length;
+      groupperProductSum[productName] = productPrice;
+      groupperProductUom[productName] = productUom;
+
+      //totalSubtotalSum += subtotalSum;
+      // totalGrandtotalSum += grandTotalSum; // Remove this line
+    });
+
+    totalSubtotalSum = groupSubtotalSum.values.reduce((value, element) => value + element);
+    totalGrandtotalSum = groupGrandtotalSum.values.reduce((value, element) => value + element);
+    totalVat = totalGrandtotalSum - totalSubtotalSum;
+    print("Total Subtotal Sum: $totalSubtotalSum");
+    print("Total Grandtotal Sum: $totalGrandtotalSum");
+    print("Total vat Sum: $totalVat");
     update();
+  }
+
+  String? customerName = "";
+  String? customerAddress = "";
+  String? customerPhNo = "";
+  String? customerPost = "";
+
+  shopKeeperInfo(pw.Font font, pw.Font boldFont) {
+    return ShopKeeperInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopkeeperName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
+  }
+
+  date(pw.Font font, pw.Font boldFont) {
+    return DateSection(font: font, boldFont: boldFont, dateTime: startDate.toString(),).build();
   }
 
   double calculateTotalGrandtotalSum() {
@@ -125,7 +170,11 @@ class ReportController extends GetxController {
     return totalGrandtotalSum;
   }
 
+  String customerID = "";
+  String settledvat = "";
+  int invoiceId = 0;
   Future<void> fetchFilteredInvoiceDetails(DateTime date) async {
+    await _databaseHelper.initializeDatabase();
     try {
       isLoading = true;
       groupedProducts.clear();
@@ -134,6 +183,8 @@ class ReportController extends GetxController {
       );
       for (var invoice in filteredInvoiceDetails) {
         String productName = invoice.name ?? "";
+        customerID = invoice.selectedCustomerId ?? "";
+        settledvat = invoice.vatAmount.toString() ?? "0"; // Set the settled VAT amount
 
         if (!groupedProducts.containsKey(productName)) {
           groupedProducts[productName] = [];
@@ -142,6 +193,11 @@ class ReportController extends GetxController {
         groupedProducts[productName]!.add(invoice);
       }
       calculateGroupSum();
+
+      // Print the VAT amount and settled VAT amount
+      print("VAT Amount: $vatAmount");
+      print("Settled VAT Amount: $settledvat");
+
       update();
     } catch (e) {
       print("Error during fetchFilteredInvoiceDetails: $e");
@@ -168,6 +224,7 @@ class ReportController extends GetxController {
       grandTotal += invoice.totalAmount!;
 
       if (invoice.vatAmount != null) {
+        print("this is vat amount------------------------${invoice.vatAmount}");
         grandTotal += double.parse(invoice.vatAmount.toString());
       }
 
@@ -178,6 +235,22 @@ class ReportController extends GetxController {
     print(grandTotal);
     print("this is grandtotal");
     return grandTotal.toStringAsFixed(2);
+  }
+
+  double calculateTotalVatAmount() {
+    double totalVatAmount = 0.0;
+
+    for (var invoice in filteredInvoiceDetails) {
+      if (invoice.vatAmount != null) {
+        totalVatAmount += double.parse(invoice.vatAmount.toString());
+      } else {
+        settledvat = "0";
+      }
+    }
+
+    print("this is total vat from repost controlelr $totalVatAmount");
+
+    return totalVatAmount;
   }
 
   String calculateTotal() {
@@ -207,74 +280,85 @@ class ReportController extends GetxController {
     }
   }
 
+  double? printGrandTotal = 0.0;
+  double? printTotal = 0.0;
 
- 
-void generatePdf(ReportController controller) async {
-  await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
-  Get.offAllNamed(RouteHelper.bottomNavBar);
-}
+  void generatePdf(ReportController controller) async {
+    await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
+    Get.offAllNamed(RouteHelper.bottomNavBar);
+  }
 
+  Future<Uint8List> _generatePdf(PdfPageFormat format, ReportController controller) async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.tiroBanglaRegular();
+    final boldFont = await PdfGoogleFonts.robotoBold();
 
-Future<Uint8List> _generatePdf(PdfPageFormat format, ReportController controller) async {
-  final pdf = pw.Document();
-  final font = await PdfGoogleFonts.robotoRegular();
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.all(Dimensions.space15),
+        pageFormat: format,
+        build: (context) {
+          return pw.Column(children: [
+            pw.Center(child: pw.Text(MyStrings.report)),
+            pw.SizedBox(height: Dimensions.space15),
+            pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, mainAxisAlignment: pw.MainAxisAlignment.start, children: [shopKeeperInfo(font, boldFont)]),
+            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [date(font, boldFont)]),
+            pw.SizedBox(height: Dimensions.space15),
+            pw.Table(
+              border: pw.TableBorder.all(),
+              children: [
+                _buildTableRow([
+                  MyStrings.products,
+                  MyStrings.price,
+                  MyStrings.discount,
+                  MyStrings.quantity,
+                  MyStrings.subTotal,
+                  MyStrings.total,
+                ], font),
+                ...controller.groupNames.map((invoice) {
+                  return _buildTableRow([
+                    invoice.toString() ?? "",
+                    '${MyUtils.getCurrency()}${groupperProductSum[invoice]?.toString() ?? 0}',
+                    '${controller.groupDiscountSum[invoice]?.toString() ?? 0}${MyUtils.getCurrency()}',
+                    '${controller.groupQuantitySum[invoice]?.toString()}${controller.groupperProductUom[invoice]?.toString()}',
+                    '${MyUtils.getCurrency()}${controller.groupSubtotalSum[invoice]?.toString() ?? 0}',
+                    '${(controller.groupGrandtotalSum[invoice]?.toString() ?? 0)}${MyUtils.getCurrency()}'
+                  ], font);
+                }).toList(),
+              ],
+            ),
+            pw.SizedBox(height: Dimensions.space25),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.end,
+              children: [
+                totalSection(font, boldFont),
+              ],
+            )
+          ]);
+        },
+      ),
+    );
+    return pdf.save();
+  }
 
-  pdf.addPage(
-    pw.Page(
-       margin: pw.EdgeInsets.all(Dimensions.space15),
-      pageFormat: format,
-      build: (context) {
-        return pw.Column(children: [
-          pw.Table(
-            
-            border: pw.TableBorder.all(),
-            children: [
-              _buildTableRow([
-                MyStrings.products,
-                MyStrings.price,
-                MyStrings.discount,
-                MyStrings.quantity,
-                MyStrings.subTotal,
-                MyStrings.total,
-              ]),
-              ...controller.groupNames.map((invoice) {
-                return _buildTableRow([
-                  invoice.toString() ?? "",
-                  '${MyUtils.getCurrency()}${groupperProductSum[invoice]?.toString() ?? 0}',
-                  '${controller.groupDiscountSum[invoice]?.toString() ?? 0}${MyUtils.getCurrency()}',
-                  '${controller.groupQuantitySum[invoice]?.toString()}${controller.groupperProductUom[invoice]?.toString()}',
-                  '${MyUtils.getCurrency()}${controller.groupSubtotalSum[invoice]?.toString() ?? 0}',
-                 '${(controller.groupGrandtotalSum[invoice]?.toString() ?? 0)}${MyUtils.getCurrency()}'
-                ]);
-              }).toList(),
-            ],
-          )
-        ]);
-      },
-    ),
-  );
-  return pdf.save();
-}
+  totalSection(pw.Font font, pw.Font boldFont) {
+    return TotalSection(font: font, boldFont: boldFont, totalPrice: totalSubtotalSum ?? 0.0, grandTotalPrice: totalGrandtotalSum ?? 0.0, vat: totalVat ?? 0.0).build();
+  }
 
-
-pw.TableRow _buildTableRow(List<String> rowData) {
-  final font = PdfGoogleFonts.robotoRegular();
-  return pw.TableRow(
-    children: rowData.map((data) {
-      return pw.Container(
-        alignment: pw.Alignment.center,
-        padding: pw.EdgeInsets.all(Dimensions.space8),
-        child: pw.Text(
-          data,
-        ),
-      );
-    }).toList(),
-  );
-}
-
-
-
-
+  pw.TableRow _buildTableRow(List<String> rowData, pw.Font font) {
+    return pw.TableRow(
+      children: rowData.map((data) {
+        return pw.Container(
+          alignment: pw.Alignment.center,
+          padding: pw.EdgeInsets.all(Dimensions.space8),
+          child: pw.Text(
+            data,
+            style: pw.TextStyle(font: font),
+          ),
+        );
+      }).toList(),
+    );
+  }
 
   Future<void> fetchMonthWiseInvoiceDetails(DateTime date) async {
     try {
@@ -338,30 +422,11 @@ pw.TableRow _buildTableRow(List<String> rowData) {
     return totalPriceWithoutVat + vatAmount;
   }
 
-  //  Map<String, ProductSummary> productSummaries = {};
-
-  // void groupAndSummarizeInvoiceDetails() {
-  //   productSummaries.clear();
-
-  //   for (var invoice in filteredInvoiceDetails) {
-  //     String productName = invoice.name ?? "";
-
-  //     if (!productSummaries.containsKey(productName)) {
-  //       productSummaries[productName] = ProductSummary();
-  //     }
-
-  //     ProductSummary summary = productSummaries[productName]!;
-  //     summary.discountAmount += double.parse(invoice.discountAmount.toString() ?? "0.0");
-  //     summary.quantity += double.parse(invoice.quantity.toString() ?? "0.0");
-  //     summary.subtotal += double.parse(invoice.totalAmount.toString() ?? "0.0");
-  //     summary.total += double.parse(invoice.grandTotal.toString() ?? "0.0");
-  //   }
-  //   update();
-  // }
+  Future<void> loadDataFromSharedPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
+    phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
+    update();
+  }
 }
-// class ProductSummary {
-//   double discountAmount = 0.0;
-//   double quantity = 0.0;
-//   double subtotal = 0.0;
-//   double total = 0.0;
-// }

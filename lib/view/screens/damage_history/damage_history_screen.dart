@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/route/route.dart';
+import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/util.dart';
+import 'package:flutter_prime/data/model/damage_history/damage_history_model.dart';
+import 'package:flutter_prime/data/model/damage_history_details/damage_history_details_model.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/data/controller/damage_history/damage_history_controller.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
@@ -21,7 +25,7 @@ class _DamageHistoryScreenState extends State<DamageHistoryScreen> {
   void initState() {
     super.initState();
     final controller = Get.put(DamageHistoryController());
-    controller.loadDamageHistory();
+    controller.fetchDamageDetails();
   }
 
   @override
@@ -33,27 +37,62 @@ class _DamageHistoryScreenState extends State<DamageHistoryScreen> {
             ? const Center(child: CustomLoader())
             : controller.damageHistory.isEmpty
                 ? const Center(child: Text('No damage history available'))
-                : ListView.builder(
-                    itemCount: controller.damageHistory.length,
-                    itemBuilder: (context, index) {
-                      final damageItem = controller.damageHistory[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CustomCard(
-                            isPress: true,
-                            onPressed: () {
-                               print("thisd si damage id from history ${damageItem.damageID}");
-                              Get.toNamed(RouteHelper.damageHistoryDetailsScreen, arguments:[ damageItem.damageID]);
-                            },
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(damageItem.id.toString()), Text("${MyStrings.date} ${DateConverter.formatValidityDate(damageItem.creationTime.toString())}")],
-                            )),
-                      );
-                    },
-                  ),
+                : Table(
+                        border: TableBorder.all(),
+                        columnWidths: const {
+                          0: IntrinsicColumnWidth(),
+                          1: IntrinsicColumnWidth(),
+                          2: IntrinsicColumnWidth(),
+                          3: IntrinsicColumnWidth(),
+                          4: IntrinsicColumnWidth(),
+                          //   5: IntrinsicColumnWidth(),
+                        },
+                        children: [
+                          const TableRow(
+                            decoration: BoxDecoration(),
+                            children: [
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.date)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.name)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.subTotal)))),
+                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                            ],
+                          ),
+                          ...controller.damageDetails.map((DamageDetailItem product) {
+                            return TableRow(
+                              children: [
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(DateConverter.formatValidityDate(product.creationTime) ?? "")))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.productName ?? "")))),
+                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() ?? "")))),
+                               
+                                //  TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${controller.subTotalForProduct(product).toStringAsFixed(2)} ')))),
+                              ],
+                            );
+                          }).toList(),
+                        ],
+                      ),
       ),
     );
   }
 }
+// ListView.builder(
+//                     itemCount: controller.damageHistory.length,
+//                     itemBuilder: (context, index) {
+//                       final damageItem = controller.damageHistory[index];
+//                       return Padding(
+//                         padding: const EdgeInsets.all(8.0),
+//                         child: CustomCard(
+//                             isPress: true,
+//                             onPressed: () {
+//                                print("thisd si damage id from history ${damageItem.damageID}");
+//                               Get.toNamed(RouteHelper.damageHistoryDetailsScreen, arguments:[ damageItem.damageID,damageItem.creationTime.toString()]);
+//                             },
+//                             width: double.infinity,
+//                             child: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [Text(damageItem.id.toString()), Text("${MyStrings.date} ${DateConverter.formatValidityDate(damageItem.creationTime.toString())}")],
+//                             )),
+//                       );
+//                     },
+//                   ),

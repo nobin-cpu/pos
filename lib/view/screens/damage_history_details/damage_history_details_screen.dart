@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
+import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/data/controller/damage_history_details/damage_history_details_controller.dart';
@@ -16,13 +18,16 @@ class DamageHistoryDetailsScreen extends StatefulWidget {
 }
 
 class _DamageHistoryDetailsScreenState extends State<DamageHistoryDetailsScreen> {
-  final controller = Get.put(DamageHistoryDetailsController());
+  
 
   @override
   void initState() {
     super.initState();
-
+final controller = Get.put(DamageHistoryDetailsController());
     int damageID = Get.arguments[0];
+    controller.dateTime = Get.arguments[1];
+    controller.
+      loadDataFromSharedPreferences();
     print("thisd si damage id ${damageID}");
     controller.fetchDamageDetails(damageID);
   }
@@ -30,7 +35,18 @@ class _DamageHistoryDetailsScreenState extends State<DamageHistoryDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: MyStrings.damageDetails),
+      appBar:  CustomAppBar(title: MyStrings.damageDetails,
+      action: [
+          GetBuilder<DamageHistoryDetailsController>(
+            builder: (controller) => InkWell(
+              onTap: () {
+                controller.generatePdf(controller);
+              },
+              child: Image.asset(MyImages.print, color: MyColor.colorWhite, height: Dimensions.space25),
+            ),
+          )
+        ]
+      ),
       body: GetBuilder<DamageHistoryDetailsController>(
         builder: (controller) {
           if (controller.isLoading) {

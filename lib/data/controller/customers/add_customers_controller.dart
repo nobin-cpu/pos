@@ -33,18 +33,31 @@ class AddCustomersController extends GetxController {
   void showAddCustomersBottomSheet(
     BuildContext context,
   ) {
+    nameController.clear();
+    addressController.clear();
+    phController.clear();
+    poController.clear();
+    update();
     CustomBottomSheet(
-      child: const AddCustomersBottomSheet(  ),
+      child: const AddCustomersBottomSheet(),
     ).customBottomSheet(context);
   }
+
   void showAddCustomersDetailsAlertDialogue(
-    BuildContext context,String address,
-String post,
-   String phone,
+    BuildContext context,
+    String address,
+    String post,
+    String phone,
   ) {
+    
+
     CustomAlertDialog(
       actions: [],
-      child:  CustomerDetails(address: address ,post: post,phone: phone,),
+      child: CustomerDetails(
+        address: address,
+        post: post,
+        phone: phone,
+      ),
     ).customAlertDialog(context);
   }
 
@@ -56,7 +69,7 @@ String post,
       Get.back();
       await CustomSnackBar.success(successList: ["CustomerAddedSuccessfully"]);
     } else {
-     await CustomSnackBar.error(errorList: ["Failed to add customer"]);
+      await CustomSnackBar.error(errorList: ["Failed to add customer"]);
     }
 
     update();

@@ -31,9 +31,9 @@ class _AddCustomersBottomSheetSectionState extends State<AddCustomersBottomSheet
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const BottomSheetHeaderRow(
-              header: MyStrings.addAUnit,
+              header: MyStrings.addCustomer,
             ),
-            const Text("Customer Name", style: semiBoldLarge),
+            const Text(MyStrings.customerName, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
               controller: controller.nameController,
@@ -42,17 +42,17 @@ class _AddCustomersBottomSheetSectionState extends State<AddCustomersBottomSheet
               animatedLabel: true,
             ),
             const SizedBox(height: Dimensions.space5),
-            const Text("Address", style: semiBoldLarge),
+            const Text(MyStrings.address, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
               controller: controller.addressController,
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
-              labelText: "ex:Sector 12,Uttara,Dhaka",
+              labelText: MyStrings.addressExample,
             ),
             const SizedBox(height: Dimensions.space5),
-            const Text("Ph no.", style: semiBoldLarge),
+            const Text(MyStrings.phone, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
               controller: controller.phController,

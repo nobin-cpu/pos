@@ -19,6 +19,7 @@ class InvoiceDetailsController extends GetxController {
   bool isVatInPercent = false;
   bool isVatActivateOrNot = false;
    int? customerId = 0;
+   double ? settledVatForCurrentTrx = 0;
 
   String? vatamount = "";
 

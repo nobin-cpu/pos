@@ -51,7 +51,7 @@ class SettingsController extends GetxController {
   getVatActivationValue() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     percentDiscount = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
-    vatamount = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey);
+    vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
     vatSwitch = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
     print('saved vat amountsssssssssssssss $vatamount');
     print('saved vat amount $percentDiscount');

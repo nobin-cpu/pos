@@ -38,6 +38,7 @@ class _AddCustomersBottomSheetState extends State<AddCustomersBottomSheet> {
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
+              textInputType: TextInputType.emailAddress,
             ),
             const SizedBox(height: Dimensions.space5),
             const Text("Address", style: semiBoldLarge),
@@ -48,6 +49,8 @@ class _AddCustomersBottomSheetState extends State<AddCustomersBottomSheet> {
               needOutlineBorder: true,
               animatedLabel: true,
               labelText: "ex:Sector 12,Uttara,Dhaka",
+              
+              textInputType: TextInputType.emailAddress,
             ),
             const SizedBox(height: Dimensions.space5),
             const Text("Ph no.", style: semiBoldLarge),
@@ -57,6 +60,8 @@ class _AddCustomersBottomSheetState extends State<AddCustomersBottomSheet> {
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
+              
+              textInputType: TextInputType.phone,
             ),
             const SizedBox(height: Dimensions.space5),
             const Text("P.O.#", style: semiBoldLarge),
@@ -66,6 +71,8 @@ class _AddCustomersBottomSheetState extends State<AddCustomersBottomSheet> {
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
+              
+              textInputType: TextInputType.phone,
             ),
             const SizedBox(height: Dimensions.contentToButtonSpace),
             RoundedButton(

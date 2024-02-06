@@ -27,12 +27,13 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   void initState() {
     super.initState();
-
+    
     controller.fetchAllInvoiceDetails();
+    controller.loadDataFromSharedPreferences();
     controller.fetchFilteredInvoiceDetails(controller.startDate);
     controller.calculateGrandTotal();
     controller.calculateTotal();
-    print("this is satart datae${controller.startDate}");
+    controller.calculateTotalVatAmount();
   }
 
   @override
@@ -46,6 +47,7 @@ class _ReportScreenState extends State<ReportScreen> {
             builder: (controller) => InkWell(
               onTap: () {
                 controller.generatePdf(controller);
+                
               },
               child: Image.asset(MyImages.print, color: MyColor.colorWhite, height: Dimensions.space25),
             ),
@@ -68,7 +70,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           isPress: true,
                           onPressed: () {
                             controller.isFilteringByMonth = !controller.isFilteringByMonth;
-                            // No need to call update() here
+                           
                           },
                           width: Dimensions.space100,
                           child: Center(child: Text(controller.isFilteringByMonth ? MyStrings.month : MyStrings.day)),
@@ -81,7 +83,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           } else {
                             controller.moveFilterDateBackward();
                           }
-                          // No need to call update() here
+                         
                         },
                         child: Image.asset(
                           MyImages.back,
@@ -106,7 +108,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           } else {
                             controller.moveFilterDateForward();
                           }
-                          // No need to call update() here
+                          
                         },
                         child: Image.asset(
                           MyImages.next,
@@ -181,6 +183,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 ],
                               ),
                               ...controller.groupNames.map((invoice) {
+                               
                                 return TableRow(
                                   children: [
                                     TableCell(

@@ -58,19 +58,21 @@ class DamageController extends GetxController {
       int damagedProductAmount = int.parse(damageAmountController.text);
       String stock = await databaseHelper.getProductStock(selectedProductId);
       int damageId = Random().nextInt(90000000) + 10000000;
+      
       update();
       databaseHelper.insertDamageDetails(damageId,productName,DateTime.now().toString(),damagedProductAmount,damagedProductId,damageReasonController.text);
       int newStock = int.parse(stock) - int.parse(damageAmountController.text);
       await updateProductStock(int.parse(productId), newStock.toString());
-
+       
       print("Updated stock for product $productId: $newStock");
 
       loadProducts();
       update();
       Get.back();
+      CustomSnackBar.success(successList: ["Damage item updated successfully"]);
     } catch (e) {
       print('Error adding damage data: $e');
-      CustomSnackBar.error(errorList: ["MyStrings.errorAddingDamageData"]);
+      CustomSnackBar.error(errorList: ["Damage item cound't updated"]);
     }
   }
  

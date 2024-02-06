@@ -1,3 +1,4 @@
+import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/data/model/cart/cart_product_model.dart';
 import 'package:flutter_prime/data/model/category/category_model.dart';
 import 'package:flutter_prime/data/model/customers/customer_model.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_prime/data/model/invoice_details/invoice_details_model.d
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/data/model/void_items/void_items_model.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -166,6 +168,31 @@ class DatabaseHelper {
     });
   }
 
+
+
+Future<List<DamageDetailItem>> getAllDamageItems() async {
+  if (!isDatabaseInitialized()) {
+    throw Exception("Database not initialized");
+  }
+
+  final List<Map<String, dynamic>> maps = await _database.query('damage_details');
+  
+  return List.generate(maps.length, (index) {
+    print("this is date========================================================== ${maps[index]['creationTime']}");
+
+    DateTime creationDateTime = DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS').parse(maps[index]['creationTime']);
+
+    return DamageDetailItem(
+      id: maps[index]['id'],
+      damageID: maps[index]['damageID'],
+      creationTime: DateFormat('yyyy-MM-dd HH:mm:ss').format(creationDateTime), 
+      productName: maps[index]['productName'],
+      quantity: maps[index]['quantity'],
+      damageReason: maps[index]['damageReason'],
+    );
+  });
+}
+
   Future<List<DamageDetailItem>> getDamageDetails(int damageID) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
@@ -228,7 +255,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId, bool isVoid, int vatAmount, bool isVatInPercent, String settledVat, bool settledVatFormat,String selectedCustomerId) async {
+  Future<void> insertCheckoutHistory(List<CartProductModel> cartProductList, String paymentMethod, int transactionId, bool isVoid, int vatAmount, bool isVatInPercent, String settledVat, bool settledVatFormat, String selectedCustomerId) async {
     if (!isDatabaseInitialized()) {
       throw Exception("Database not initialized");
     }
@@ -244,6 +271,7 @@ class DatabaseHelper {
     print("VAT from database helper: $vatAmount");
     print("date database helper: ${DateTime.now()}");
     print("this is settled vat from databse${settledVat}");
+    print("this is settled vat from databse${settledVat}");
 
     try {
       int invoiceId = await _database.insert('invoice_history', {
@@ -256,7 +284,7 @@ class DatabaseHelper {
         'vatAmount': vatAmount,
         'setteledVat': settledVat,
         'settledVatFormat': settledVatFormat ? 1 : 0,
-        'selectedCustomerId': selectedCustomerId.toString() ,
+        'selectedCustomerId': selectedCustomerId.toString(),
       });
 
       print("Invoice ID: $invoiceId");
@@ -286,11 +314,14 @@ class DatabaseHelper {
         }
 
         double grandTotalWithVat = grandTotalForProduct + productVatAmount;
-
+        print("this is grandtotal from product_detailss${grandTotalWithVat}");
+        print("this is grandtotal from product_detailsss--${productVatAmount}");
+        print("this is grandtotal from product_detailsss-${productVatAmount.toString()}");
+        print("this is grandtotal from product_detailsss----${cartItem.totalAmount.toString()}");
         print("this is discounted amount from database  insert cheakout  ${discountedAmount}");
         print("this is settled vat from databse2---${settledVat}");
         await _database.insert('product_details', {
-          'invoiceId': invoiceId,
+          'invoiceId': transactionId,
           'checkoutTime': DateTime.now().toUtc().toString(),
           'productId': cartItem.productId,
           'productName': cartItem.name,
@@ -301,11 +332,11 @@ class DatabaseHelper {
           'grandTotal': grandTotalWithVat.toString(),
           'uom': cartItem.uom,
           'isDiscountInPercent': cartItem.isDiscountInPercent,
-          'vatAmount': productVatAmount.toString(),
+          'vatAmount': int.tryParse(productVatAmount.toString()),
           'vatInPercentOrNot': isVatInPercent ? 1 : 0,
           'setteledVat': settledVat,
           'settledVatFormat': settledVatFormat ? 1 : 0,
-           'selectedCustomerId': selectedCustomerId.toString() 
+          'selectedCustomerId': selectedCustomerId.toString()
         });
       }
     } catch (e) {
@@ -332,15 +363,7 @@ class DatabaseHelper {
 
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
-          name: productMap['productName'],
-          price: productMap['productPrice'],
-          totalAmount: double.parse(productMap['totalAmount']),
-          quantity: productMap['quantity'],
-          uom: productMap['uom'],
-          discountAmount: double.tryParse(productMap['discountAmount']),
-          grandTotal: productMap['grandTotal'],
-          isDiscountInPercent: productMap['isDiscountInPercent'],
-        ));
+            name: productMap['productName'], price: productMap['productPrice'], totalAmount: double.parse(productMap['totalAmount']), quantity: productMap['quantity'], uom: productMap['uom'], discountAmount: double.tryParse(productMap['discountAmount']), grandTotal: productMap['grandTotal'], isDiscountInPercent: productMap['isDiscountInPercent'], invoiceID: productMap['invoiceId']));
       }
 
       return products;
@@ -369,16 +392,16 @@ class DatabaseHelper {
       print("working from here 2 ");
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
-          name: productMap['productName'],
-          price: productMap['productPrice'],
-          totalAmount: double.parse(productMap['totalAmount']),
-          quantity: productMap['quantity'],
-          uom: productMap['uom'],
-          discountAmount: double.tryParse(productMap['discountAmount']),
-          grandTotal: productMap['grandTotal'],
-          isDiscountInPercent: productMap['isDiscountInPercent'],
-          isvatInpercentOrNot: productMap['isVatInPercent'] == 1 ? true : false,
-        ));
+            name: productMap['productName'],
+            price: productMap['productPrice'],
+            totalAmount: double.parse(productMap['totalAmount']),
+            quantity: productMap['quantity'],
+            uom: productMap['uom'],
+            discountAmount: double.tryParse(productMap['discountAmount']),
+            grandTotal: productMap['grandTotal'],
+            isDiscountInPercent: productMap['isDiscountInPercent'],
+            isvatInpercentOrNot: productMap['isVatInPercent'] == 1 ? true : false,
+            invoiceID: productMap['invoiceId']));
       }
       print("working from here 3 ");
       return products;
@@ -415,8 +438,10 @@ class DatabaseHelper {
             discountAmount: double.tryParse(productMap['discountAmount']),
             grandTotal: productMap['grandTotal'],
             isDiscountInPercent: productMap['isDiscountInPercent'],
-            vatAmount: productMap['vatAmount'].toString(),
-            isvatInpercentOrNot: productMap['vatInpercentOrNot'] == 1 ? true : false));
+            vatAmount: productMap['vatAmount'],
+            isvatInpercentOrNot: productMap['vatInpercentOrNot'] == 1 ? true : false,
+            selectedCustomerId: productMap['selectedCustomerId'],
+            invoiceID: productMap['invoiceId']));
       }
 
       return products;
@@ -458,21 +483,20 @@ class DatabaseHelper {
 
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
-            name: productMap['productName'],
-            price: productMap['productPrice'].toString(),
-            totalAmount: double.parse(productMap['totalAmount']),
-            quantity: productMap['quantity'],
-            uom: productMap['uom'],
-            discountAmount: double.tryParse(productMap['discountAmount']),
-            grandTotal: productMap['grandTotal'],
-            isDiscountInPercent: productMap['isDiscountInPercent'],
-            vatAmount: productMap['vatAmount'].toString(),
-            productId: int.tryParse(productMap['productId'].toString()),
-            settledVat: productMap['setteledVat'].toString(),
-            settledVatFormat: productMap['settledVatFormat'],
-            selectedCustomerId: productMap['selectedCustomerId'],
-            ));
-            
+          name: productMap['productName'],
+          price: productMap['productPrice'].toString(),
+          totalAmount: double.parse(productMap['totalAmount']),
+          quantity: productMap['quantity'],
+          uom: productMap['uom'],
+          discountAmount: double.tryParse(productMap['discountAmount']),
+          grandTotal: productMap['grandTotal'],
+          isDiscountInPercent: productMap['isDiscountInPercent'],
+          vatAmount: productMap['vatAmount'],
+          productId: int.tryParse(productMap['productId'].toString()),
+          settledVat: productMap['setteledVat'].toString(),
+          settledVatFormat: productMap['settledVatFormat'],
+          selectedCustomerId: productMap['selectedCustomerId'],
+        ));
       }
 
       return products;
@@ -610,7 +634,7 @@ class DatabaseHelper {
     print("success");
   }
 
-    Future<List<CustomerModel>> getCustomers() async {
+  Future<List<CustomerModel>> getCustomers() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('customers');
     return List.generate(maps.length, (index) {
@@ -623,7 +647,6 @@ class DatabaseHelper {
       );
     });
   }
-
 
   Future<List<UomModel>> getUomList() async {
     if (!isDatabaseInitialized()) {
@@ -651,16 +674,19 @@ class DatabaseHelper {
 
       for (var productMap in productData) {
         products.add(InvoiceDetailsModel(
-            name: productMap['productName'],
-            price: productMap['productPrice'],
-            totalAmount: double.parse(productMap['totalAmount']),
-            quantity: productMap['quantity'],
-            uom: productMap['uom'],
-            discountAmount: double.tryParse(productMap['discountAmount']),
-            grandTotal: productMap['grandTotal'],
-            isDiscountInPercent: productMap['isDiscountInPercent'],
-            checkoutTime: productMap['checkoutTime'],
-            vatAmount: productMap['vatAmount']));
+          name: productMap['productName'],
+          price: productMap['productPrice'],
+          totalAmount: double.parse(productMap['totalAmount']),
+          quantity: productMap['quantity'],
+          uom: productMap['uom'],
+          discountAmount: double.tryParse(productMap['discountAmount']),
+          grandTotal: productMap['grandTotal'],
+          isDiscountInPercent: productMap['isDiscountInPercent'],
+          checkoutTime: productMap['checkoutTime'],
+          vatAmount: int.tryParse(productMap['vatAmount'].toString()),
+          selectedCustomerId: productMap['selectedCustomerId'],
+          invoiceID: productMap['invoiceId'],
+        ));
       }
 
       return products;

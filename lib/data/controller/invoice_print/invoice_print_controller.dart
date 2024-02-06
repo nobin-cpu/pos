@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
@@ -15,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InvoicePrintController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -23,6 +25,9 @@ class InvoicePrintController extends GetxController {
   int transectionId = 0;
   String dateTime = "";
   bool isFromVoidScreen = false;
+   String shopkeeperName = "";
+  String shopAddress = "";
+  String phoneNumber = "";
 
   bool isVatEnable = false;
   bool isVatInPercent = false;
@@ -31,6 +36,8 @@ class InvoicePrintController extends GetxController {
 
   String? vatamount = "";
   double? grandTotal = 0.0;
+  double? perProductTotal = 0.0;
+  double? currentTrxVat = 0.0;
 
   Future<void> fetchProducts(int invoiceId) async {
     print('my invoiceId: ${invoiceId}');
@@ -169,17 +176,23 @@ class InvoicePrintController extends GetxController {
     return ShopKeeperInfoSection(
       font: font,
       boldFont: boldFont,
+      shopkeeperName: shopkeeperName,
+      shopAddress: shopAddress,
+      shopPhoneNo: phoneNumber
     ).build();
   }
 
   billTo(pw.Font font, pw.Font boldFont) {
-    return BillToSection(font: font, boldFont: boldFont, customerName: customerName ?? "",customerAddress: customerAddress??"",customerpost: customerPhNo??"",customerph: customerPhNo??"").build();
+    return BillToSection(font: font, boldFont: boldFont, customerName: customerName ?? "", customerAddress: customerAddress ?? "", customerpost: customerPhNo ?? "", customerph: customerPost ?? "").build();
   }
 
   totalSection(pw.Font font, pw.Font boldFont) {
     return TotalSection(
       font: font,
       boldFont: boldFont,
+      totalPrice: perProductTotal??0.0,
+      grandTotalPrice: grandTotal??0.0,
+      vat: currentTrxVat??0.0
     ).build();
   }
 
@@ -187,6 +200,7 @@ class InvoicePrintController extends GetxController {
     return DateSection(
       font: font,
       boldFont: boldFont,
+      dateTime: dateTime,
     ).build();
   }
 
@@ -205,9 +219,13 @@ class InvoicePrintController extends GetxController {
     return totalPriceWithoutVat + vatAmount;
   }
 
-  // Future<void> fetchProductsAndCustomerDetails(InvoicePrintController controller, int invoiceId, int? customerId) async {
-  //   await controller.fetchProducts(invoiceId);
-  //   await controller.getCustomerById(customerId ?? 0);
-  //   print("Products and customer details fetched");
-  // }
+ 
+
+  Future<void> loadDataFromSharedPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
+    phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
+    update();
+  }
 }

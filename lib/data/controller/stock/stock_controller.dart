@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
@@ -9,11 +10,14 @@ import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/date_section.dart';
+import 'package:flutter_prime/view/screens/invoice_print/widgets/shop_keeper_info_srction.dart';
 import 'package:flutter_prime/view/screens/stock/widgets/update_stock_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StockController extends GetxController {
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -22,6 +26,10 @@ class StockController extends GetxController {
   List<ProductModel> products = [];
   List<ProductModel> productList = [];
   String selectedProductId = "";
+
+    String shopkeeperName = "";
+  String shopAddress = "";
+  String phoneNumber = "";
 
   @override
   void onInit() {
@@ -84,11 +92,15 @@ void generatePdf(StockController controller) async {
   await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
   Get.offAllNamed(RouteHelper.bottomNavBar);
 }
+shopKeeperInfo(pw.Font font, pw.Font boldFont) {
+    return ShopKeeperInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopkeeperName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
+  }
 
 
 Future<Uint8List> _generatePdf(PdfPageFormat format, StockController controller) async {
   final pdf = pw.Document();
-  final font = await PdfGoogleFonts.robotoRegular();
+     final font = await PdfGoogleFonts.tiroBanglaRegular();
+    final boldFont = await PdfGoogleFonts.robotoBold();
 
   pdf.addPage(
     pw.Page(
@@ -96,6 +108,11 @@ Future<Uint8List> _generatePdf(PdfPageFormat format, StockController controller)
       pageFormat: format,
       build: (context) {
         return pw.Column(children: [
+           pw.Center(child: pw.Text(MyStrings.stockReport)),
+            pw.SizedBox(height: Dimensions.space15),
+            pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, mainAxisAlignment: pw.MainAxisAlignment.start, children: [shopKeeperInfo(font, boldFont)]),
+            
+            pw.SizedBox(height: Dimensions.space15),
           pw.Table(
             border: pw.TableBorder.all(),
             children: [
@@ -119,6 +136,9 @@ Future<Uint8List> _generatePdf(PdfPageFormat format, StockController controller)
 }
 
 
+  
+ 
+
 pw.TableRow _buildTableRow(List<String> rowData) {
   final font = PdfGoogleFonts.robotoRegular();
   return pw.TableRow(
@@ -133,4 +153,13 @@ pw.TableRow _buildTableRow(List<String> rowData) {
     }).toList(),
   );
 }
+
+
+ Future<void> loadDataFromSharedPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
+    phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
+    update();
+  }
 }

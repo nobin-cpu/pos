@@ -19,21 +19,19 @@ class CategoryProductListController extends GetxController {
   List<ProductModel> uomList = [];
   List<CartProductModel> cartList = [];
   int quantity = 1;
-   double previousDiscount = 0.0;
-    double totalAmount = 0.0;
+  double previousDiscount = 0.0;
+  double totalAmount = 0.0;
 
   bool isDiscountInpercent = false;
-   bool isLoading = false;
+  bool isLoading = false;
   String categoryTitle = "";
   String totalCartItems = "";
-
 
   @override
   void onInit() {
     super.onInit();
   }
 
- 
   Future<void> loadProductData(String category) async {
     isLoading = true;
     update();
@@ -54,17 +52,11 @@ class CategoryProductListController extends GetxController {
     await loadProductData(category);
   }
 
-
-
-
   void increaseInputFieldProductQuantity() {
     quantity++;
     productQuantityController.text = quantity.toString();
     update();
   }
-
-
-
 
   void decreaseInputFieldProductQuantity() {
     if (quantity > 1) {
@@ -73,10 +65,6 @@ class CategoryProductListController extends GetxController {
       update();
     }
   }
-
-
-
- 
 
   void updateTotalAmount(int index, dynamic quantity) {
     ProductModel product = productList[index];
@@ -88,19 +76,15 @@ class CategoryProductListController extends GetxController {
     update();
   }
 
-
-
   void showAddToCartAlertDialogue(ProductModel product, BuildContext context, int index) {
+    isDiscountInpercent = false;
+
     totalAmount = double.parse(product.price.toString());
 
     productQuantityController.text = quantity.toString();
     discountController.text = "";
     CustomAlertDialog(child: AddToCartAlertDialogue(index: index), actions: []).customAlertDialog(context);
   }
-
-
-
-
 
   Future<void> loadCartData() async {
     try {
@@ -116,84 +100,65 @@ class CategoryProductListController extends GetxController {
     }
   }
 
- 
-
-
-  
-
   Future<void> addToCart(ProductModel product, int quantity) async {
+    try {
+      List<CartProductModel> existingCartItems = await databaseHelper.getCartItems();
+      CartProductModel? existingCartItem = existingCartItems.firstWhere(
+        (cartItem) => cartItem.productId == product.id,
+        orElse: () => CartProductModel(),
+      );
 
-  try {
-    List<CartProductModel> existingCartItems = await databaseHelper.getCartItems();
-    CartProductModel? existingCartItem = existingCartItems.firstWhere(
-      (cartItem) => cartItem.productId == product.id,
-      orElse: () => CartProductModel(),
-    );
+      double discount = double.tryParse(discountController.text) ?? 0.0;
 
-    double discount = double.tryParse(discountController.text) ?? 0.0;
+      String stock = await databaseHelper.getProductStock(product.id.toString());
+      int availableStock = int.parse(stock);
 
-    
-    String stock = await databaseHelper.getProductStock(product.id.toString());
-    int availableStock = int.parse(stock);
+      if (existingCartItem != null && existingCartItem.id != null) {
+        if (quantity > availableStock) {
+          CustomSnackBar.error(errorList: [MyStrings.notEnoughStock]);
+          return;
+        }
+        existingCartItem.quantity = quantity;
+        existingCartItem.totalAmount = totalAmount;
+        existingCartItem.discountAmount = discount;
 
-    if (existingCartItem != null && existingCartItem.id != null) {
-      
-      if (quantity > availableStock) {
-       CustomSnackBar.error(errorList: [MyStrings.notEnoughStock]);
-        return;
+        await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
+        CustomSnackBar.success(successList: [MyStrings.productUpdatededSuccessfully]);
+      } else {
+        if (quantity > availableStock) {
+          CustomSnackBar.error(errorList: [MyStrings.notEnoughStock]);
+          return;
+        }
+        await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
+        CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
       }
-      existingCartItem.quantity = quantity;
-      existingCartItem.totalAmount = totalAmount;
-      existingCartItem.discountAmount = discount;
 
-      await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
-      CustomSnackBar.success(successList: [MyStrings.productUpdatededSuccessfully]);
-    } else {
-      if (quantity > availableStock) {
-        CustomSnackBar.error(errorList: [MyStrings.notEnoughStock]);
-        return;
-      }
-      await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
-      CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
+      CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
+
+      productQuantityController.clear();
+      productQuantityController.text = "1";
+
+      this.quantity = 1;
+
+      update();
+      Get.back();
+      initData(categoryTitle);
+    } catch (e) {
+      print(isDiscountInpercent);
+      CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
+      print("Failed to add to cart: $e");
     }
-
-    CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
- 
-
-    productQuantityController.clear();
-    productQuantityController.text = "1";
-
-    this.quantity = 1;
-
-    update();
-    Get.back();
-    initData(categoryTitle);
-  } catch (e) {
-    print(isDiscountInpercent);
-    CustomSnackBar.error(errorList: [MyStrings.failedToAddToCart]);
-    print("Failed to add to cart: $e");
   }
-}
-
-
-
 
   changediscountCheckBox() {
     isDiscountInpercent = !isDiscountInpercent;
     update();
   }
 
-
-
-
   double calculateTotalAmount(ProductModel product, int quantity) {
     double price = double.parse(product.price ?? '0.0');
     return price * quantity;
   }
-
-
-
-
 
   void updateTotalAmountWithDiscount(ProductModel product, int quantity, double discount) async {
     double price = double.parse(product.price ?? '0.0');
@@ -215,11 +180,6 @@ class CategoryProductListController extends GetxController {
     update();
   }
 
-
-
-
-
-
   void handleDiscountChange(String value, int index) {
     if (isDiscountInpercent) {
       double discountPercentage = double.tryParse(value) ?? 0;
@@ -229,8 +189,6 @@ class CategoryProductListController extends GetxController {
       updateTotalAmountWithDiscount(productList[index], quantity, directDiscount);
     }
   }
-
-
 
   resetFields() {
     quantity = 1;

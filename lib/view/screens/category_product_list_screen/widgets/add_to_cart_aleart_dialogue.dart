@@ -132,6 +132,7 @@ class AddToCartAlertDialogue extends StatelessWidget {
                     MyStrings.discount,
                     style: semiBoldLarge,
                   ),
+                  const SizedBox(width:Dimensions.space15),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.space2, vertical: Dimensions.space10),

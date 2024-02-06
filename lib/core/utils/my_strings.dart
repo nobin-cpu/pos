@@ -25,6 +25,13 @@ class MyStrings{
   static const String shopAddress   = "Shop Address";
   static const String addshopdetails   = "Add shop details";
   static const String customers   = "Customers";
+  static const String transectionID   = "trx ID:";
+  static const String recieptDate   = "RecieptDate:";
+  static const String addCustomer   = "Add Customer:";
+  static const String customerName   = "Customer Name";
+  static const String selectACustomer   = 'Select Customer';
+  static const String customerAddedSuccessfully   = 'Customer Added Successfully';
+  static const String failedToAddCustomer   = "Failed to add customer";
 
   static const String appName       = "POS";
   static const String damageHistory       = "Damage History";
@@ -211,6 +218,7 @@ class MyStrings{
   static const String resendCodeFail         = 'Failed to resend code';
   static const String somethingWentWrong     = 'Something went wrong';
   static const String invalidAmount          = 'Invalid amount';
+  static const String addressExample          = "ex:Sector 12,Uttara,Dhaka";
 
   static const String verificationSuccess  = 'Verification Success';
   static const String enterYourUsername    = 'Enter your username';
@@ -258,6 +266,7 @@ class MyStrings{
   static const String rejected                               = "Rejected";
   static const String inventory                              = "Inventory";
   static const String stock                                  = "Stock";
+  static const String stockReport                                  = "Stock report";
   static const String inStock                                  = "In stock:";
   static const String setting                                  = "Setting";
   static const String pos                                    = "POS";

@@ -5,16 +5,20 @@ import 'package:pdf/widgets.dart' as pw;
 class ShopKeeperInfoSection {
   final pw.Font font;
   final pw.Font boldFont;
+  final String shopkeeperName;
+  final String shopAddress;
+  final String shopPhoneNo;
 
-  ShopKeeperInfoSection({required this.font, required this.boldFont});
+  ShopKeeperInfoSection({required this.font, required this.boldFont, required this.shopkeeperName, required this.shopAddress, required this.shopPhoneNo});
 
   pw.Widget build() {
+    print("this is shop keeper name ${shopkeeperName}");
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       mainAxisAlignment: pw.MainAxisAlignment.start,
       children: [
         pw.Text(
-          "John Smith",
+          shopkeeperName,
           style: pw.TextStyle(
             font: font,
             color: PdfColors.orange400,
@@ -23,14 +27,15 @@ class ShopKeeperInfoSection {
         ),
         pw.SizedBox(height: Dimensions.space18),
         pw.Text(
-          "4490 Oak Drive",
+          shopAddress,
           style: pw.TextStyle(
             font: font,
             fontSize: 12,
           ),
         ),
+        pw.SizedBox(height: Dimensions.space8),
         pw.Text(
-          "Albany, NY 12210",
+          shopPhoneNo,
           style: pw.TextStyle(
             font: font,
             fontSize: 12,

@@ -26,6 +26,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
   @override
   void initState() {
     final controller = Get.put(ConfirmCheakoutController());
+    controller.loadDataFromSharedPreferences();
     controller.initData();
     super.initState();
   }
@@ -48,6 +49,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * .45,
                   child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
                     child: Padding(
                       padding: const EdgeInsets.all(Dimensions.space10),
                       child: Table(
@@ -167,15 +169,17 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                             borderRadius: BorderRadius.circular(Dimensions.space5),
                           ),
                           child: DropdownButtonFormField<CustomerModel>(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Select Customer',
+                              hintText: MyStrings.selectACustomer,
                             ),
                             value: controller.selectedCustomer,
                             onChanged: (CustomerModel? value) {
                               controller.selectedCustomer = value;
+                              controller.customerid = value!.id;
 
                               print(value!.id.toString());
+                              print("|this is customer id ${controller.customerid}");
                             },
                             items: controller.customerList.map((CustomerModel customer) {
                               return DropdownMenuItem<CustomerModel>(
@@ -183,8 +187,8 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                                   child: Row(
                                     children: [
                                       Text(customer.name),
-                                      SizedBox(
-                                        width: 5,
+                                      const SizedBox(
+                                        width: Dimensions.space5,
                                       ),
                                       Text("(${customer.address})", style: regularDefault)
                                     ],
@@ -193,7 +197,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: Dimensions.space15),
+                      const SizedBox(width: Dimensions.space15),
                       InkWell(
                           onTap: () {
                             controller.showAddCustomersBottomSheet(context);
@@ -234,7 +238,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                                 controller.paidinCash = false;
                                 controller.update();
                               } else {
-                                CustomSnackBar.error(errorList: ["select a customer"]);
+                                CustomSnackBar.error(errorList: [MyStrings.selectACustomer]);
                               }
                             },
                             width: double.infinity,
@@ -277,13 +281,12 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                             isPress: true,
                             onPressed: () {
                               if (controller.selectedCustomer != null) {
-                                 controller.paidinCash = true;
-                              controller.paidOnline = false;
-                              controller.update();
+                                controller.paidinCash = true;
+                                controller.paidOnline = false;
+                                controller.update();
                               } else {
-                                CustomSnackBar.error(errorList: ["select a customer"]);
+                                CustomSnackBar.error(errorList: [MyStrings.selectACustomer]);
                               }
-                            
                             },
                             width: double.infinity,
                             child: FittedBox(
@@ -318,14 +321,19 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               ),
             ),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 if (controller.paidOnline || controller.paidinCash) {
                   if (controller.paidOnline) {
                     controller.completeCheckout(MyStrings.paidOnline);
+                    controller.generatePdf(controller);
                   }
                   if (controller.paidinCash) {
                     controller.completeCheckout(MyStrings.paidByCash);
+                    controller.generatePdf(controller);
                   }
+                  
+                 
+                 
                 } else {
                   CustomSnackBar.error(errorList: [MyStrings.selectPaymentGatewat]);
                 }

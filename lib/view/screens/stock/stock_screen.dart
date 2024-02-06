@@ -21,6 +21,7 @@ class _StockScreenState extends State<StockScreen> {
     super.initState();
     final controller = Get.put(StockController());
     controller.loadProducts();
+    controller.loadDataFromSharedPreferences();
   }
 
   @override

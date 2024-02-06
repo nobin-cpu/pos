@@ -22,10 +22,13 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
     controller.isFromVoidScreen = Get.arguments[3];
     controller.grandTotal = Get.arguments[4];
     controller.customerId = Get.arguments[5];
+    controller.perProductTotal = Get.arguments[6];
+    controller.currentTrxVat = Get.arguments[7];
     controller.fetchProducts(invoiceId);
     controller.generatePdf(controller);
     controller.getCustomerById(controller.customerId??0);
     controller.getAndPrintCustomerById(controller.customerId??0);
+    controller.loadDataFromSharedPreferences();
     print(invoiceId);
     print(controller.transectionId);
     print("..................invoice and transection id from print s...................${invoiceId}");

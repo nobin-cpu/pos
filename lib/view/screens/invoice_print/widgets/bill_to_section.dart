@@ -7,8 +7,9 @@ class BillToSection {
   final pw.Font boldFont;
   final String customerName; 
   final String customerAddress; 
+    final String customerph; 
   final String customerpost; 
-  final String customerph; 
+
 
   BillToSection( {required this.font, required this.boldFont, required this.customerName,required this.customerAddress,required this.customerph,required this.customerpost}); 
   pw.Widget build() {
