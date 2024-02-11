@@ -123,6 +123,7 @@ class CategoryProductListController extends GetxController {
         existingCartItem.discountAmount = discount;
 
         await databaseHelper.updateCartItem(existingCartItem).then((value) => isDiscountInpercent = false);
+        
         CustomSnackBar.success(successList: [MyStrings.productUpdatededSuccessfully]);
       } else {
         if (quantity > availableStock) {
@@ -130,10 +131,12 @@ class CategoryProductListController extends GetxController {
           return;
         }
         await databaseHelper.insertCartItem(product, quantity, totalAmount.toString(), discount, isDiscountInpercent).then((value) => isDiscountInpercent = false);
-        CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
+       await CustomSnackBar.success(successList: [MyStrings.productAddedSuccessfully]);
+        
       }
 
-      CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
+     
+     await  CustomSnackBar.success(successList: [MyStrings.succesfullyProductAddedToCart]);
 
       productQuantityController.clear();
       productQuantityController.text = "1";
@@ -141,7 +144,6 @@ class CategoryProductListController extends GetxController {
       this.quantity = 1;
 
       update();
-      Get.back();
       initData(categoryTitle);
     } catch (e) {
       print(isDiscountInpercent);

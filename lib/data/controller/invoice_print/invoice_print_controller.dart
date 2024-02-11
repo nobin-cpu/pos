@@ -25,7 +25,7 @@ class InvoicePrintController extends GetxController {
   int transectionId = 0;
   String dateTime = "";
   bool isFromVoidScreen = false;
-   String shopkeeperName = "";
+   String shopName = "";
   String shopAddress = "";
   String phoneNumber = "";
 
@@ -173,10 +173,10 @@ class InvoicePrintController extends GetxController {
   }
 
   shopKeeperInfo(pw.Font font, pw.Font boldFont) {
-    return ShopKeeperInfoSection(
+    return ShopInfoSection(
       font: font,
       boldFont: boldFont,
-      shopkeeperName: shopkeeperName,
+      shopkeeperName: shopName,
       shopAddress: shopAddress,
       shopPhoneNo: phoneNumber
     ).build();
@@ -223,7 +223,7 @@ class InvoicePrintController extends GetxController {
 
   Future<void> loadDataFromSharedPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopName = preferences.getString(SharedPreferenceHelper.shopNameKey) ?? "";
     shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
     phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
     update();

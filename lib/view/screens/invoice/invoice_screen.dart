@@ -124,7 +124,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                   onPressed: () {
                                     controller.isFrom = false;
                                     controller.isTo = true;
-                                    controller.selectDate(context, false); // Pass false for toDate
+                                    controller.selectDate(context, false);
                                   },
                                   width: double.infinity,
                                   child: Row(
@@ -159,7 +159,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           child: CustomCard(
                             isPress: true,
                             onPressed: () {
-                              Get.toNamed(RouteHelper.invoiceDetailsScreen, arguments: [controller.invoiceProductList[index].id, controller.invoiceProductList[index].dateTime.toString(), controller.invoiceProductList[index].transectionId, false]);
+                              print("this i id  s ====================${controller.invoiceProductList[index].id}");
+                              Get.toNamed(RouteHelper.invoiceDetailsScreen, arguments: [controller.invoiceProductList[index].transectionId, controller.invoiceProductList[index].dateTime.toString(), controller.invoiceProductList[index].transectionId, false]);
                             },
                             width: double.infinity,
                             child: Column(

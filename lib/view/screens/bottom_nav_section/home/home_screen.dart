@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/screens/bottom_nav_section/home/widget/home_main_section.dart';
 import 'package:get/get.dart';
@@ -49,41 +51,38 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: Scaffold(
               backgroundColor: MyColor.colorWhite,
-              appBar: CustomAppBar(
+              appBar:const CustomAppBar(
                 title: "",
                 isShowBackBtn: false,
-                // todaysDate: DateTime.now(),
-                action: [
-                  InkWell(
-                    customBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * .1),
-                    ),
-                    onTap: () async {
-                      controller.logout();
-                    },
-                    hoverColor: Colors.transparent,
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Dimensions.space10),
-                        color: MyColor.transparentColor,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(Dimensions.space17),
-                        child: Image.asset(
-                          MyImages.signOut,
-                          height: Dimensions.space20,
-                          color: MyColor.colorWhite,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+               
               ),
               body: controller.isLoading
                   ? const CustomLoader()
-                  : const Center(
-                      child: HomeMainSection(),
-                    ),
+                  : SingleChildScrollView(
+                    physics:const BouncingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                       controller.shopName.isNotEmpty?   Padding(
+                            padding: const EdgeInsets.only(bottom:  5,left: Dimensions.space10),
+                            child: Text(
+                              "${MyStrings.hi}${controller.shopName}",
+                              style: semiBoldExtraLarge,
+                            ),
+                          ):const SizedBox(),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              MyStrings.whatDoYouWantToDoToday,
+                              style: regularExtraLarge,
+                            ),
+                          ),
+                          const HomeMainSection(),
+                        ],
+                      ),
+                  ),
             ),
           ),
         ),

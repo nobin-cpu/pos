@@ -3,7 +3,7 @@ import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
-import 'package:flutter_prime/data/controller/settings/settings_controller.dart';
+import 'package:flutter_prime/data/controller/add_shop_details/add_shop_details_controller.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/bottom_sheet_header_row.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
@@ -16,7 +16,7 @@ class ShopDetailsAddBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SettingsController>(builder: (controller) {
+    return GetBuilder<AddShopDetailsController>(builder: (controller) {
       return Container(
         padding: const EdgeInsets.all(Dimensions.space10),
         decoration: const BoxDecoration(color: MyColor.colorWhite),
@@ -26,10 +26,10 @@ class ShopDetailsAddBottomSheet extends StatelessWidget {
             const BottomSheetHeaderRow(
               header: MyStrings.addshopdetails,
             ),
-            const Text(MyStrings.shopkeeperName, style: semiBoldLarge),
+            const Text(MyStrings.shopName, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
-              controller: controller.shopKeeperNameController,
+              controller: controller.shopNameController,
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
@@ -73,7 +73,7 @@ class ShopDetailsAddBottomSheet extends StatelessWidget {
                         press: () {
                           controller.saveshopDataToSharedPreference();
                           Get.back();
-                          controller.getVatActivationValue();
+                          controller.getShopDetailsData();
                         },
                         verticalPadding: Dimensions.space10)),
               ],

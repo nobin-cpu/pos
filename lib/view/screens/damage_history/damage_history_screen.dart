@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_color.dart';
+import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
+import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/core/utils/util.dart';
 import 'package:flutter_prime/data/model/damage_history/damage_history_model.dart';
 import 'package:flutter_prime/data/model/damage_history_details/damage_history_details_model.dart';
@@ -25,74 +28,124 @@ class _DamageHistoryScreenState extends State<DamageHistoryScreen> {
   void initState() {
     super.initState();
     final controller = Get.put(DamageHistoryController());
-    controller.fetchDamageDetails();
+    controller.fetchDamageDetails(controller.startDate);
+    controller.loadDamageHistory(); 
+    controller.loadDataFromSharedPreferences(); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: MyStrings.damageHistory),
+      appBar: CustomAppBar(title: MyStrings.damageHistory,  action: [
+          GetBuilder<DamageHistoryController>(
+            builder: (controller) => InkWell(
+              onTap: () {
+                controller.generatePdf(controller);
+                
+              },
+              child: Image.asset(MyImages.print, color: MyColor.colorWhite, height: Dimensions.space25),
+            ),
+          )
+        ],),
       body: GetBuilder<DamageHistoryController>(
         builder: (controller) => controller.isLoading
             ? const Center(child: CustomLoader())
             : controller.damageHistory.isEmpty
                 ? const Center(child: Text('No damage history available'))
-                : Table(
-                        border: TableBorder.all(),
-                        columnWidths: const {
-                          0: IntrinsicColumnWidth(),
-                          1: IntrinsicColumnWidth(),
-                          2: IntrinsicColumnWidth(),
-                          3: IntrinsicColumnWidth(),
-                          4: IntrinsicColumnWidth(),
-                          //   5: IntrinsicColumnWidth(),
-                        },
-                        children: [
-                          const TableRow(
-                            decoration: BoxDecoration(),
+                : Column(
+                  
+                  children: [
+
+
+                      Container(
+                  padding: const EdgeInsets.all(Dimensions.space10),
+                  child: Row(
+  children: [
+    Expanded(
+      child: CustomCard(
+        isPress: true,
+        onPressed: () {
+          controller.isFilteringByMonth = !controller.isFilteringByMonth;
+          controller.fetchDamageDetails(controller.startDate);
+        },
+        width: Dimensions.space100,
+        child: Center(child: Text(controller.isFilteringByMonth ? MyStrings.month : MyStrings.day)),
+      ),
+    ),
+    InkWell(
+      onTap: () async {
+        if (controller.isFilteringByMonth) {
+          controller.moveFilterMonthBackward();
+        } else {
+          controller.moveFilterDateBackward();
+        }
+      },
+      child: Image.asset(
+        MyImages.back,
+        height: Dimensions.space30,
+      ),
+    ),
+    Expanded(
+      child: CustomCard(
+        width: Dimensions.space200,
+        child: Center(
+          child: Text(
+            controller.isFilteringByMonth ? DateConverter.formatMonth(controller.startDate) : DateConverter.formatValidityDate(controller.startDate.toString()),
+            style: regularDefault.copyWith(color: MyColor.colorBlack),
+          ),
+        ),
+      ),
+    ),
+    InkWell(
+      onTap: () async {
+        if (controller.isFilteringByMonth) {
+          controller.moveFilterMonthForward();
+        } else {
+          controller.moveFilterDateForward();
+        }
+      },
+      child: Image.asset(
+        MyImages.next,
+        height: Dimensions.space30,
+      ),
+    ),
+  ],
+),
+                ),
+                    Table(
+                            border: TableBorder.all(),
+                            columnWidths: const {
+                              0: IntrinsicColumnWidth(),
+                              1: IntrinsicColumnWidth(),
+                              2: IntrinsicColumnWidth(),
+                              3: IntrinsicColumnWidth(),
+                              4: IntrinsicColumnWidth(),
+                            },
                             children: [
-                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.date)))),
-                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.name)))),
-                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
-                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
-                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.subTotal)))),
-                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
+                              const TableRow(
+                                decoration: BoxDecoration(),
+                                children: [
+                                  TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.date)))),
+                                  TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.name)))),
+                                  TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
+                                ],
+                              ),
+                              ...controller.damageDetails.map((DamageDetailItem product) {
+                                return TableRow(
+                                  children: [
+                                    TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(DateConverter.formatValidityDate(product.creationTime) ?? "")))),
+                                    TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.productName ?? "")))),
+                                    TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() ?? "")))),
+                                   
+                                    //  TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${controller.subTotalForProduct(product).toStringAsFixed(2)} ')))),
+                                  ],
+                                );
+                              }).toList(),
                             ],
                           ),
-                          ...controller.damageDetails.map((DamageDetailItem product) {
-                            return TableRow(
-                              children: [
-                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(DateConverter.formatValidityDate(product.creationTime) ?? "")))),
-                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.productName ?? "")))),
-                                TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() ?? "")))),
-                               
-                                //  TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${controller.subTotalForProduct(product).toStringAsFixed(2)} ')))),
-                              ],
-                            );
-                          }).toList(),
-                        ],
-                      ),
+                  ],
+                ),
       ),
     );
   }
 }
-// ListView.builder(
-//                     itemCount: controller.damageHistory.length,
-//                     itemBuilder: (context, index) {
-//                       final damageItem = controller.damageHistory[index];
-//                       return Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: CustomCard(
-//                             isPress: true,
-//                             onPressed: () {
-//                                print("thisd si damage id from history ${damageItem.damageID}");
-//                               Get.toNamed(RouteHelper.damageHistoryDetailsScreen, arguments:[ damageItem.damageID,damageItem.creationTime.toString()]);
-//                             },
-//                             width: double.infinity,
-//                             child: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [Text(damageItem.id.toString()), Text("${MyStrings.date} ${DateConverter.formatValidityDate(damageItem.creationTime.toString())}")],
-//                             )),
-//                       );
-//                     },
-//                   ),

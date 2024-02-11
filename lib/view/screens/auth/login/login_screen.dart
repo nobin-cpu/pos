@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             InkWell(
                               onTap: () {
                                 controller.clearTextField();
-                                Get.toNamed(RouteHelper.forgotPasswordScreen);
+                                Get.toNamed(RouteHelper.forgetPasswordScreen);
                               },
                               child: Text(MyStrings.forgotPassword.tr, maxLines: 2, overflow: TextOverflow.ellipsis, style: regularLarge.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w500)),
                             )
@@ -210,30 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onTap: () {},
                                 child: const GoogleLoginSection(),
                               ),
-                              // const Padding(
-                              //   padding: EdgeInsets.symmetric(vertical: Dimensions.space10, horizontal: Dimensions.space10),
-                              //   child: Text.rich(
-                              //     TextSpan(
-                              //       children: [
-                              //         TextSpan(
-                              //           text: MyStrings.byCreatingAnAccountYouAreAgreeingToOur,
-                              //           style: TextStyle(
-                              //             color: MyColor.colorBlack,
-                              //             fontSize: Dimensions.space12,
-                              //           ),
-                              //         ),
-                              //         TextSpan(
-                              //           text: MyStrings.termsAndConditions,
-                              //           style: TextStyle(
-                              //             color: MyColor.primaryColor,
-                              //             fontSize: Dimensions.space12,
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //     textAlign: TextAlign.center,
-                              //   ),
-                              // )
+                             
                             ],
                           ),
                         ),

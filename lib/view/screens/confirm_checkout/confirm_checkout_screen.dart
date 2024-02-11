@@ -26,7 +26,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
   @override
   void initState() {
     final controller = Get.put(ConfirmCheakoutController());
-    controller.loadDataFromSharedPreferences();
+    
     controller.initData();
     super.initState();
   }
@@ -38,7 +38,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
       print("this is vat status${controller.isVatEnable}");
 
       return Scaffold(
-        // backgroundColor: MyColor.colorWhite,
+       
         appBar: const CustomAppBar(title: MyStrings.checkout),
         body: Column(
           children: [
@@ -46,13 +46,16 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               width: double.infinity,
               child: FittedBox(
                 fit: BoxFit.cover,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * .45,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Dimensions.space10),
+                child: Container(
+                  margin:const EdgeInsets.only(bottom: Dimensions.space40),
+                  padding:const EdgeInsets.only(bottom: Dimensions.space30),
+                  height: MediaQuery.of(context).size.height * .35,
+                  child: Padding(
+                    padding: const EdgeInsets.all(Dimensions.space10),
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
                       child: Table(
+                        
                         border: TableBorder.all(),
                         columnWidths: const {
                           0: IntrinsicColumnWidth(),
@@ -60,22 +63,20 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                           2: IntrinsicColumnWidth(),
                           3: IntrinsicColumnWidth(),
                           4: IntrinsicColumnWidth(),
-                          //   5: IntrinsicColumnWidth(),
                         },
                         children: [
                           const TableRow(
                             decoration: BoxDecoration(),
                             children: [
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.products)))),
-                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.price)))),
+                              TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.priceTable)))),
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.discount)))),
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.quantity)))),
                               TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.subTotal)))),
-                              // TableCell(child: Padding(padding: EdgeInsets.all(Dimensions.space8), child: Center(child: Text(MyStrings.total)))),
                             ],
                           ),
                           ...controller.cartProductList.map((CartProductModel product) {
-                            double perProductTotal = double.parse(product.price.toString()) * double.parse(product.quantity.toString());
+
                             return TableRow(
                               children: [
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
@@ -83,7 +84,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${product.discountAmount}${product.isDiscountInPercent == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}')))),
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.quantity.toString() + product.uom.toString())))),
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${product.totalAmount} ')))),
-                                //  TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text('${MyUtils.getCurrency()}${controller.subTotalForProduct(product).toStringAsFixed(2)} ')))),
                               ],
                             );
                           }).toList(),
@@ -94,6 +94,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                 ),
               ),
             ),
+           
           ],
         ),
         floatingActionButton: Column(
@@ -178,8 +179,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                               controller.selectedCustomer = value;
                               controller.customerid = value!.id;
 
-                              print(value!.id.toString());
-                              print("|this is customer id ${controller.customerid}");
+                            
                             },
                             items: controller.customerList.map((CustomerModel customer) {
                               return DropdownMenuItem<CustomerModel>(
@@ -324,12 +324,12 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               onTap: () async {
                 if (controller.paidOnline || controller.paidinCash) {
                   if (controller.paidOnline) {
+                    controller.generatePdf();
                     controller.completeCheckout(MyStrings.paidOnline);
-                    controller.generatePdf(controller);
                   }
                   if (controller.paidinCash) {
+                    controller.generatePdf();
                     controller.completeCheckout(MyStrings.paidByCash);
-                    controller.generatePdf(controller);
                   }
                   
                  

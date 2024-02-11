@@ -11,15 +11,18 @@ class InvoiceDetailsModel {
   double? discountAmount;
   int? isDiscountInPercent;
   double? grandTotal;
-  int? vatAmount;
+  double? vatAmount;
   String? checkoutTime;
   bool? isvatInpercentOrNot;
    String? settledVat;
    int? settledVatFormat;
    String? selectedCustomerId;
    int? invoiceID;
+   double? totalGrandTotalofAllProduct;
+   double? totalPriceofAllProduct;
+   double? totalVatofAllProduct;
 
-  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime,this.isvatInpercentOrNot,this.settledVat,this.settledVatFormat,this.selectedCustomerId,this.invoiceID});
+  InvoiceDetailsModel({this.id, this.productId, this.name, this.price, this.category, this.uom, this.imagePath, this.quantity, this.totalAmount, this.discountAmount, this.isDiscountInPercent, this.grandTotal, this.vatAmount,this.checkoutTime,this.isvatInpercentOrNot,this.settledVat,this.settledVatFormat,this.selectedCustomerId,this.invoiceID,this.totalGrandTotalofAllProduct,this.totalPriceofAllProduct,this.totalVatofAllProduct});
 
   Map<String, dynamic> toMap() {
     return {
@@ -42,6 +45,9 @@ class InvoiceDetailsModel {
       'settledVatFormat': settledVatFormat,
       'selectedCustomerId': selectedCustomerId,
       'invoiceId': invoiceID,
+      'totalGrandTotalAllProducts': totalGrandTotalofAllProduct,
+      'totalAmountAllProducts': totalPriceofAllProduct,
+      'totalVatAllProducts': totalVatofAllProduct,
     };
   }
 
@@ -65,7 +71,10 @@ class InvoiceDetailsModel {
       settledVat: map['settledVat'],
       settledVatFormat: map['settledVatFormat'],
       selectedCustomerId: map['selectedCustomerId'],
-      invoiceID: map['invoiceId']
+      invoiceID: map['invoiceId'],
+      totalGrandTotalofAllProduct: map['totalGrandTotalAllProducts'],
+      totalPriceofAllProduct: map['totalAmountAllProducts'],
+      totalVatofAllProduct: map['totalVatAllProducts'],
     );
   }
 }

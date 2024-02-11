@@ -185,104 +185,101 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
             ],
           );
         }),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+       floatingActionButton: Column(
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    Container(
+      decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
+      child: CustomCard(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-              child: CustomCard(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(MyStrings.billAndPayment, style: semiBoldMediumLarge),
-                    const SizedBox(height: Dimensions.space10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          MyStrings.total,
-                          style: regularDefault.copyWith(color: MyColor.getGreyText()),
-                        ),
-                        Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
-                      ],
-                    ),
-                    const SizedBox(height: Dimensions.space10),
-                    ...controller.products.map((InvoiceDetailsModel product) {
-                      controller.customerId = int.tryParse(product.selectedCustomerId.toString());
-                      print("this is settled vat from screen---${product.settledVat}");
-                      controller.settledVatForCurrentTrx = double.tryParse(product.settledVat.toString());
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(MyStrings.vat, style: regularDefault.copyWith(color: MyColor.getGreyText())),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '+ ${product.settledVat ?? "0"}${product.settledVatFormat == 1 ? MyUtils.getPercentSymbol() : MyUtils.getCurrency()}',
-                              style: regularDefault.copyWith(color: MyColor.getGreyText()),
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                    const CustomDivider(space: Dimensions.space5),
-                    const SizedBox(height: Dimensions.space10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          MyStrings.grandTotal,
-                          style: regularDefault,
-                        ),
-                        Text(
-                          '${MyUtils.getCurrency()}${controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice}',
-                          style: regularLarge,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            const Text(MyStrings.billAndPayment, style: semiBoldMediumLarge),
             const SizedBox(height: Dimensions.space10),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                controller.isFromVoidScreen
-                    ? const SizedBox()
-                    : Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(Dimensions.space10),
-                          child: RoundedButton(
-                            verticalPadding: Dimensions.space5,
-                            color: MyColor.colorRed,
-                            press: () {
-                              print(controller.transectionId);
-                              controller.updateVoidStatus();
-                            },
-                            text: MyStrings.voids,
-                          ),
-                        ),
-                      ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(Dimensions.space10),
-                    child: RoundedButton(
-                        verticalPadding: Dimensions.space5,
-                        press: () {
-                          Get.toNamed(RouteHelper.invoicePrintScreen, arguments: [controller.invoiceId, controller.dateTime, controller.transectionId, true, controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice, controller.customerId, controller.totalPrice, controller.settledVatForCurrentTrx]);
-                        },
-                        text: MyStrings.print),
+                Text(
+                  MyStrings.total,
+                  style: regularDefault.copyWith(color: MyColor.getGreyText()),
+                ),
+                Text('${MyUtils.getCurrency()}${controller.totalPrice.toStringAsFixed(2)}', style: regularDefault.copyWith(color: MyColor.getGreyText())),
+              ],
+            ),
+            const SizedBox(height: Dimensions.space10),
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(MyStrings.vat, style: regularDefault.copyWith(color: MyColor.getGreyText())),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '+ ${controller.products.isNotEmpty ? controller.products.first.settledVat ?? "0" : "0"}${ MyUtils.getCurrency()}',
+                    style: regularDefault.copyWith(color: MyColor.getGreyText()),
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ],
-            )
+            ),
+            const CustomDivider(space: Dimensions.space5),
+            const SizedBox(height: Dimensions.space10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  MyStrings.grandTotal,
+                  style: regularDefault,
+                ),
+                Text(
+                  '${MyUtils.getCurrency()}${controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice}',
+                  style: regularLarge,
+                ),
+              ],
+            ),
           ],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      ),
+    ),
+    const SizedBox(height: Dimensions.space10),
+    Row(
+      children: [
+        controller.isFromVoidScreen
+            ? const SizedBox()
+            : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(Dimensions.space10),
+                  child: RoundedButton(
+                    verticalPadding: Dimensions.space5,
+                    color: MyColor.colorRed,
+                    press: () {
+                      print(controller.transectionId);
+                      controller.updateVoidStatus();
+                    },
+                    text: MyStrings.voids,
+                  ),
+                ),
+              ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimensions.space10),
+            child: RoundedButton(
+                verticalPadding: Dimensions.space5,
+                press: () {
+                  Get.toNamed(RouteHelper.invoicePrintScreen, arguments: [controller.invoiceId, controller.dateTime, controller.transectionId, true, controller.isVatActivateOrNot ? controller.grandTotalPrice : controller.totalPrice, controller.customerId, controller.totalPrice, controller.settledVatForCurrentTrx]);
+                },
+                text: MyStrings.print),
+          ),
+        ),
+      ],
+    )
+  ],
+),
+floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       );
     });
   }
 }
+// controller.products.isNotEmpty && controller.products.first.settledVatFormat == 1 ? MyUtils.getPercentSymbol() :

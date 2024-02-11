@@ -49,12 +49,12 @@ class MyColor{
   static const Color greenP             = Color(0xFF28C76F);
   static const Color containerBgColor   = Color(0xffF9F9F9);
   static const Color pickImageBgColor   = Color(0xFFECECEC);
-  static const Color invernToryBtnColor = Color(0xFF264653);
-  static const Color stockBtnColor      = Color(0xFF2a9d8f);
-  static const Color posBtnColor        = Color(0xFFe9c46a);
-  static const Color reportBtnColor     = Color(0xFFf4a261);
-  static const Color issueBtnColor      = Color(0xFFe76f51);
-  static const Color contactBtnColor    = Color(0xFFe97c61);
+  static const Color invernToryBtnColor = Color(0xFFD8D5F4);
+  static const Color stockBtnColor      = Color(0xFFEAF5D3);
+  static const Color posBtnColor        = Color(0xFFF4F9F4);
+  static const Color reportBtnColor     = Color(0xFFFCEEC7);
+  static const Color issueBtnColor      = Color(0xFFFFCACC);
+  static const Color contactBtnColor    = Color(0xFFFAF3F0);
 
 
   static Color getPrimaryColor(){

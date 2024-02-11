@@ -11,13 +11,15 @@ class HomeMainSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) => GridView.builder(
+        physics:const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.03),
         itemCount: controller.homeButtons.length,
         itemBuilder: (context, index) => HomeButtonContainer(
           color: controller.homeButtons[index]["color"],
           imagePath: controller.homeButtons[index]["image"].toString(),
           text: controller.homeButtons[index]["title"].toString(),
+          description: controller.homeButtons[index]["description"].toString(),
           onPressed: () {
             if (index == 0) {
               Get.toNamed(RouteHelper.inventoryScreen);

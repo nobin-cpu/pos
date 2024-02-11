@@ -106,12 +106,14 @@ class _ProductScreenState extends State<ProductScreen> {
                                                       const SizedBox(
                                                         width: Dimensions.space10,
                                                       ),
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(controller.productList[index].name ?? 'N/A', style: regularMediumLarge),
-                                                          Text("${MyStrings.price}: ${controller.productList[index].price}${MyUtils.getCurrency()} /${controller.productList[index].uom}" ?? 'N/A ', style: regularMediumLarge),
-                                                        ],
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(controller.productList[index].name ?? 'N/A', style: regularMediumLarge),
+                                                            Text("${MyStrings.price}: ${controller.productList[index].price}${MyUtils.getCurrency()} /${controller.productList[index].uom}" ?? 'N/A ', style: regularMediumLarge,overflow: TextOverflow.ellipsis,),
+                                                          ],
+                                                        ),
                                                       ),
                                                       const Spacer(),
                                                       InkWell(

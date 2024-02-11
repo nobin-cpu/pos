@@ -63,11 +63,12 @@ class ConfirmCheakoutController extends GetxController {
   bool paidinCash = false;
   int id = 0;
   List<CartProductModel> cartProductList = [];
+  List<CartProductModel> checkOutProductList = [];
   double vat = 0.0;
   double? discountPrice;
   List<ProductModel> products = [];
 
-  String shopkeeperName = "";
+  String shopName = "";
   String shopAddress = "";
   String phoneNumber = "";
 
@@ -92,6 +93,7 @@ class ConfirmCheakoutController extends GetxController {
   Future<void> getCartList() async {
     await databaseHelper.initializeDatabase();
     cartProductList = await databaseHelper.getCartItems();
+    checkOutProductList = await databaseHelper.getCartItems();
     update();
   }
 
@@ -101,6 +103,7 @@ class ConfirmCheakoutController extends GetxController {
     await loadProducts();
     fetchCustomers();
     loadDropdownData();
+    await loadDataFromSharedPreferences();
   }
 
   getVatData() async {
@@ -183,7 +186,6 @@ class ConfirmCheakoutController extends GetxController {
     cartItem.category = newCategory;
     cartItem.uom = uomController.text;
     cartItem.quantity = quantity;
-    // cartItem.discountAmount = disc;
 
     await databaseHelper.updateCartItem(cartItem);
     print("cart updated succesfully" + cartItem.discountAmount.toString());
@@ -239,7 +241,18 @@ class ConfirmCheakoutController extends GetxController {
     return cartProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
   }
 
+  double get checkOutTotalPrice {
+    return checkOutProductList.fold(0.0, (sum, item) => sum + (item.totalAmount ?? 0.0));
+  }
+
   double get grandTotalPrice {
+    double totalPriceWithoutVat = totalPrice;
+    double vatAmount = isVatInPercent ? (totalPriceWithoutVat * (vat / 100.0)) : vat.toDouble();
+
+    return totalPriceWithoutVat + vatAmount;
+  }
+
+  double get checkOutGrandTotalPrice {
     double totalPriceWithoutVat = totalPrice;
     double vatAmount = isVatInPercent ? (totalPriceWithoutVat * (vat / 100.0)) : vat.toDouble();
 
@@ -251,11 +264,6 @@ class ConfirmCheakoutController extends GetxController {
     return totalPriceWithoutVat;
   }
 
-  // void showConfirmPopUp(
-  //   BuildContext context,
-  // ) {
-  //   CustomAlertDialog(child: const ConfirmCheckoutPopUp(), actions: []).customAlertDialog(context);
-  // }
   int? customerid = 0;
   Future<void> completeCheckout(String paymentMethod) async {
     int? currentVat = int.tryParse(vatAmount.toString());
@@ -276,7 +284,7 @@ class ConfirmCheakoutController extends GetxController {
         print("Updated stock for product $productId: $newStock");
       }
       print("this is settled vat from controller${vatAmount}");
-      await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent, vatAmount ?? "0", isVatInPercent, selectedCustomer!.id.toString());
+      await databaseHelper.insertCheckoutHistory(cartProductList, paymentMethod, generateUniqueId(), false, currentVat ?? 0, isVatInPercent, isVatInPercent, selectedCustomer!.id.toString());
       await CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
       await databaseHelper.clearCart();
 
@@ -370,16 +378,19 @@ class ConfirmCheakoutController extends GetxController {
     Get.back();
   }
 
-  void generatePdf(ConfirmCheakoutController controller) async {
+  void generatePdf() async {
     await getCustomerById(customerid!);
 
     await getAndPrintCustomerById(customerid!);
     update();
-    await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, controller));
+    await Printing.layoutPdf(onLayout: (format) => _generatePdf(format));
     Get.offAllNamed(RouteHelper.bottomNavBar);
+    checkOutProductList.clear();
   }
 
-  Future<Uint8List> _generatePdf(PdfPageFormat format, ConfirmCheakoutController controller) async {
+  Future<Uint8List> _generatePdf(
+    PdfPageFormat format,
+  ) async {
     final pdf = pw.Document();
     final font = await PdfGoogleFonts.tiroBanglaRegular();
     final boldFont = await PdfGoogleFonts.robotoBold();
@@ -390,7 +401,7 @@ class ConfirmCheakoutController extends GetxController {
         pageFormat: format,
         build: (context) {
           return pw.Column(children: [
-            pw.Center(child: pw.Text(MyStrings.report)),
+            pw.Center(child: pw.Text(MyStrings.checkout)),
             pw.SizedBox(height: Dimensions.space15),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, mainAxisAlignment: pw.MainAxisAlignment.start, children: [shopKeeperInfo(font, boldFont)]),
             pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [billTo(font, boldFont), date(font, boldFont)]),
@@ -405,11 +416,11 @@ class ConfirmCheakoutController extends GetxController {
                   MyStrings.quantity,
                   MyStrings.subTotal,
                 ], font),
-                ...controller.cartProductList.map((invoice) {
+                ...checkOutProductList.map((invoice) {
                   return _buildTableRow([
                     invoice.name.toString() ?? "",
                     '${MyUtils.getCurrency()}${invoice.price ?? 0}',
-                    '${invoice.discountPrice ?? 0}${MyUtils.getCurrency()}',
+                    '${invoice.discountAmount ?? 0}${invoice.isDiscountInPercent == 0 ? MyUtils.getCurrency() : MyUtils.getPercentSymbol()}',
                     '${invoice.quantity}${invoice.uom}',
                     '${MyUtils.getCurrency()}${invoice.totalAmount ?? 0}',
                   ], font);
@@ -431,7 +442,8 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   shopKeeperInfo(pw.Font font, pw.Font boldFont) {
-    return ShopKeeperInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopkeeperName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
+   
+    return ShopInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
   }
 
   date(pw.Font font, pw.Font boldFont) {
@@ -443,7 +455,10 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   totalSection(pw.Font font, pw.Font boldFont) {
-    return TotalSection(font: font, boldFont: boldFont, totalPrice: double.tryParse(totalPrice.toStringAsFixed(2)) ?? 0.0, grandTotalPrice: double.tryParse(grandTotalPrice.toStringAsFixed(2)) ?? 0.0, vat: double.tryParse(vatAmount.toString()) ?? 0.0).build();
+    double grandTotal = isVatEnable ? checkOutGrandTotalPrice : checkOutTotalPrice;
+    update();
+    print("this is grande totoal${grandTotal}");
+    return TotalSection(font: font, boldFont: boldFont, totalPrice: double.tryParse(checkOutTotalPrice.toStringAsFixed(2)) ?? 0.0, grandTotalPrice: checkOutGrandTotalPrice ?? 0.0, vat: double.tryParse(vatAmount.toString()) ?? 0.0).build();
   }
 
   pw.TableRow _buildTableRow(List<String> rowData, pw.Font font) {
@@ -463,7 +478,7 @@ class ConfirmCheakoutController extends GetxController {
 
   Future<void> loadDataFromSharedPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopName = preferences.getString(SharedPreferenceHelper.shopNameKey) ?? "";
     shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
     phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
     update();
@@ -474,7 +489,7 @@ class ConfirmCheakoutController extends GetxController {
   String? customerPhNo = "";
   String? customerPost = "";
 
-  Future<void> getAndPrintCustomerById(int  customerid) async {
+  Future<void> getAndPrintCustomerById(int customerid) async {
     final customer = await getCustomerById(customerid);
     if (customer != null) {
       customerName = customer.name;
@@ -493,7 +508,7 @@ class ConfirmCheakoutController extends GetxController {
     }
   }
 
-  Future<CustomerModel?> getCustomerById( int customerid) async {
+  Future<CustomerModel?> getCustomerById(int customerid) async {
     await databaseHelper.initializeDatabase();
     print("this is customer id to fetch data${customerid}");
     final db = await databaseHelper.database;

@@ -1,6 +1,5 @@
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class TotalSection {
@@ -13,7 +12,7 @@ class TotalSection {
   TotalSection({required this.font, required this.boldFont, required this.totalPrice, required this.grandTotalPrice, required this.vat});
 
   pw.Widget build() {
-    print("this is from total section${vat.toString()}");
+    print("this is from total section${grandTotalPrice.toString()}");
     return pw.Row(
       children: [
         pw.Column(
@@ -49,7 +48,7 @@ class TotalSection {
           crossAxisAlignment: pw.CrossAxisAlignment.end,
           children: [
             pw.Text(
-              totalPrice.toString(),
+              totalPrice.toStringAsFixed(2),
               style: pw.TextStyle(
                 font: font,
                 fontSize: 12,
@@ -57,7 +56,7 @@ class TotalSection {
             ),
             pw.SizedBox(height: Dimensions.space10),
             pw.Text(
-              vat.toString(),
+              vat.toStringAsFixed(2),
               style: pw.TextStyle(
                 font: font,
                 fontSize: 12,
@@ -65,7 +64,7 @@ class TotalSection {
             ),
             pw.SizedBox(height: Dimensions.space15),
             pw.Text(
-              grandTotalPrice.toString(),
+              grandTotalPrice.toStringAsFixed(2),
               style: pw.TextStyle(
                 font: font,
                 fontSize: 16,

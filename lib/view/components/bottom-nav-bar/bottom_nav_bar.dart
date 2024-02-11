@@ -4,8 +4,8 @@ import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/view/screens/bottom_nav_section/home/home_screen.dart';
+import 'package:flutter_prime/view/screens/menu/menu_screen.dart';
 import 'package:flutter_prime/view/screens/pos/pos_screen.dart';
-import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
 import 'package:flutter_prime/view/screens/void_or_invoice_choice_screen/void_or_invoice_choice_screen.dart';
 import 'package:get/get.dart';
 import 'nav_bar_item_widget.dart';
@@ -18,7 +18,7 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  List<Widget> screens = [const HomeScreen(), const PosScreen(),const VoidOrInvoiceScreen(),const SettingsScreen(),];
+  List<Widget> screens = [const HomeScreen(), const PosScreen(),const VoidOrInvoiceScreen(),const MenuScreen(),];
 
   int currentIndex = 0;
 
@@ -68,8 +68,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       });
                     }),
                 NavBarItem(
-                    label: MyStrings.setting,
-                    imagePath: MyImages.settings,
+                    label: MyStrings.menu,
+                    imagePath: MyImages.menu,
                     index: 3,
                     isSelected: currentIndex == 3,
                     press: () {

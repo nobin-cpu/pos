@@ -7,14 +7,14 @@ import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:get/get.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+class VatSettingsScreen extends StatefulWidget {
+  const VatSettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<VatSettingsScreen> createState() => _VatSettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _VatSettingsScreenState extends State<VatSettingsScreen> {
   @override
   void initState() {
     super.initState();
@@ -70,31 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                 Padding(
-                  padding: const EdgeInsets.all(Dimensions.space5),
-                  child: CustomCard(
-                    width: double.infinity,
-                    onPressed: () {
-                     
-                        controller.showShopDetailsAddBottomSheet(context);
-                     
-                    },
-                    isPress: true,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                       
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(MyStrings.shopName  ),
-                            
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                
               ],
             ),
           ),

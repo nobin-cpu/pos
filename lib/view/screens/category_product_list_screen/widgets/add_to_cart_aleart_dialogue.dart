@@ -198,7 +198,6 @@ class AddToCartAlertDialogue extends StatelessWidget {
                         Get.back();
 
                        
-                        controller.loadCartData();
                       }),
                 )),
               ],

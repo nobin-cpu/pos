@@ -3,13 +3,13 @@ import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/view/components/alert-dialog/custom_alert_dialog.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/screens/settings/widget/settings_aleart_dialogue.dart';
-import 'package:flutter_prime/view/screens/settings/widget/shop_details_add_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/add_shop_details/widgets/shop_details_add_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsController extends GetxController {
   final TextEditingController vatController = TextEditingController();
-  final TextEditingController shopKeeperNameController = TextEditingController();
+  final TextEditingController shopNameController = TextEditingController();
   final TextEditingController shopAddressController = TextEditingController();
   final TextEditingController phNoController = TextEditingController();
   bool percentDiscount = false;
@@ -19,16 +19,20 @@ class SettingsController extends GetxController {
   bool? bools;
 
   String? vatamount = "";
+  String? shopName = "";
 
   void showVatCustomizeAleartDialogue(BuildContext context) {
     vatController.text = vatamount.toString();
     update();
     CustomAlertDialog(child: const VatCustomizeAlartDialogue(), actions: []).customAlertDialog(context);
   }
+
   void showShopDetailsAddBottomSheet(BuildContext context) {
     vatController.text = vatamount.toString();
     update();
-    CustomBottomSheet(child: const ShopDetailsAddBottomSheet(),).customBottomSheet(context);
+    CustomBottomSheet(
+      child: const ShopDetailsAddBottomSheet(),
+    ).customBottomSheet(context);
   }
 
   changediscountCheckBox() {
@@ -52,6 +56,7 @@ class SettingsController extends GetxController {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     percentDiscount = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
     vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
+    shopName = preferences.getString(SharedPreferenceHelper.shopNameKey);
     vatSwitch = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
     print('saved vat amountsssssssssssssss $vatamount');
     print('saved vat amount $percentDiscount');
@@ -61,7 +66,7 @@ class SettingsController extends GetxController {
   Future<void> saveVatDataToSharedPreference() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
-    await preferences.setString(SharedPreferenceHelper.shopKeeperNameKey, shopKeeperNameController.text);
+    await preferences.setString(SharedPreferenceHelper.shopNameKey, shopNameController.text);
     await preferences.setString(SharedPreferenceHelper.shopAddressKey, shopAddressController.text);
     await preferences.setString(SharedPreferenceHelper.phNoKey, phNoController.text);
     await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
@@ -70,8 +75,10 @@ class SettingsController extends GetxController {
 
   Future<void> saveshopDataToSharedPreference() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(SharedPreferenceHelper.shopKeeperNameKey, shopKeeperNameController.text);
+    await preferences.setString(SharedPreferenceHelper.shopNameKey, shopNameController.text);
     await preferences.setString(SharedPreferenceHelper.shopAddressKey, shopAddressController.text);
     await preferences.setString(SharedPreferenceHelper.phNoKey, phNoController.text);
+    getVatActivationValue();
+    update();
   }
 }

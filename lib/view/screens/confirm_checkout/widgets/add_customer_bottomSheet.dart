@@ -59,9 +59,10 @@ class _AddCustomersBottomSheetSectionState extends State<AddCustomersBottomSheet
               onChanged: () {},
               needOutlineBorder: true,
               animatedLabel: true,
+              textInputType: TextInputType.number,
             ),
             const SizedBox(height: Dimensions.space5),
-            const Text("P.O.#", style: semiBoldLarge),
+            const Text(MyStrings.po, style: semiBoldLarge),
             const SizedBox(height: Dimensions.space10),
             CustomTextField(
               controller: controller.poController,
@@ -75,7 +76,7 @@ class _AddCustomersBottomSheetSectionState extends State<AddCustomersBottomSheet
                 if (controller.nameController.text.isNotEmpty) {
                   controller.addCustomers();
                 } else {
-                  CustomSnackBar.error(errorList: ["add customer name"]);
+                  CustomSnackBar.error(errorList: [MyStrings.addCustomer]);
                 }
               },
               text: MyStrings.save,

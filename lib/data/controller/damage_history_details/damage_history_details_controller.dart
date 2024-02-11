@@ -55,7 +55,7 @@ class DamageHistoryDetailsController extends GetxController {
   }
 
   shopKeeperInfo(pw.Font font, pw.Font boldFont) {
-    return ShopKeeperInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopkeeperName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
+    return ShopInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopkeeperName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
   }
 
   String ? damageReason = "";
@@ -124,7 +124,7 @@ class DamageHistoryDetailsController extends GetxController {
 
   Future<void> loadDataFromSharedPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopKeeperNameKey) ?? "";
+    shopkeeperName = preferences.getString(SharedPreferenceHelper.shopNameKey) ?? "";
     shopAddress = preferences.getString(SharedPreferenceHelper.shopAddressKey) ?? "";
     phoneNumber = preferences.getString(SharedPreferenceHelper.phNoKey) ?? "";
     update();

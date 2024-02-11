@@ -2,14 +2,14 @@ import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class ShopKeeperInfoSection {
+class ShopInfoSection {
   final pw.Font font;
   final pw.Font boldFont;
   final String shopkeeperName;
   final String shopAddress;
   final String shopPhoneNo;
 
-  ShopKeeperInfoSection({required this.font, required this.boldFont, required this.shopkeeperName, required this.shopAddress, required this.shopPhoneNo});
+  ShopInfoSection({required this.font, required this.boldFont, required this.shopkeeperName, required this.shopAddress, required this.shopPhoneNo});
 
   pw.Widget build() {
     print("this is shop keeper name ${shopkeeperName}");

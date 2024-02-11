@@ -94,7 +94,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   width: double.infinity,
                                   child: Row(
                                     children: [
-                                      Text(controller.catagoryData[index].title!, style: regularMediumLarge),
+                                      Expanded(child: Text(controller.catagoryData[index].title!, style: regularMediumLarge,overflow: TextOverflow.ellipsis,)),
                                       const Spacer(),
                                       InkWell(
                                         onTap: () {

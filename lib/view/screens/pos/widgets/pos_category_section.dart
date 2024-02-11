@@ -48,6 +48,7 @@ class _PosCategorySectionState extends State<PosCategorySection> {
                       Text(
                         controller.categoryList[index].title.toString(),
                         style: semiBoldLarge,
+                        overflow: TextOverflow.ellipsis,
                       )
                     ],
                   ));
@@ -56,11 +57,3 @@ class _PosCategorySectionState extends State<PosCategorySection> {
     );
   }
 }
-//  CustomCard(
-//               isPress: true,
-//               onPressed: () {
-//                 Get.toNamed(RouteHelper.categoryProductListScreen, arguments: [controller.categoryList[index].title]);
-//               },
-//               width: double.infinity,
-//               child: Center(child: Text(controller.categoryList[index].title.toString())),
-//             ),

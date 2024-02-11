@@ -1,3 +1,4 @@
+import 'package:flutter_prime/view/screens/add_shop_details/add_shop_details_screen.dart';
 import 'package:flutter_prime/view/components/bottom-nav-bar/bottom_nav_bar.dart';
 import 'package:flutter_prime/view/screens/account/change-password/change_password_screen.dart';
 import 'package:flutter_prime/view/screens/auth/login/login_screen.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_prime/view/screens/customers/customers_screeen.dart';
 import 'package:flutter_prime/view/screens/damage/damage_screen.dart';
 import 'package:flutter_prime/view/screens/damage_history/damage_history_screen.dart';
 import 'package:flutter_prime/view/screens/damage_history_details/damage_history_details_screen.dart';
+import 'package:flutter_prime/view/screens/forget_password/forget_password_screen.dart';
 import 'package:flutter_prime/view/screens/inventory/inventory_screen.dart';
 import 'package:flutter_prime/view/screens/confirm_checkout/confirm_checkout_screen.dart';
 import 'package:flutter_prime/view/screens/invoice/invoice_screen.dart';
@@ -20,7 +22,7 @@ import 'package:flutter_prime/view/screens/pos/widgets/pos_category_section.dart
 import 'package:flutter_prime/view/screens/invoice_print/invoice_print_screen.dart';
 import 'package:flutter_prime/view/screens/product/product_screen.dart';
 import 'package:flutter_prime/view/screens/report/report_screen.dart';
-import 'package:flutter_prime/view/screens/settings/settings_screen.dart';
+import 'package:flutter_prime/view/screens/settings/vat_settings_screen.dart';
 import 'package:flutter_prime/view/screens/splash/splash_screen.dart';
 import 'package:flutter_prime/view/screens/stock/stock_screen.dart';
 import 'package:flutter_prime/view/screens/uom/uom_screen.dart';
@@ -47,7 +49,7 @@ static const String categoryProductListScreen = '/category_Product_List_Screen';
 static const String cartScreen                = '/cart_Screen';
 static const String cheakOutScreen            = '/cheak_out_Screen';
 static const String confirmCheckoutScreen     = '/confirm_checkout_Screen';
-static const String settingsScreen            = '/settings_Screen';
+static const String vatSettingsScreen            = '/settings_Screen';
 static const String invoiceScreen             = '/invoice_Screen';
 static const String invoiceDetailsScreen      = '/invoice_details_Screen';
 static const String voidItemsScreen           = '/void_items_Screen';
@@ -59,6 +61,8 @@ static const String damageHistoryScreen               = '/damage_history_Screen'
 static const String damageHistoryDetailsScreen               = '/damage_history_details_Screen';
 static const String invoicePrintScreen               = '/print_Screen';
 static const String customersScreen               = '/customers_Screen';
+static const String addShopDetailsScreen               = '/add_shop_details_Screen';
+static const String forgetPasswordScreen               = '/forget_password_Screen';
 
 
   List<GetPage> routes = [
@@ -79,7 +83,7 @@ static const String customersScreen               = '/customers_Screen';
     GetPage(name: cartScreen, page: () => const CartScreen()),
     GetPage(name: cheakOutScreen, page: () => const CheckoutScreen()),
     GetPage(name: confirmCheckoutScreen, page: () => const ConfirmCheckOutScreen()),
-    GetPage(name: settingsScreen, page: () => const SettingsScreen()),
+    GetPage(name: vatSettingsScreen, page: () => const VatSettingsScreen()),
     GetPage(name: invoiceScreen, page: () => const InvoiceScreen()),
     GetPage(name: invoiceDetailsScreen, page: () => const InvoiceDetailsScreen()),
     GetPage(name: reportScreen, page: () => const ReportScreen()),
@@ -90,5 +94,7 @@ static const String customersScreen               = '/customers_Screen';
     GetPage(name: damageHistoryDetailsScreen, page: () => const DamageHistoryDetailsScreen()),
     GetPage(name: invoicePrintScreen, page: () => const InvoicePrintScreen()),
     GetPage(name: customersScreen, page: () => const CustomersScreen()),
+    GetPage(name: addShopDetailsScreen, page: () => const AddShopDetailsScreen()),
+    GetPage(name: forgetPasswordScreen, page: () => const ForgetPasswordScreen()),
   ];
 }

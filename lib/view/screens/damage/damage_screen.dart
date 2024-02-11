@@ -50,8 +50,8 @@ class _DamageScreenState extends State<DamageScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(product.name ?? MyStrings.noData),
-                            Text('${MyStrings.inStock} ${product.stock ?? '0'}'),
+                            Text("${product.name  ?? MyStrings.noData}   (${product.category })"   ),
+                            Text('${MyStrings.inStock} ${product.stock  ?? '0'}'),
                           ],
                         ),
                       ),
