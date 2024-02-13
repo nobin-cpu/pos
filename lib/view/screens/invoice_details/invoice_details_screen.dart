@@ -216,7 +216,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '+ ${controller.products.isNotEmpty ? controller.products.first.settledVat ?? "0" : "0"}${ MyUtils.getCurrency()}',
+                    '${ MyUtils.getPlusSymbol()}${controller.products.isNotEmpty ? controller.products.first.settledVat ?? "0" : "0"}${ MyUtils.getCurrency()}',
                     style: regularDefault.copyWith(color: MyColor.getGreyText()),
                     textAlign: TextAlign.end,
                   ),

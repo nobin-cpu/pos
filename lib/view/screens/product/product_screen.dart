@@ -11,7 +11,7 @@ import 'package:flutter_prime/data/controller/product/product_controller.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:flutter_prime/view/components/custom_loader/custom_loader.dart';
-import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/chip_filter.dart';
+import 'package:flutter_prime/view/screens/product/widgets/chip_filter.dart';
 import 'package:get/get.dart';
 
 class ProductScreen extends StatefulWidget {

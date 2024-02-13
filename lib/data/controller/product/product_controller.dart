@@ -7,8 +7,8 @@ import 'package:flutter_prime/data/model/product/product_model.dart';
 import 'package:flutter_prime/data/model/uom/uom_model.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/custom_bottom_sheet.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
-import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/add_product_bottom_sheet.dart';
-import 'package:flutter_prime/view/screens/product/add_product_bottom_sheet/edit_or_delete_product_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/product/widgets/add_product_bottom_sheet.dart';
+import 'package:flutter_prime/view/screens/product/widgets/edit_or_delete_product_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -52,8 +52,7 @@ class ProductController extends GetxController {
       categoryList.addAll(categoryData);
       uomList.add(UomModel(title: MyStrings.selectOne, id: -1));
       uomList.addAll(uomData);
-      print(uomList);
-      print("--------------------.............................");
+  
       update();
     } catch (e) {
       print('Error loading dropdown data: $e');
@@ -112,10 +111,7 @@ class ProductController extends GetxController {
     newCategory = productModel.category ?? "";
     newUom = productModel.uom ?? "";
 
-    print(newNameController.text);
-    print(newPickedImage);
-    print(newCategory);
-    print("newUom=============================================>>>>>>>>>>>>>>>>>${newUom}");
+ 
     CustomBottomSheet(
       child: EditOrDeleteProductBottomSheet(
         id: productModel.id??0,

@@ -12,7 +12,6 @@ class TotalSection {
   TotalSection({required this.font, required this.boldFont, required this.totalPrice, required this.grandTotalPrice, required this.vat});
 
   pw.Widget build() {
-    print("this is from total section${grandTotalPrice.toString()}");
     return pw.Row(
       children: [
         pw.Column(

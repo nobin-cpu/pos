@@ -29,10 +29,7 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
     
     controller.getCustomerById(controller.customerId??0);
     controller.getAndPrintCustomerById(controller.customerId??0);
-    
-    print(invoiceId);
-    print(controller.transectionId);
-    print("..................invoice and transection id from print s...................${invoiceId}");
+
   }
 
   @override

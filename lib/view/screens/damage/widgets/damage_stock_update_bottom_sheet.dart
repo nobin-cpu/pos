@@ -22,7 +22,7 @@ class _DamageStockUpdateBottomSheetState extends State<DamageStockUpdateBottomSh
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const BottomSheetHeaderRow(header: MyStrings.updateStockItems),
-        
+       
           const Text(MyStrings.damageQuantity),
           const SizedBox(height: Dimensions.space5),
           CustomTextField(
@@ -30,7 +30,7 @@ class _DamageStockUpdateBottomSheetState extends State<DamageStockUpdateBottomSh
             needOutlineBorder: true,
             controller: controller.damageAmountController,
           ),
-            const SizedBox(height: Dimensions.space5),
+          const SizedBox(height: Dimensions.space5),
           const Text(MyStrings.damageReason),
           const SizedBox(height: Dimensions.space5),
           CustomTextField (

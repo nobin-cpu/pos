@@ -26,7 +26,6 @@ class _PosScreenState extends State<PosScreen> {
     super.initState();
    
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //  isPartOfBottomNavBar = Get.find<_BottomNavBarState>().currentIndex == 1;
       controller.initData();
     });
   }

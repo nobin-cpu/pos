@@ -16,6 +16,10 @@ import 'package:flutter_prime/data/controller/localization/localization_controll
 import 'package:flutter_prime/push_notification_service.dart';
 import 'core/di_service/di_services.dart' as di_service;
 
+
+
+
+
 Future<void> _messageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   final sharedPreferences=await SharedPreferences.getInstance();
@@ -62,9 +66,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
    
   }
-
- 
-
 
   @override
   Widget build(BuildContext context) {

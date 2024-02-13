@@ -15,7 +15,7 @@ class VatCustomizeAlartDialogue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SettingsController>(builder: (controller) {
+    return GetBuilder<VatSettingsController>(builder: (controller) {
       return Container(
         padding: const EdgeInsets.all(Dimensions.space10),
         decoration: const BoxDecoration(color: MyColor.colorWhite),

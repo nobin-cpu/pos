@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
@@ -80,7 +78,7 @@ class _TableSectionState extends State<TableSection> {
               controller.totalGrandTotalAllProducts = invoice.totalGrandTotalofAllProduct;
               controller.totalVatAllProducts = invoice.totalVatofAllProduct;
               controller.totalAmountAllProducts = invoice.totalPriceofAllProduct;
-              print("this is state111111");
+              
               return TableRow(
                 children: [
                   TableCell(
@@ -102,13 +100,13 @@ class _TableSectionState extends State<TableSection> {
                   TableCell(
                     child: Padding(
                       padding: const EdgeInsets.all(Dimensions.space8),
-                      child: Center(child: Text('${invoice.discountAmount!.toStringAsFixed(2) ?? '0.0'}${MyUtils.getCurrency()}')),
+                      child: Center(child: Text('${invoice.discountAmount!.toStringAsFixed(2)}${MyUtils.getCurrency()}')),
                     ),
                   ),
                   TableCell(
                     child: Padding(
                       padding: const EdgeInsets.all(Dimensions.space8),
-                      child: Center(child: Text('${invoice.quantity!.toStringAsFixed(2) ?? '0.0'}')),
+                      child: Center(child: Text(invoice.quantity!.toStringAsFixed(2))),
                     ),
                   ),
                   TableCell(

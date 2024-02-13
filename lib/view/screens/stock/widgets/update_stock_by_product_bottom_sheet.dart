@@ -4,7 +4,6 @@ import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/data/controller/stock/stock_controller.dart';
 import 'package:flutter_prime/view/components/bottom-sheet/bottom_sheet_header_row.dart';
 import 'package:flutter_prime/view/components/buttons/rounded_button.dart';
-import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_button_with_text_field2.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 

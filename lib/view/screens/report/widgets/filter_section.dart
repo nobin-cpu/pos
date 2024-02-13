@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
@@ -41,7 +39,6 @@ class _FilterSectionState extends State<FilterSection> {
               } else {
                 controller.moveFilterDateBackward();
               }
-             
             },
             child: Image.asset(
               MyImages.back,
@@ -66,7 +63,6 @@ class _FilterSectionState extends State<FilterSection> {
               } else {
                 controller.moveFilterDateForward();
               }
-            
             },
             child: Image.asset(
               MyImages.next,

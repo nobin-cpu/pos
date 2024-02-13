@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
 import 'package:flutter_prime/core/helper/sqflite_database.dart';
 import 'package:flutter_prime/core/route/route.dart';
@@ -45,8 +44,7 @@ class InvoicePrintController extends GetxController {
     this.invoiceId = invoiceId;
     List<InvoiceDetailsModel> productList = await databaseHelper.getProductsByTransactionId(invoiceId);
     products = productList;
-    print(products);
-    print("this id product");
+ 
     update();
   }
 
@@ -99,14 +97,7 @@ class InvoicePrintController extends GetxController {
                 totalSection(font, boldFont),
               ],
             )
-            // pw.Spacer(),
-            // pw.Row(
-            //   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     pw.Text(MyStrings.grandTotal),
-            //     pw.Text(grandTotal.toString()),
-            //   ],
-            // )
+          
           ]);
         },
       ),
@@ -114,7 +105,6 @@ class InvoicePrintController extends GetxController {
     return pdf.save();
   }
 
-  // int? customerIds;
   String? customerName = "";
   String? customerAddress = "";
   String? customerPhNo = "";
@@ -127,12 +117,7 @@ class InvoicePrintController extends GetxController {
       customerAddress = customer.address;
       customerPhNo = customer.phNo;
       customerPost = customer.post;
-      print('Customer Details:');
-      print('ID: ${customer.id}');
-      print('Name: ${customer.name}');
-      print('Address: ${customer.address}');
-      print('Phone Number: ${customer.phNo}');
-      print('Post: ${customer.post}');
+   
       update();
     } else {
       print('No customer found with ID: $id');

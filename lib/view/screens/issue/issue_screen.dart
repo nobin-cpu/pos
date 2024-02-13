@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
-import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:flutter_prime/core/utils/style.dart';
 import 'package:flutter_prime/view/components/app-bar/custom_appbar.dart';
 import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/my_images.dart';
 
 class IssueScreen extends StatefulWidget {
   const IssueScreen({super.key});

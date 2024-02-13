@@ -12,7 +12,6 @@ class ShopInfoSection {
   ShopInfoSection({required this.font, required this.boldFont, required this.shopkeeperName, required this.shopAddress, required this.shopPhoneNo});
 
   pw.Widget build() {
-    print("this is shop keeper name ${shopkeeperName}");
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       mainAxisAlignment: pw.MainAxisAlignment.start,

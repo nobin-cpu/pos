@@ -38,10 +38,12 @@ class MyStrings{
   static const String vatSettiings   = "Vat Settings";
   static const String whatDoYouWantToDoToday   = "What do you want to do today?";
   static const String hi   = "Hi!";
+  static const String billTo   = "Bill to";
   static const String resetPasswordSenttoEmail   = "Reset Password Sent to Email";
   static const String sendVerificationMail   = "Send verification mail";
 
   static const String appName       = "POS";
+  static const String noDamageHistoryAvailable       = "No Damage History Available";
   static const String po       = "P.O.#";
   static const String damageHistory       = "Damage History";
   static const String damageQuantity       = "Damage Quantity";
@@ -346,6 +348,7 @@ class MyStrings{
   static const String total                                  = 'Total';
   static const String subTotal                               = 'Sub Total';
   static const String vat                                    = 'VAT';
+  static const String vatSetting                                    = 'VAT setting';
   static const String grandTotal                             = 'Grand Total:';
   static const String actions                                = 'Actions';
   static const String preview                                = 'Preview: ' ;

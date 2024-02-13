@@ -88,6 +88,7 @@ class _CategoryProductListScreenState extends State<CategoryProductListScreen> {
                           ),
                           Expanded(
                             child: ListView.builder(
+                              physics:const BouncingScrollPhysics(),
                               itemCount: controller.productList.length,
                               itemBuilder: (context, index) {
                                 ProductModel product = controller.productList[index];

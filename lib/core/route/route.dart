@@ -1,6 +1,5 @@
 import 'package:flutter_prime/view/screens/add_shop_details/add_shop_details_screen.dart';
 import 'package:flutter_prime/view/components/bottom-nav-bar/bottom_nav_bar.dart';
-import 'package:flutter_prime/view/screens/account/change-password/change_password_screen.dart';
 import 'package:flutter_prime/view/screens/auth/login/login_screen.dart';
 import 'package:flutter_prime/view/screens/auth/registration/registration_screen.dart';
 import 'package:flutter_prime/view/screens/cart/cart_screen.dart';
@@ -69,7 +68,6 @@ static const String forgetPasswordScreen               = '/forget_password_Scree
 
     GetPage(name: splashScreen, page: () => const SplashScreen()),
     GetPage(name: loginScreen, page: () => const LoginScreen()),
-    GetPage(name: changePasswordScreen, page: () => const ChangePasswordScreen()),
     GetPage(name: registrationScreen, page: () => const RegistrationScreen()),
     GetPage(name: bottomNavBar, page: () => const BottomNavBar()),
     GetPage(name: voidItemsScreen, page: () => const VoidItemsScreen()),

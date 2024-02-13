@@ -18,7 +18,7 @@ class _VatSettingsScreenState extends State<VatSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    final controller = Get.put(SettingsController());
+    final controller = Get.put(VatSettingsController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
     controller.getVatActivationValue();
   });
@@ -28,9 +28,9 @@ class _VatSettingsScreenState extends State<VatSettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: MyStrings.setting,
+        title: MyStrings.vatSetting,
       ),
-      body: GetBuilder<SettingsController>(
+      body: GetBuilder<VatSettingsController>(
         builder: (controller) => SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(Dimensions.space5),

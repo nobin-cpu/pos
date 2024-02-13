@@ -12,6 +12,8 @@ import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_b
 import 'package:flutter_prime/view/components/text-form-field/custom_text_field.dart';
 import 'package:get/get.dart';
 
+import 'add_products_details_fields.dart';
+
 class AddProductBottomSheet extends StatefulWidget {
   const AddProductBottomSheet({super.key});
 
@@ -28,114 +30,8 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const BottomSheetHeaderRow(header: MyStrings.addProduct),
-          Row(
-            children: [
-              const Text(
-                MyStrings.productName,
-                style: mediumLarge,
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Text(
-                MyStrings.required,
-                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-              ),
-            ],
-          ),
-          const SizedBox(height: Dimensions.space5),
-          CustomTextField(
-            controller: controller.productNameController,
-            onChanged: () {},
-            needOutlineBorder: true,
-            animatedLabel: true,
-          ),
-          const SizedBox(height: Dimensions.space10),
-          Row(
-            children: [
-              const Text(
-                MyStrings.onlyPrice,
-                style: mediumLarge,
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Text(
-                MyStrings.required,
-                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-              ),
-            ],
-          ),
-          const SizedBox(height: Dimensions.space5),
-          CustomTextField(
-            controller: controller.priceController,
-            onChanged: () {},
-            needOutlineBorder: true,
-            animatedLabel: true,
-            textInputType: TextInputType.number,
-          ),
-          const SizedBox(height: Dimensions.space10),
-          Row(
-            children: [
-              Text(
-                MyStrings.stocks.tr,
-                style: mediumLarge,
-              ),
-              const SizedBox(width: Dimensions.space10),
-              Text(
-                MyStrings.required,
-                style: mediumDefault.copyWith(color: MyColor.getGreyText()),
-              ),
-            ],
-          ),
-          const SizedBox(height: Dimensions.space5),
-          CustomTextField(
-            controller: controller.stocksController,
-            onChanged: () {},
-            needOutlineBorder: true,
-            animatedLabel: true,
-            textInputType: TextInputType.number,
-          ),
-          const SizedBox(height: Dimensions.space10),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      MyStrings.wholesalePrice,
-                      style: mediumLarge,
-                    ),
-                    const SizedBox(height: Dimensions.space5),
-                    CustomTextField(
-                      controller: controller.wholesaleController,
-                      onChanged: () {},
-                      needOutlineBorder: true,
-                      animatedLabel: true,
-                      textInputType: TextInputType.number,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: Dimensions.space5),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      MyStrings.purchasePrice,
-                      style: mediumLarge,
-                    ),
-                    const SizedBox(height: Dimensions.space5),
-                    CustomTextField(
-                      controller: controller.purchasePriceController,
-                      onChanged: () {},
-                      needOutlineBorder: true,
-                      animatedLabel: true,
-                      textInputType: TextInputType.number,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          const AddProductsDetailsFields(),
+        
           controller.categoryList.length > 1 ? const SizedBox(height: Dimensions.space10) : const SizedBox(),
           controller.categoryList.length > 1
               ? Row(

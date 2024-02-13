@@ -23,6 +23,9 @@ class MyUtils {
  static String getCurrency() {
   return " ৳ ";
 }
+ static String getPlusSymbol() {
+  return "+";
+}
  static String getPercentSymbol() {
   return " % ";
 }

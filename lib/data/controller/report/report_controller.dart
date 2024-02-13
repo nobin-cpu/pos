@@ -94,12 +94,12 @@ class ReportController extends GetxController {
       await _initDatabase();
       isLoading = true;
       filteredInvoiceList.clear();
+      update();
 
       filteredInvoiceList = await _databaseHelper.getFilteredInvoiceList(date, isFilteringByMonth);
 
-      print("Settled VAT Amount: $filteredInvoiceList");
-      print("Sent date: $date");
-
+   
+       await getTotalValues();
       update();
     } catch (e) {
       print("Error during fetchFilteredInvoiceDetails: $e");
@@ -108,15 +108,31 @@ class ReportController extends GetxController {
       update();
     }
   }
+Future<void> getTotalValues() async {
+  print("getTotalValues called ------------------------------");
 
-  Future<void> getTotalValues() async {
-    for (var item in filteredInvoiceList) {
-      item.totalGrandTotalofAllProduct = totalGrandTotalAllProducts;
-      item.totalPriceofAllProduct = totalAmountAllProducts;
-      item.totalVatofAllProduct = totalVatAllProducts;
-    }
-    update();
+
+  double grandTotal = 0.0;
+  double vatTotal = 0.0;
+  double priceTotal = 0.0;
+
+  for (var item in filteredInvoiceList) {
+    grandTotal += item.totalGrandTotalofAllProduct ?? 0.0;
+    vatTotal += item.totalVatofAllProduct ?? 0.0;
+    priceTotal += item.totalPriceofAllProduct ?? 0.0;
   }
+   
+  totalGrandTotalAllProducts = double.parse(grandTotal.toStringAsFixed(2));
+  totalVatAllProducts = double.parse(vatTotal.toStringAsFixed(2));
+  totalAmountAllProducts = double.parse(priceTotal.toStringAsFixed(2));
+
+  print("this is totalGrand===================${totalGrandTotalAllProducts}");
+  print("this is totalvatAll=============${totalVatAllProducts}");
+  print("this is price============${totalVatAllProducts}");
+
+  update();
+}
+
 
   void generatePdf() async {
     await Printing.layoutPdf(onLayout: (format) => _generatePdf(format));
@@ -189,6 +205,7 @@ class ReportController extends GetxController {
   }
 
   void moveFilterMonth() {
+    
     setStartDate(DateTime(_startDate.year, _startDate.month, 1));
     setEndDate(DateTime(_startDate.year, _startDate.month + 1, 0));
 
@@ -196,6 +213,7 @@ class ReportController extends GetxController {
   }
 
   void moveFilterDateForward() {
+   
     setStartDate(startDate.add(Duration(days: 1)));
     setEndDate(endDate.add(Duration(days: 1)));
 
@@ -203,14 +221,16 @@ class ReportController extends GetxController {
   }
 
   void moveFilterDateBackward() {
+   
     setStartDate(startDate.subtract(Duration(days: 1)));
     setEndDate(endDate.subtract(Duration(days: 1)));
 
     fetchFilteredInvoiceDetails(startDate);
-     print("this is month end from controller ");
+    print("this is month end from controller ");
   }
 
   void moveFilterMonthForward() {
+   
     final lastDayOfMonth = DateTime(_startDate.year, _startDate.month + 1, 0);
 
     final nextMonthStartDate = lastDayOfMonth.add(Duration(days: 1));
@@ -224,6 +244,7 @@ class ReportController extends GetxController {
   }
 
   void moveFilterMonthBackward() {
+    
     final previousMonthStartDate = DateTime(_startDate.year, _startDate.month - 1, 1);
 
     final lastDayOfPreviousMonth = DateTime(_startDate.year, _startDate.month, 0);

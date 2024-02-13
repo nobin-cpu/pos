@@ -14,7 +14,6 @@ class PosController extends GetxController {
   void onInit() {
     super.onInit();
     initData();
-    // loadDropdownData();
   }
 
   Future<void> loadCategoryData() async {
@@ -22,12 +21,10 @@ class PosController extends GetxController {
     update();
     try {
       await databaseHelper.initializeDatabase();
-      print("database has initilized here in loadCategoryData");
       List<CategoryModel> categoryData = await databaseHelper.getCategoryList();
       categoryList = categoryData;
 
-      print("this is catetagory list   ${categoryList[0].image}");
-      print("this is catetagory list   ${categoryList[0].title}");
+ 
       await loadProductData();
 
       update();
@@ -51,7 +48,7 @@ class PosController extends GetxController {
   }
 
   Future<void> initData() async {
-    //  await loadProductData();
+   
     await loadCategoryData();
   }
 }

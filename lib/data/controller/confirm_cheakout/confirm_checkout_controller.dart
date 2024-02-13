@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -72,6 +73,12 @@ class ConfirmCheakoutController extends GetxController {
   String shopAddress = "";
   String phoneNumber = "";
 
+  
+  String? customerName = "";
+  String? customerAddress = "";
+  String? customerPhNo = "";
+  String? customerPost = "";
+
   List<CustomerModel> customerList = [];
   CustomerModel? selectedCustomer;
   fetchCustomers() async {
@@ -140,13 +147,6 @@ class ConfirmCheakoutController extends GetxController {
     newUom = cartProductModel.uom ?? "";
     uom = cartProductModel.uom ?? "";
     update();
-    print(quantity);
-    print(quantity);
-    // CustomBottomSheet(
-    //   child: CheckoutProductEditBottomSheet(
-    //     id: int.parse(cartProductModel.id.toString()),
-    //   ),
-    // ).customBottomSheet(context);
   }
 
   Future<void> loadDropdownData() async {
@@ -288,7 +288,6 @@ class ConfirmCheakoutController extends GetxController {
       await CustomSnackBar.success(successList: [MyStrings.productCheckoutSuccessfully]);
       await databaseHelper.clearCart();
 
-      cartProductList.clear();
       update();
 
       Get.back();
@@ -442,7 +441,6 @@ class ConfirmCheakoutController extends GetxController {
   }
 
   shopKeeperInfo(pw.Font font, pw.Font boldFont) {
-   
     return ShopInfoSection(font: font, boldFont: boldFont, shopkeeperName: shopName, shopAddress: shopAddress, shopPhoneNo: phoneNumber).build();
   }
 
@@ -456,10 +454,14 @@ class ConfirmCheakoutController extends GetxController {
 
   totalSection(pw.Font font, pw.Font boldFont) {
     double grandTotal = isVatEnable ? checkOutGrandTotalPrice : checkOutTotalPrice;
+    double totalVatAmount = checkOutTotalPrice * (double.tryParse(vatAmount.toString())! / 100);
     update();
     print("this is grande totoal${grandTotal}");
-    return TotalSection(font: font, boldFont: boldFont, totalPrice: double.tryParse(checkOutTotalPrice.toStringAsFixed(2)) ?? 0.0, grandTotalPrice: checkOutGrandTotalPrice ?? 0.0, vat: double.tryParse(vatAmount.toString()) ?? 0.0).build();
+    return TotalSection(font: font, boldFont: boldFont, totalPrice: double.tryParse(checkOutTotalPrice.toStringAsFixed(2)) ?? 0.0, grandTotalPrice: checkOutGrandTotalPrice ?? 0.0, vat: totalVatAmount ?? 0.0).build();
   }
+
+
+
 
   pw.TableRow _buildTableRow(List<String> rowData, pw.Font font) {
     return pw.TableRow(
@@ -484,10 +486,6 @@ class ConfirmCheakoutController extends GetxController {
     update();
   }
 
-  String? customerName = "";
-  String? customerAddress = "";
-  String? customerPhNo = "";
-  String? customerPost = "";
 
   Future<void> getAndPrintCustomerById(int customerid) async {
     final customer = await getCustomerById(customerid);

@@ -1,6 +1,5 @@
-import 'package:flutter_prime/core/helper/secured_storage_helper.dart';
+
 import 'package:flutter_prime/core/helper/shared_preference_helper.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter_prime/core/route/route.dart';
 import 'package:flutter_prime/data/controller/localization/localization_controller.dart';

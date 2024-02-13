@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_prime/core/helper/date_converter.dart';
 import 'package:flutter_prime/core/utils/dimensions.dart';
 import 'package:flutter_prime/core/utils/my_color.dart';
 import 'package:flutter_prime/core/utils/my_images.dart';
@@ -30,7 +29,7 @@ class _ReportScreenState extends State<ReportScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controller.loadDataFromSharedPreferences();
       controller.fetchFilteredInvoiceDetails(controller.startDate);
-      controller.getTotalValues();
+      
 
     });
   }

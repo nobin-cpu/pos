@@ -7,7 +7,7 @@ import 'package:flutter_prime/view/screens/add_shop_details/widgets/shop_details
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsController extends GetxController {
+class VatSettingsController extends GetxController {
   final TextEditingController vatController = TextEditingController();
   final TextEditingController shopNameController = TextEditingController();
   final TextEditingController shopAddressController = TextEditingController();
@@ -56,29 +56,18 @@ class SettingsController extends GetxController {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     percentDiscount = preferences.getBool(SharedPreferenceHelper.isVatInPercentiseKey)!;
     vatamount = preferences.getString(SharedPreferenceHelper.vatAmountKey);
-    shopName = preferences.getString(SharedPreferenceHelper.shopNameKey);
+
     vatSwitch = preferences.getBool(SharedPreferenceHelper.isVatactiveOrNot)!;
-    print('saved vat amountsssssssssssssss $vatamount');
-    print('saved vat amount $percentDiscount');
+ 
     update();
   }
 
   Future<void> saveVatDataToSharedPreference() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(SharedPreferenceHelper.vatAmountKey, vatController.text);
-    await preferences.setString(SharedPreferenceHelper.shopNameKey, shopNameController.text);
-    await preferences.setString(SharedPreferenceHelper.shopAddressKey, shopAddressController.text);
-    await preferences.setString(SharedPreferenceHelper.phNoKey, phNoController.text);
+
     await preferences.setBool(SharedPreferenceHelper.isVatInPercentiseKey, percentDiscount);
     await preferences.setBool(SharedPreferenceHelper.isVatactiveOrNot, vatSwitch);
-  }
-
-  Future<void> saveshopDataToSharedPreference() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(SharedPreferenceHelper.shopNameKey, shopNameController.text);
-    await preferences.setString(SharedPreferenceHelper.shopAddressKey, shopAddressController.text);
-    await preferences.setString(SharedPreferenceHelper.phNoKey, phNoController.text);
-    getVatActivationValue();
-    update();
+    await getVatActivationValue();
   }
 }

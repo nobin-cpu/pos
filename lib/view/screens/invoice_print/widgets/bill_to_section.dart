@@ -1,4 +1,5 @@
 import 'package:flutter_prime/core/utils/dimensions.dart';
+import 'package:flutter_prime/core/utils/my_strings.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -13,13 +14,12 @@ class BillToSection {
 
   BillToSection( {required this.font, required this.boldFont, required this.customerName,required this.customerAddress,required this.customerph,required this.customerpost}); 
   pw.Widget build() {
-    print("this is client name ${this.customerName}");
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       mainAxisAlignment: pw.MainAxisAlignment.start,
       children: [
         pw.Text(
-          "Bill to",
+          MyStrings.billTo,
           style: pw.TextStyle(
             font: boldFont,
             color: PdfColors.orange400,

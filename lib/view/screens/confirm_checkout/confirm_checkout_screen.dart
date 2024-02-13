@@ -13,7 +13,10 @@ import 'package:flutter_prime/view/components/card/custom_card.dart';
 import 'package:flutter_prime/view/components/divider/custom_divider.dart';
 import 'package:flutter_prime/view/components/snack_bar/show_custom_snackbar.dart';
 import 'package:flutter_prime/view/components/text-form-field/custom_drop_down_button_with_text_field2.dart';
+import 'package:flutter_prime/view/screens/confirm_checkout/widgets/payement_type_selection_section.dart';
 import 'package:get/get.dart';
+
+import 'widgets/add_customer_section.dart';
 
 class ConfirmCheckOutScreen extends StatefulWidget {
   const ConfirmCheckOutScreen({super.key});
@@ -26,7 +29,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
   @override
   void initState() {
     final controller = Get.put(ConfirmCheakoutController());
-    
+
     controller.initData();
     super.initState();
   }
@@ -38,7 +41,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
       print("this is vat status${controller.isVatEnable}");
 
       return Scaffold(
-       
         appBar: const CustomAppBar(title: MyStrings.checkout),
         body: Column(
           children: [
@@ -47,15 +49,14 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: Container(
-                  margin:const EdgeInsets.only(bottom: Dimensions.space40),
-                  padding:const EdgeInsets.only(bottom: Dimensions.space30),
+                  margin: const EdgeInsets.only(bottom: Dimensions.space40),
+                  padding: const EdgeInsets.only(bottom: Dimensions.space30),
                   height: MediaQuery.of(context).size.height * .35,
                   child: Padding(
                     padding: const EdgeInsets.all(Dimensions.space10),
                     child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
+                      scrollDirection: Axis.vertical,
                       child: Table(
-                        
                         border: TableBorder.all(),
                         columnWidths: const {
                           0: IntrinsicColumnWidth(),
@@ -76,7 +77,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                             ],
                           ),
                           ...controller.cartProductList.map((CartProductModel product) {
-
                             return TableRow(
                               children: [
                                 TableCell(child: Padding(padding: const EdgeInsets.all(Dimensions.space8), child: Center(child: Text(product.name ?? "")))),
@@ -94,7 +94,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                 ),
               ),
             ),
-           
           ],
         ),
         floatingActionButton: Column(
@@ -155,171 +154,24 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
               ),
             ),
             const SizedBox(height: Dimensions.space10),
-            CustomCard(
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.space10),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(Dimensions.space5),
-                          ),
-                          child: DropdownButtonFormField<CustomerModel>(
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: MyStrings.selectACustomer,
-                            ),
-                            value: controller.selectedCustomer,
-                            onChanged: (CustomerModel? value) {
-                              controller.selectedCustomer = value;
-                              controller.customerid = value!.id;
 
-                            
-                            },
-                            items: controller.customerList.map((CustomerModel customer) {
-                              return DropdownMenuItem<CustomerModel>(
-                                  value: customer,
-                                  child: Row(
-                                    children: [
-                                      Text(customer.name),
-                                      const SizedBox(
-                                        width: Dimensions.space5,
-                                      ),
-                                      Text("(${customer.address})", style: regularDefault)
-                                    ],
-                                  ));
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: Dimensions.space15),
-                      InkWell(
-                          onTap: () {
-                            controller.showAddCustomersBottomSheet(context);
-                          },
-                          child: Image.asset(
-                            MyImages.add,
-                            height: 15,
-                          ))
-                    ],
-                  )),
-                  const SizedBox(width: Dimensions.space10),
-                ],
-              ),
-            ),
+            // this is section for adding customer from checkout screen
+
+            const AddCustomerSection(),
+
             const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.only(left: Dimensions.space8),
                   child: Text(MyStrings.selectPaymentType, style: semiBoldMediumLarge),
                 )),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: CustomCard(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
-                        child: Container(
-                          decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-                          child: CustomCard(
-                            radius: Dimensions.space5,
-                            isPress: true,
-                            onPressed: () {
-                              if (controller.selectedCustomer != null) {
-                                controller.paidOnline = true;
-                                controller.paidinCash = false;
-                                controller.update();
-                              } else {
-                                CustomSnackBar.error(errorList: [MyStrings.selectACustomer]);
-                              }
-                            },
-                            width: double.infinity,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: Dimensions.space10,
-                                    child: Radio(
-                                      value: true,
-                                      groupValue: controller.paidOnline,
-                                      onChanged: (bool? value) {
-                                        controller.changeonlinePaid();
-                                        controller.paidinCash = false;
-                                        controller.update();
-                                      },
-                                    ),
-                                  ),
-                                  const Text(
-                                    MyStrings.paidOnline,
-                                    style: regularMediumLarge,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: Dimensions.space10),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Dimensions.space10),
-                        child: Container(
-                          decoration: BoxDecoration(boxShadow: MyUtils.getCardShadow()),
-                          child: CustomCard(
-                            radius: Dimensions.space5,
-                            isPress: true,
-                            onPressed: () {
-                              if (controller.selectedCustomer != null) {
-                                controller.paidinCash = true;
-                                controller.paidOnline = false;
-                                controller.update();
-                              } else {
-                                CustomSnackBar.error(errorList: [MyStrings.selectACustomer]);
-                              }
-                            },
-                            width: double.infinity,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    height: Dimensions.space10,
-                                    child: Radio(
-                                      value: true,
-                                      groupValue: controller.paidinCash,
-                                      onChanged: (bool? value) {
-                                        controller.changeCashPaid();
 
-                                        controller.update();
-                                      },
-                                    ),
-                                  ),
-                                  const Text(
-                                    MyStrings.paidByCash,
-                                    style: regularMediumLarge,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+              
+              //this is payment type selection section
+
+             const PaymentTypeSelectionSection(),
+
+             
             InkWell(
               onTap: () async {
                 if (controller.paidOnline || controller.paidinCash) {
@@ -331,9 +183,6 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                     controller.generatePdf();
                     controller.completeCheckout(MyStrings.paidByCash);
                   }
-                  
-                 
-                 
                 } else {
                   CustomSnackBar.error(errorList: [MyStrings.selectPaymentGatewat]);
                 }

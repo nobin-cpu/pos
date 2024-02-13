@@ -17,7 +17,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
-    final controller = Get.put(MyMenuController());
+     Get.put(MyMenuController());
 
     super.initState();
   }

@@ -21,40 +21,40 @@ class _VoidOrInvoiceScreenState extends State<VoidOrInvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     bool hasBottomNavBar = (ModalRoute.of(context)?.settings.name == BottomNavBar().toString());
-   
+
     return Scaffold(
-      appBar:const CustomAppBar(title: ""),
+      appBar: const CustomAppBar(title: ""),
       body: Row(
         children: [
-        
           Expanded(
             child: InkWell(
-              onTap: () {  Get.toNamed(RouteHelper.voidItemsScreen);},
+              onTap: () {
+                Get.toNamed(RouteHelper.voidItemsScreen);
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(Dimensions.space10, Dimensions.space20, Dimensions.space10, Dimensions.space0),
                 child: CustomCard(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.all(Dimensions.space15),
-                    child: Row(children: [Image.asset(
-                                        MyImages.voids,
-                                        color: MyColor.colorBlack,
-                                        height: Dimensions.space25,
-                                      ),
-                                      
-                                       const  SizedBox(width:Dimensions.space10),
-                                       const Text(
-              MyStrings.voids,
-              style: regularExtraLarge,
-            ),],
-            )
-                  ),
+                      padding: const EdgeInsets.all(Dimensions.space15),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            MyImages.voids,
+                            color: MyColor.colorBlack,
+                            height: Dimensions.space25,
+                          ),
+                          const SizedBox(width: Dimensions.space10),
+                          const Text(
+                            MyStrings.voids,
+                            style: regularExtraLarge,
+                          ),
+                        ],
+                      )),
                 ),
               ),
             ),
           ),
-          
-         
           Expanded(
             child: InkWell(
               onTap: () {
@@ -65,25 +65,25 @@ class _VoidOrInvoiceScreenState extends State<VoidOrInvoiceScreen> {
                 child: CustomCard(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.all(Dimensions.space15),
-                    child:  Row(children: [Image.asset(
-                                        MyImages.invoice,
-                                        color: MyColor.colorBlack,
-                                        height: Dimensions.space25,
-                                      ),
-                                     const  SizedBox(width:Dimensions.space10),
-                                       const Text(
-              MyStrings.invoice,
-              style: regularExtraLarge,
-            ),],
-            )
-                  ),
+                      padding: const EdgeInsets.all(Dimensions.space15),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            MyImages.invoice,
+                            color: MyColor.colorBlack,
+                            height: Dimensions.space25,
+                          ),
+                          const SizedBox(width: Dimensions.space10),
+                          const Text(
+                            MyStrings.invoice,
+                            style: regularExtraLarge,
+                          ),
+                        ],
+                      )),
                 ),
               ),
             ),
           ),
-          
-         
         ],
       ),
     );

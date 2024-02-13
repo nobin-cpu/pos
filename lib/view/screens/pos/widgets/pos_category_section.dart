@@ -20,6 +20,7 @@ class _PosCategorySectionState extends State<PosCategorySection> {
     return Expanded(
       child: GetBuilder<PosController>(builder: (controller) {
         return GridView.builder(
+          physics:const BouncingScrollPhysics(),
             itemCount: controller.categoryList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               childAspectRatio: 1.3,
@@ -28,12 +29,11 @@ class _PosCategorySectionState extends State<PosCategorySection> {
               crossAxisSpacing: 12,
             ),
             itemBuilder: (context, index) {
-               print("this is photo ${controller.categoryList[index].image.toString()}");
               return CustomCard(
-                isPress: true,
-                onPressed: () {
-                   Get.toNamed(RouteHelper.categoryProductListScreen, arguments: [controller.categoryList[index].title]);
-                },
+                  isPress: true,
+                  onPressed: () {
+                    Get.toNamed(RouteHelper.categoryProductListScreen, arguments: [controller.categoryList[index].title]);
+                  },
                   width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
